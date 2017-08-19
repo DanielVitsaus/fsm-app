@@ -27,7 +27,7 @@ public class SplashScreenPresenter extends MvpBasePresenter<SplashScreenView> {
             public void run() {
                 getView().callModeActivity();
             }
-        }, 10000);
+        }, 2000);
     }
 
     @Override

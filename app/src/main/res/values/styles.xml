@@ -12,4 +12,14 @@
         <item name="android:windowFullscreen">true</item>
     </style>
 
+    <style name="MyButtonGreen" parent="Widget.AppCompat.Button.Colored">
+        <item name="colorControlHighlight">@color/material_green_700</item>
+        <item name="colorButtonNormal">@color/material_green_900</item>
+    </style>
+
+    <style name="MyButtonBlue" parent="Theme.AppCompat.Light">
+        <item name="colorControlHighlight">@color/material_blue_700</item>
+        <item name="colorButtonNormal">@color/material_blue_900</item>
+    </style>
+
 </resources>

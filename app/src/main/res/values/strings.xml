@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">fsm-app</string>
+    <string name="primary_mode">MODO PRIMÁRIO</string>
+    <string name="secondary_mode">MODO SECUNDÁRIO</string>
+    <string name="primary_mode_slogan">Reproduza conteúdo para uma experiência coletiva</string>
+    <string name="secondary_mode_slogan">Receba conteúdo personalizado para uma experiência diferenciada</string>
 </resources>

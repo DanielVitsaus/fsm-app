@@ -9,7 +9,7 @@ import javax.inject.Inject;
 import br.com.lapic.thomas.fsm_app.R;
 import br.com.lapic.thomas.fsm_app.injection.component.ActivityComponent;
 import br.com.lapic.thomas.fsm_app.ui.base.BaseMvpActivity;
-import br.com.lapic.thomas.fsm_app.ui.main.MainActivity;
+import br.com.lapic.thomas.fsm_app.ui.mode.ModeActivity;
 
 public class SplashScreenActivity extends BaseMvpActivity<SplashScreenView, SplashScreenPresenter> implements SplashScreenView {
 
@@ -35,7 +35,7 @@ public class SplashScreenActivity extends BaseMvpActivity<SplashScreenView, Spla
 
     @Override
     public void callModeActivity(){
-        startActivity(new Intent(this, MainActivity.class));
+        startActivity(new Intent(this, ModeActivity.class));
     }
 
 }

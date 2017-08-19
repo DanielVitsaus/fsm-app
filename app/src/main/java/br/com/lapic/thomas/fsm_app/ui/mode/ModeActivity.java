@@ -1,9 +1,8 @@
-package br.com.lapic.thomas.fsm_app.ui.main;
+package br.com.lapic.thomas.fsm_app.ui.mode;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
-import android.widget.Button;
 import android.widget.Toast;
 
 import javax.inject.Inject;
@@ -11,30 +10,25 @@ import javax.inject.Inject;
 import br.com.lapic.thomas.fsm_app.R;
 import br.com.lapic.thomas.fsm_app.injection.component.ActivityComponent;
 import br.com.lapic.thomas.fsm_app.ui.base.BaseMvpActivity;
-import butterknife.BindView;
 import butterknife.ButterKnife;
-import butterknife.OnClick;
 
-public class MainActivity
-        extends BaseMvpActivity<MainView, MainPresenter>
-        implements MainView {
+public class ModeActivity
+        extends BaseMvpActivity<ModeView, ModePresenter>
+        implements ModeView {
 
     @Inject
-    protected MainPresenter mPresenter;
-
-    @BindView(R.id.button)
-    protected Button button;
+    protected ModePresenter mPresenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_mode);
         ButterKnife.bind(this);
     }
 
     @NonNull
     @Override
-    public MainPresenter createPresenter() {
+    public ModePresenter createPresenter() {
         return mPresenter;
     }
 
@@ -43,8 +37,10 @@ public class MainActivity
         activityComponent.inject(this);
     }
 
-    @OnClick(R.id.button)
-    public void onClickButton(View view){
-        Toast.makeText(this, "teste", Toast.LENGTH_SHORT).show();
+    public void onClickButton(View view) {
+        String tagButton = view.getTag().toString();
+        mPresenter.onClickButton(tagButton);
+        Toast.makeText(this, tagButton, Toast.LENGTH_SHORT).show();
     }
+
 }

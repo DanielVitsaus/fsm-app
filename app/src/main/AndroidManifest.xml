@@ -19,7 +19,9 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ui.main.MainActivity"/>
+        <activity
+            android:name=".ui.mode.ModeActivity"
+            android:theme="@style/AppCompat.FullScreen"/>
     </application>
 
 </manifest>

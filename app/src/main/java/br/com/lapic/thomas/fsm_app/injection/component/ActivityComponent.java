@@ -5,7 +5,7 @@ import android.content.Context;
 import br.com.lapic.thomas.fsm_app.injection.ActivityContext;
 import br.com.lapic.thomas.fsm_app.injection.PerActivity;
 import br.com.lapic.thomas.fsm_app.injection.module.ActivityModule;
-import br.com.lapic.thomas.fsm_app.ui.main.MainActivity;
+import br.com.lapic.thomas.fsm_app.ui.mode.ModeActivity;
 import br.com.lapic.thomas.fsm_app.ui.splashscreen.SplashScreenActivity;
 import dagger.Component;
 
@@ -18,7 +18,7 @@ public interface ActivityComponent {
 
     void inject(SplashScreenActivity splashScreenActivity);
 
-    void inject(MainActivity mainActivity);
+    void inject(ModeActivity modeActivity);
 
     @ActivityContext
     Context context();
