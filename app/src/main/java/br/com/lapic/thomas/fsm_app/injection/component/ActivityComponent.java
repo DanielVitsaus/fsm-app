@@ -6,6 +6,7 @@ import br.com.lapic.thomas.fsm_app.injection.ActivityContext;
 import br.com.lapic.thomas.fsm_app.injection.PerActivity;
 import br.com.lapic.thomas.fsm_app.injection.module.ActivityModule;
 import br.com.lapic.thomas.fsm_app.ui.main.MainActivity;
+import br.com.lapic.thomas.fsm_app.ui.splashscreen.SplashScreenActivity;
 import dagger.Component;
 
 /**
@@ -14,6 +15,8 @@ import dagger.Component;
 @PerActivity
 @Component(dependencies = ApplicationComponent.class, modules = ActivityModule.class)
 public interface ActivityComponent {
+
+    void inject(SplashScreenActivity splashScreenActivity);
 
     void inject(MainActivity mainActivity);
 

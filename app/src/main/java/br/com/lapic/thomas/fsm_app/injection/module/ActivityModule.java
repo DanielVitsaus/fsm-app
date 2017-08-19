@@ -2,6 +2,8 @@ package br.com.lapic.thomas.fsm_app.injection.module;
 
 import android.app.Activity;
 import android.content.Context;
+import android.os.Handler;
+import android.os.Looper;
 
 import br.com.lapic.thomas.fsm_app.injection.ActivityContext;
 import dagger.Module;
@@ -27,6 +29,11 @@ public class ActivityModule {
     @ActivityContext
     Context provideContext() {
         return mActivity;
+    }
+
+    @Provides
+    Handler provideHandler(){
+        return new Handler(Looper.getMainLooper());
     }
 
 }
