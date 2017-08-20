@@ -12,6 +12,12 @@ import android.view.MenuItem;
 import android.view.Window;
 import android.view.WindowManager;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.io.IOException;
+import java.io.InputStream;
+
 import javax.inject.Inject;
 
 import br.com.lapic.thomas.fsm_app.R;
@@ -32,6 +38,11 @@ public class PrimaryModeActivity
         configBars();
         setContentView(R.layout.activity_primary_mode);
         setTitle(getString(R.string.primary_mode));
+        try {
+            JSONObject obj = new JSONObject(loadJSONFromAsset());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     @NonNull
@@ -77,5 +88,21 @@ public class PrimaryModeActivity
     public void callModeActivity() {
         startActivity(new Intent(this, ModeActivity.class));
         finish();
+    }
+
+    private String loadJSONFromAsset() {
+        String json = null;
+        try {
+            InputStream is = getAssets().open("content.json");
+            int size = is.available();
+            byte[] buffer = new byte[size];
+            is.read(buffer);
+            is.close();
+            json = new String(buffer, "UTF-8");
+        } catch (IOException ex) {
+            ex.printStackTrace();
+            return null;
+        }
+        return json;
     }
 }

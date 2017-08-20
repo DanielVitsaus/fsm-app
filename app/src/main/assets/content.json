@@ -1,0 +1,87 @@
+{
+  "medias": [
+    {
+      "id": "media1.mp4",
+      "src": "/medias/media1.mp4",
+      "type": "video",
+      "groups": [
+        {
+          "medias": [
+            {
+              "id": "media2",
+              "src": "/medias/media2.mp4",
+              "type": "video"
+            },
+            {
+              "id": "media3",
+              "src": "/medias/media3.mp3",
+              "type": "audio"
+            },
+            {
+              "id": "media4",
+              "src": "www.example.com",
+              "type": "url"
+            },
+            {
+              "id": "media5",
+              "src": "/medias/media5.mp4",
+              "type": "video"
+            },
+            {
+              "id": "media6",
+              "src": "/medias/media6.png",
+              "type": "image"
+            }
+          ],
+          "anchors": [
+            {
+              "id": "anchor1",
+              "begin": "12s",
+              "end": "16s",
+              "medias": [
+                "media2"
+              ]
+            },
+            {
+              "id": "anchor2",
+              "begin": "20s",
+              "end": "28s",
+              "medias": [
+                "media3",
+                "media4"
+              ]
+            },
+            {
+              "id": "anchor3",
+              "begin": "35s",
+              "end": "45s",
+              "medias": [
+                "media5",
+                "media6"
+              ]
+            }
+          ]
+        },
+        {
+          "medias": [
+            {
+              "id": "media7",
+              "src": "/medias/media7.png",
+              "type": "image"
+            }
+          ],
+          "anchors": [
+            {
+              "id": "anchor4",
+              "begin": "7s",
+              "end": "20s",
+              "medias": [
+                "media7"
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
