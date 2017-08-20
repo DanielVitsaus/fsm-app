@@ -7,6 +7,7 @@ import br.com.lapic.thomas.fsm_app.injection.PerActivity;
 import br.com.lapic.thomas.fsm_app.injection.module.ActivityModule;
 import br.com.lapic.thomas.fsm_app.ui.mode.ModeActivity;
 import br.com.lapic.thomas.fsm_app.ui.primarymode.PrimaryModeActivity;
+import br.com.lapic.thomas.fsm_app.ui.secondarymode.SecondaryModeActivity;
 import br.com.lapic.thomas.fsm_app.ui.splashscreen.SplashScreenActivity;
 import dagger.Component;
 
@@ -22,6 +23,8 @@ public interface ActivityComponent {
     void inject(ModeActivity modeActivity);
 
     void inject(PrimaryModeActivity primaryModeActivity);
+
+    void inject(SecondaryModeActivity secondaryModeActivity);
 
     @ActivityContext
     Context context();

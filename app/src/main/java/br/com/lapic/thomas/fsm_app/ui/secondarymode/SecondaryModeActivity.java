@@ -1,11 +1,12 @@
-package br.com.lapic.thomas.fsm_app.ui.primarymode;
+package br.com.lapic.thomas.fsm_app.ui.secondarymode;
 
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AppCompatActivity;
+import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,24 +20,22 @@ import br.com.lapic.thomas.fsm_app.injection.component.ActivityComponent;
 import br.com.lapic.thomas.fsm_app.ui.base.BaseMvpActivity;
 import br.com.lapic.thomas.fsm_app.ui.mode.ModeActivity;
 
-public class PrimaryModeActivity
-        extends BaseMvpActivity<PrimaryModeView, PrimaryModePresenter>
-        implements PrimaryModeView {
+public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, SecondaryModePresenter> implements SecondaryModeView {
 
     @Inject
-    protected PrimaryModePresenter mPresenter;
+    protected SecondaryModePresenter mPresenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         configBars();
-        setContentView(R.layout.activity_primary_mode);
-        setTitle(getString(R.string.primary_mode));
+        setContentView(R.layout.activity_secondary_mode);
+        setTitle(getString(R.string.secondary_mode));
     }
 
     @NonNull
     @Override
-    public PrimaryModePresenter createPresenter() {
+    public SecondaryModePresenter createPresenter() {
         return mPresenter;
     }
 
@@ -48,14 +47,17 @@ public class PrimaryModeActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.primary_mode_menu, menu);
+        inflater.inflate(R.menu.secondary_mode_menu, menu);
         return true;
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.leave_primary_mode:
-                mPresenter.onLeavePrimaryMode();
+            case R.id.historic:
+                mPresenter.onShowHistoric();
+                break;
+            case R.id.leave_secondary_mode:
+                mPresenter.onLeaveSecondaryMode();
                 break;
             default:
                 return super.onOptionsItemSelected(item);
@@ -68,9 +70,9 @@ public class PrimaryModeActivity
             Window window = this.getWindow();
             window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ContextCompat.getColor(this, R.color.material_green_700));
+            window.setStatusBarColor(ContextCompat.getColor(this, R.color.material_blue_700));
         }
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.material_green_a200)));
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.material_blue_a200)));
     }
 
     @Override
@@ -78,4 +80,10 @@ public class PrimaryModeActivity
         startActivity(new Intent(this, ModeActivity.class));
         finish();
     }
+
+    @Override
+    public void showHistoric() {
+        showToast("Historico");
+    }
+
 }

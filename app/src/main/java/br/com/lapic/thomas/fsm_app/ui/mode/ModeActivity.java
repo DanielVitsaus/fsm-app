@@ -12,6 +12,7 @@ import br.com.lapic.thomas.fsm_app.R;
 import br.com.lapic.thomas.fsm_app.injection.component.ActivityComponent;
 import br.com.lapic.thomas.fsm_app.ui.base.BaseMvpActivity;
 import br.com.lapic.thomas.fsm_app.ui.primarymode.PrimaryModeActivity;
+import br.com.lapic.thomas.fsm_app.ui.secondarymode.SecondaryModeActivity;
 import butterknife.ButterKnife;
 
 public class ModeActivity
@@ -58,7 +59,8 @@ public class ModeActivity
 
     @Override
     public void callSecondaryModeActivity() {
-        showToast(getStringRes(R.string.secondary_mode));
+        startActivity(new Intent(this, SecondaryModeActivity.class));
+        finish();
     }
 
 }
