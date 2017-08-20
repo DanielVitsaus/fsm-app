@@ -1,5 +1,6 @@
 package br.com.lapic.thomas.fsm_app.ui.mode;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.view.View;
@@ -10,6 +11,7 @@ import javax.inject.Inject;
 import br.com.lapic.thomas.fsm_app.R;
 import br.com.lapic.thomas.fsm_app.injection.component.ActivityComponent;
 import br.com.lapic.thomas.fsm_app.ui.base.BaseMvpActivity;
+import br.com.lapic.thomas.fsm_app.ui.primarymode.PrimaryModeActivity;
 import butterknife.ButterKnife;
 
 public class ModeActivity
@@ -37,10 +39,26 @@ public class ModeActivity
         activityComponent.inject(this);
     }
 
+    @Override
+    public String getStringRes(int resId) {
+        return getString(resId);
+    }
+
+    @Override
     public void onClickButton(View view) {
         String tagButton = view.getTag().toString();
         mPresenter.onClickButton(tagButton);
-        Toast.makeText(this, tagButton, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public void callPrimaryModeActivity() {
+        startActivity(new Intent(this, PrimaryModeActivity.class));
+        finish();
+    }
+
+    @Override
+    public void callSecondaryModeActivity() {
+        showToast(getStringRes(R.string.secondary_mode));
     }
 
 }

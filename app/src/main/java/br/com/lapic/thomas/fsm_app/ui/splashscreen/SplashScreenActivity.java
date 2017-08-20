@@ -36,6 +36,7 @@ public class SplashScreenActivity extends BaseMvpActivity<SplashScreenView, Spla
     @Override
     public void callModeActivity(){
         startActivity(new Intent(this, ModeActivity.class));
+        finish();
     }
 
 }

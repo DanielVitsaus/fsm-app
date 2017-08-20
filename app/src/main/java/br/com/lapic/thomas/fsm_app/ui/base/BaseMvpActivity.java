@@ -1,6 +1,7 @@
 package br.com.lapic.thomas.fsm_app.ui.base;
 
 import android.os.Bundle;
+import android.widget.Toast;
 
 import com.hannesdorfmann.mosby.mvp.MvpActivity;
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
@@ -37,5 +38,9 @@ public abstract class BaseMvpActivity<V extends MvpView, P extends MvpBasePresen
     }
 
     public abstract void inject(ActivityComponent activityComponent);
+
+    public void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
 
 }

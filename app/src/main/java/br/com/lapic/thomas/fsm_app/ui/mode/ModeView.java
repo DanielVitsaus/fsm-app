@@ -1,5 +1,7 @@
 package br.com.lapic.thomas.fsm_app.ui.mode;
 
+import android.view.View;
+
 import com.hannesdorfmann.mosby.mvp.MvpView;
 
 /**
@@ -8,4 +10,12 @@ import com.hannesdorfmann.mosby.mvp.MvpView;
 
 public interface ModeView
         extends MvpView {
+
+    String getStringRes(int resId);
+
+    void onClickButton(View view);
+
+    void callPrimaryModeActivity();
+
+    void callSecondaryModeActivity();
 }

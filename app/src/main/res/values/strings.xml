@@ -4,4 +4,6 @@
     <string name="secondary_mode">MODO SECUNDÁRIO</string>
     <string name="primary_mode_slogan">Reproduza conteúdo para uma experiência coletiva</string>
     <string name="secondary_mode_slogan">Receba conteúdo personalizado para uma experiência diferenciada</string>
+    <string name="action_menu">menu</string>
+    <string name="leave_primary_mode">Sair do modo primário</string>
 </resources>

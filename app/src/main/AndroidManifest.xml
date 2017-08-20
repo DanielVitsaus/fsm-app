@@ -12,7 +12,7 @@
         android:theme="@style/AppTheme">
         <activity
             android:name=".ui.splashscreen.SplashScreenActivity"
-            android:theme="@style/AppCompat.FullScreen" >
+            android:theme="@style/AppCompat.FullScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -21,7 +21,8 @@
         </activity>
         <activity
             android:name=".ui.mode.ModeActivity"
-            android:theme="@style/AppCompat.FullScreen"/>
+            android:theme="@style/AppCompat.FullScreen" />
+        <activity android:name=".ui.primarymode.PrimaryModeActivity"></activity>
     </application>
 
 </manifest>

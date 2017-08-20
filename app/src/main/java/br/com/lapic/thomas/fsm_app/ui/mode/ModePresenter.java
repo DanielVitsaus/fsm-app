@@ -5,6 +5,7 @@ import com.hannesdorfmann.mosby.mvp.MvpPresenter;
 
 import javax.inject.Inject;
 
+import br.com.lapic.thomas.fsm_app.R;
 import br.com.lapic.thomas.fsm_app.helper.PreferencesHelper;
 
 /**
@@ -34,5 +35,11 @@ public class ModePresenter
 
     public void onClickButton(String mode) {
         mPreferencesHelper.putMode(mode);
+        if (isViewAttached()) {
+            if (mPreferencesHelper.getMode().equals(getView().getStringRes(R.string.primary_mode)))
+                getView().callPrimaryModeActivity();
+            else
+                getView().callSecondaryModeActivity();
+        }
     }
 }
