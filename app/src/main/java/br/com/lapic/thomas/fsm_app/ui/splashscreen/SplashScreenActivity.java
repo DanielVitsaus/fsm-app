@@ -10,6 +10,8 @@ import br.com.lapic.thomas.fsm_app.R;
 import br.com.lapic.thomas.fsm_app.injection.component.ActivityComponent;
 import br.com.lapic.thomas.fsm_app.ui.base.BaseMvpActivity;
 import br.com.lapic.thomas.fsm_app.ui.mode.ModeActivity;
+import br.com.lapic.thomas.fsm_app.ui.primarymode.PrimaryModeActivity;
+import br.com.lapic.thomas.fsm_app.ui.secondarymode.SecondaryModeActivity;
 
 public class SplashScreenActivity extends BaseMvpActivity<SplashScreenView, SplashScreenPresenter> implements SplashScreenView {
 
@@ -34,8 +36,25 @@ public class SplashScreenActivity extends BaseMvpActivity<SplashScreenView, Spla
     }
 
     @Override
+    public String getStringRes(int resId) {
+        return getString(resId);
+    }
+
+    @Override
     public void callModeActivity(){
         startActivity(new Intent(this, ModeActivity.class));
+        finish();
+    }
+
+    @Override
+    public void callPrimaryModeActivity() {
+        startActivity(new Intent(this, PrimaryModeActivity.class));
+        finish();
+    }
+
+    @Override
+    public void callSecondaryModeActivity() {
+        startActivity(new Intent(this, SecondaryModeActivity.class));
         finish();
     }
 

@@ -6,16 +6,21 @@ import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 
 import javax.inject.Inject;
 
+import br.com.lapic.thomas.fsm_app.R;
+import br.com.lapic.thomas.fsm_app.helper.PreferencesHelper;
+
 /**
  * Created by thomas on 19/08/17.
  */
 
 public class SplashScreenPresenter extends MvpBasePresenter<SplashScreenView> {
 
+    private PreferencesHelper mPreferencesHelper;
     private final Handler mHandler;
 
     @Inject
-    public SplashScreenPresenter(Handler handler){
+    public SplashScreenPresenter(PreferencesHelper preferencesHelper, Handler handler){
+        mPreferencesHelper = preferencesHelper;
         mHandler = handler;
     }
 
@@ -25,7 +30,13 @@ public class SplashScreenPresenter extends MvpBasePresenter<SplashScreenView> {
         mHandler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                getView().callModeActivity();
+                String mode = mPreferencesHelper.getMode();
+                if (mode == null)
+                    getView().callModeActivity();
+                else if (mode.equals(getView().getStringRes(R.string.primary_mode)))
+                    getView().callPrimaryModeActivity();
+                else if (mode.equals(getView().getStringRes(R.string.secondary_mode)))
+                    getView().callSecondaryModeActivity();
             }
         }, 2000);
     }

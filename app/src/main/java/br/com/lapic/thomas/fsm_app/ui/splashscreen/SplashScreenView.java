@@ -7,5 +7,12 @@ import com.hannesdorfmann.mosby.mvp.MvpView;
  */
 
 public interface SplashScreenView extends MvpView {
+
+    String getStringRes(int resId);
+    
     void callModeActivity();
+
+    void callPrimaryModeActivity();
+
+    void callSecondaryModeActivity();
 }
