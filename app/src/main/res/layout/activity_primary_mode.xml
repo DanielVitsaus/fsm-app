@@ -6,4 +6,12 @@
     android:layout_height="match_parent"
     tools:context="br.com.lapic.thomas.fsm_app.ui.primarymode.PrimaryModeActivity">
 
+    <include
+        android:id="@+id/loading"
+        layout="@layout/loading_layout"
+        android:layout_height="match_parent"
+        android:layout_width="match_parent"
+        android:visibility="gone"
+        />
+
 </android.support.constraint.ConstraintLayout>
