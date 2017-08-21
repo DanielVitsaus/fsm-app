@@ -1,5 +1,7 @@
 package br.com.lapic.thomas.fsm_app.ui.primarymode;
 
+import android.content.res.AssetManager;
+
 import com.hannesdorfmann.mosby.mvp.MvpView;
 
 /**
@@ -13,5 +15,9 @@ public interface PrimaryModeView extends MvpView {
     void showLoading();
 
     void hideLoading();
+
+    void showError(int resId);
+
+    AssetManager getAssetManager();
 
 }

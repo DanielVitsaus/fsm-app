@@ -39,8 +39,8 @@ public abstract class BaseMvpActivity<V extends MvpView, P extends MvpBasePresen
 
     public abstract void inject(ActivityComponent activityComponent);
 
-    public void showToast(String message) {
-        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    public void showToast(int resIdMessage) {
+        Toast.makeText(this, resIdMessage, Toast.LENGTH_LONG).show();
     }
 
 }

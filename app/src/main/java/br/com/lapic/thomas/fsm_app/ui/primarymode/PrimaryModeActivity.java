@@ -1,6 +1,7 @@
 package br.com.lapic.thomas.fsm_app.ui.primarymode;
 
 import android.content.Intent;
+import android.content.res.AssetManager;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -47,19 +48,6 @@ public class PrimaryModeActivity
         setContentView(R.layout.activity_primary_mode);
         setTitle(getString(R.string.primary_mode));
         ButterKnife.bind(this);
-        try {
-            JSONObject obj = new JSONObject(loadJSONFromAsset());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-        showLoading();
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                PrimaryModeActivity.this.hideLoading();
-            }
-        }, 3000);
     }
 
     @NonNull
@@ -91,6 +79,12 @@ public class PrimaryModeActivity
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mPresenter.onStart();
+    }
+
     private void configBars() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = this.getWindow();
@@ -117,19 +111,14 @@ public class PrimaryModeActivity
         loadingView.setVisibility(View.GONE);
     }
 
-    private String loadJSONFromAsset() {
-        String json = null;
-        try {
-            InputStream is = getAssets().open("content.json");
-            int size = is.available();
-            byte[] buffer = new byte[size];
-            is.read(buffer);
-            is.close();
-            json = new String(buffer, "UTF-8");
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-        return json;
+    @Override
+    public void showError(int resId) {
+        showToast(resId);
     }
+
+    @Override
+    public AssetManager getAssetManager() {
+        return getAssets();
+    }
+
 }

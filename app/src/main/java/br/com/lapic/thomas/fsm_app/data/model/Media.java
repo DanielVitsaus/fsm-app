@@ -9,16 +9,16 @@ import java.util.ArrayList;
 public class Media {
 
     private String id;
-    private String url;
+    private String src;
     private String type;
     private ArrayList<Group> groups;
 
     public Media() {
     }
 
-    public Media(String id, String url, String type, ArrayList<Group> groups) {
+    public Media(String id, String src, String type, ArrayList<Group> groups) {
         this.id = id;
-        this.url = url;
+        this.src = src;
         this.type = type;
         this.groups = groups;
     }
@@ -27,8 +27,8 @@ public class Media {
         return id;
     }
 
-    public String getUrl() {
-        return url;
+    public String getSrc() {
+        return src;
     }
 
     public String getType() {
@@ -47,8 +47,8 @@ public class Media {
         this.id = id;
     }
 
-    public void setUrl(String url) {
-        this.url = url;
+    public void setSrc(String src) {
+        this.src = src;
     }
 
     public void setType(String type) {

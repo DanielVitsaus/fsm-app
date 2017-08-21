@@ -83,7 +83,7 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
 
     @Override
     public void showHistoric() {
-        showToast("Historico");
+        showToast(R.string.historic_item);
     }
 
 }

@@ -7,4 +7,5 @@
     <string name="action_menu">menu</string>
     <string name="leave_primary_mode">Sair do modo primário</string>
     <string name="historic_item">Histórico</string>
+    <string name="error_parsing">Erro ao analisar documento</string>
 </resources>
