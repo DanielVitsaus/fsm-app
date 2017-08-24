@@ -82,7 +82,13 @@ public class PrimaryModeActivity
     @Override
     protected void onStart() {
         super.onStart();
-        mPresenter.onStart();
+        mPresenter.onStart(this);
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.onDestroy();
+        super.onDestroy();
     }
 
     private void configBars() {

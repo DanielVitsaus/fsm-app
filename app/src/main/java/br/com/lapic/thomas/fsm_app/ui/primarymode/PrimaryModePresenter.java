@@ -1,5 +1,6 @@
 package br.com.lapic.thomas.fsm_app.ui.primarymode;
 
+import android.content.Context;
 import android.util.Log;
 
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
@@ -10,6 +11,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.ServerSocket;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
@@ -18,6 +20,7 @@ import br.com.lapic.thomas.fsm_app.R;
 import br.com.lapic.thomas.fsm_app.data.model.Anchor;
 import br.com.lapic.thomas.fsm_app.data.model.Group;
 import br.com.lapic.thomas.fsm_app.data.model.Media;
+import br.com.lapic.thomas.fsm_app.helper.NsdHelper;
 import br.com.lapic.thomas.fsm_app.helper.PreferencesHelper;
 import br.com.lapic.thomas.fsm_app.helper.StringHelper;
 
@@ -38,6 +41,8 @@ public class PrimaryModePresenter
     private static final String END = "end";
     private String TAG = this.getClass().getSimpleName();
     private ArrayList<Media> mMedias;
+
+    NsdHelper mNsdHelper;
 
     @Inject
     protected PreferencesHelper mPreferencesHelper;
@@ -137,12 +142,12 @@ public class PrimaryModePresenter
         return true;
     }
 
-    public void onStart() {
+    public void onStart(Context context) {
         if (isViewAttached()) {
             try {
                 getView().showLoading(R.string.reading_document);
                 if (documentParser())
-                    registerService();
+                    registerService(context);
                 else
                     onError(R.string.error_parsing);
             } catch (IOException | JSONException e) {
@@ -152,8 +157,15 @@ public class PrimaryModePresenter
         }
     }
 
-    private void registerService() {
+    public void onDestroy() {
 
+    }
+
+    private void registerService(Context context) throws IOException {
+        mNsdHelper = new NsdHelper(context);
+        ServerSocket mServerSocket = new ServerSocket(0);
+        int mLocalPort = mServerSocket.getLocalPort();
+        mNsdHelper.registerService(mLocalPort);
     }
 
     private void onSuccess() {
