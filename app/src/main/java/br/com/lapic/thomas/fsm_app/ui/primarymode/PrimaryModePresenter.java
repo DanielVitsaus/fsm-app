@@ -158,7 +158,8 @@ public class PrimaryModePresenter
     }
 
     public void onDestroy() {
-
+        if (mNsdHelper != null)
+            mNsdHelper.tearDown();
     }
 
     private void registerService(Context context) throws IOException {

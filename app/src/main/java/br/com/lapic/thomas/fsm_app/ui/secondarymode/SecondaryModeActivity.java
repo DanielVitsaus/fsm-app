@@ -10,8 +10,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import javax.inject.Inject;
 
@@ -19,8 +22,19 @@ import br.com.lapic.thomas.fsm_app.R;
 import br.com.lapic.thomas.fsm_app.injection.component.ActivityComponent;
 import br.com.lapic.thomas.fsm_app.ui.base.BaseMvpActivity;
 import br.com.lapic.thomas.fsm_app.ui.mode.ModeActivity;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, SecondaryModePresenter> implements SecondaryModeView {
+
+    @BindView(R.id.loading)
+    protected RelativeLayout loadingView;
+
+    @BindView(R.id.content)
+    protected RelativeLayout contentView;
+
+    @BindView(R.id.error)
+    protected RelativeLayout errorView;
 
     @Inject
     protected SecondaryModePresenter mPresenter;
@@ -31,6 +45,7 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
         configBars();
         setContentView(R.layout.activity_secondary_mode);
         setTitle(getString(R.string.secondary_mode));
+        ButterKnife.bind(this);
     }
 
     @NonNull
@@ -65,6 +80,30 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mPresenter.onStart(this);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        mPresenter.onPause();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        mPresenter.onResume();
+    }
+
+    @Override
+    protected void onDestroy() {
+        mPresenter.onDestroy();
+        super.onDestroy();
+    }
+
     private void configBars() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = this.getWindow();
@@ -79,6 +118,32 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
     public void callModeActivity() {
         startActivity(new Intent(this, ModeActivity.class));
         finish();
+    }
+
+    @Override
+    public void showLoading(int resIdMessage) {
+        loadingView.setVisibility(View.VISIBLE);
+        TextView textView = ButterKnife.findById(loadingView, R.id.tv_message);
+        textView.setText(resIdMessage);
+    }
+
+    @Override
+    public void hideLoading() {
+        loadingView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showError(int resId) {
+        contentView.setVisibility(View.GONE);
+        loadingView.setVisibility(View.GONE);
+        errorView.setVisibility(View.VISIBLE);
+        TextView textView = ButterKnife.findById(errorView, R.id.tv_error);
+        textView.setText(resId);
+    }
+
+    @Override
+    public void showMessage(String message) {
+        showToast(message);
     }
 
     @Override

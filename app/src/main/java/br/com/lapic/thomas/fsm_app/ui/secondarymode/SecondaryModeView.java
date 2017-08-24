@@ -10,6 +10,14 @@ public interface SecondaryModeView extends MvpView {
 
     void callModeActivity();
 
+    void showLoading(int resIdMessage);
+
+    void hideLoading();
+
+    void showError(int resId);
+
+    void showMessage(String message);
+
     void showHistoric();
 
 }

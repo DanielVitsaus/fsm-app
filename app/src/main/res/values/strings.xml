@@ -9,4 +9,7 @@
     <string name="historic_item">Histórico</string>
     <string name="error_parsing">Erro ao analisar documento</string>
     <string name="reading_document">Lendo documento</string>
+    <string name="Looking_primary_device">Buscando por dispositivos primários</string>
+    <string name="error_found_discover">Falha ao buscar dispositivos primários</string>
+    <string name="service_lost">Conexao perdida</string>
 </resources>

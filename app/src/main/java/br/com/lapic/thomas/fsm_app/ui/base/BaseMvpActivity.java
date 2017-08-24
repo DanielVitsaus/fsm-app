@@ -43,4 +43,8 @@ public abstract class BaseMvpActivity<V extends MvpView, P extends MvpBasePresen
         Toast.makeText(this, resIdMessage, Toast.LENGTH_LONG).show();
     }
 
+    public void showToast(String message) {
+        Toast.makeText(this, message, Toast.LENGTH_LONG).show();
+    }
+
 }
