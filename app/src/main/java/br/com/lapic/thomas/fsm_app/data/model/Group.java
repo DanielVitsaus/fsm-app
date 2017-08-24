@@ -1,5 +1,8 @@
 package br.com.lapic.thomas.fsm_app.data.model;
 
+import android.util.ArrayMap;
+
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -32,6 +35,8 @@ public class Group {
     }
 
     public void addMedia(Media media) {
+        if (medias == null)
+            this.medias = new HashMap<>();
         this.medias.put(media.getId(), media);
     }
 
@@ -40,6 +45,8 @@ public class Group {
     }
 
     public void addAnchor(Anchor anchor) {
+        if (anchors == null)
+            this.anchors = new HashMap<>();
         this.anchors.put(anchor.getId(), anchor);
     }
 

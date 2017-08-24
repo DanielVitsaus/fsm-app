@@ -12,7 +12,7 @@ public interface PrimaryModeView extends MvpView {
 
     void callModeActivity();
 
-    void showLoading();
+    void showLoading(int resIdMessage);
 
     void hideLoading();
 

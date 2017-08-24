@@ -60,6 +60,8 @@ public class Anchor {
     }
 
     public void addMedia(String mediaId) {
+        if (medias == null)
+            this.medias = new ArrayList<>();
         this.medias.add(mediaId);
     }
 

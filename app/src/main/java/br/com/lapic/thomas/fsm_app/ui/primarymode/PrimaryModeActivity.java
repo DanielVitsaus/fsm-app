@@ -5,7 +5,6 @@ import android.content.res.AssetManager;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.view.Menu;
@@ -15,12 +14,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.RelativeLayout;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
-import java.io.InputStream;
+import android.widget.TextView;
 
 import javax.inject.Inject;
 
@@ -37,6 +31,12 @@ public class PrimaryModeActivity
 
     @BindView(R.id.loading)
     protected RelativeLayout loadingView;
+
+    @BindView(R.id.content)
+    protected RelativeLayout contentView;
+
+    @BindView(R.id.error)
+    protected RelativeLayout errorView;
 
     @Inject
     protected PrimaryModePresenter mPresenter;
@@ -102,8 +102,10 @@ public class PrimaryModeActivity
     }
 
     @Override
-    public void showLoading() {
+    public void showLoading(int resIdMessage) {
         loadingView.setVisibility(View.VISIBLE);
+        TextView textView = ButterKnife.findById(loadingView, R.id.tv_message);
+        textView.setText(resIdMessage);
     }
 
     @Override
@@ -113,7 +115,11 @@ public class PrimaryModeActivity
 
     @Override
     public void showError(int resId) {
-        showToast(resId);
+        contentView.setVisibility(View.GONE);
+        loadingView.setVisibility(View.GONE);
+        errorView.setVisibility(View.VISIBLE);
+        TextView textView = ButterKnife.findById(errorView, R.id.tv_error);
+        textView.setText(resId);
     }
 
     @Override

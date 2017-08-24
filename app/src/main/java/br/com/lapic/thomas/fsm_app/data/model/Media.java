@@ -56,6 +56,8 @@ public class Media {
     }
 
     public void addGroup(Group group) {
+        if (groups == null)
+            this.groups = new ArrayList<>();
         this.groups.add(group);
     }
 }
