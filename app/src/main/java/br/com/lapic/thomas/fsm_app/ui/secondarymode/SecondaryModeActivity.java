@@ -129,7 +129,12 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
 
     @Override
     public void hideLoading() {
-        loadingView.setVisibility(View.GONE);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                loadingView.setVisibility(View.GONE);
+            }
+        });
     }
 
     @Override

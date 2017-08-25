@@ -74,6 +74,7 @@ public class NsdHelper {
                     return;
                 }
                 mService = serviceInfo;
+                Log.e(TAG, "ServiceHost: "+mService.getHost().toString());
             }
         };
 
@@ -92,7 +93,6 @@ public class NsdHelper {
                 } else if (service.getServiceName().contains(mServiceName)){
                     mNsdManager.resolveService(service, mResolveListener);
                 }
-                secondaryModePresenter.onServiceFound(service);
             }
             @Override
             public void onServiceLost(NsdServiceInfo service) {
