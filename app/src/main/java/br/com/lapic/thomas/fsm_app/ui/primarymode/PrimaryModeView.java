@@ -25,4 +25,6 @@ public interface PrimaryModeView extends MvpView {
     AssetManager getAssetManager();
 
     void setListMedias(ArrayList<Media> medias);
+
+    void checkPermissions();
 }

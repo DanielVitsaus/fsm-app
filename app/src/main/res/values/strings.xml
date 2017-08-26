@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">fsm-app</string>
+    <string name="app_name">SyncPlayer</string>
     <string name="primary_mode">MODO PRIMÁRIO</string>
     <string name="secondary_mode">MODO SECUNDÁRIO</string>
     <string name="primary_mode_slogan">Reproduza conteúdo para uma experiência coletiva</string>
@@ -13,4 +13,5 @@
     <string name="Looking_primary_device">Buscando por dispositivos primários</string>
     <string name="error_found_discover">Falha ao buscar dispositivos primários</string>
     <string name="service_lost">Conexao perdida</string>
+    <string name="write_read_permission_necessary">Permissão necessária para realizar a leitura das mídias</string>
 </resources>

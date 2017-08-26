@@ -1,6 +1,7 @@
 package br.com.lapic.thomas.fsm_app.ui.primarymode;
 
 import android.content.Context;
+import android.os.Environment;
 import android.util.Log;
 
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
@@ -9,9 +10,14 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.ServerSocket;
+import java.nio.MappedByteBuffer;
+import java.nio.channels.FileChannel;
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
@@ -39,10 +45,11 @@ public class PrimaryModePresenter
     private static final String ANCHORS = "anchors";
     private static final String BEGIN = "begin";
     private static final String END = "end";
+    private static final String PATH_METADATA_FILE = "app/main.json";
     private String TAG = this.getClass().getSimpleName();
     private ArrayList<Media> mMedias;
 
-    NsdHelper mNsdHelper;
+    private NsdHelper mNsdHelper;
 
     @Inject
     protected PreferencesHelper mPreferencesHelper;
@@ -64,14 +71,27 @@ public class PrimaryModePresenter
     }
 
     private String loadJSONFromAsset() throws IOException {
+
+        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), PATH_METADATA_FILE);
+        FileInputStream fileInputStream = new FileInputStream(file);
         String json = null;
-        InputStream is = getView().getAssetManager().open("content.json");
-        int size = is.available();
-        byte[] buffer = new byte[size];
-        is.read(buffer);
-        is.close();
-        json = new String(buffer, "UTF-8");
+
+        FileChannel fileChannel = fileInputStream.getChannel();
+        MappedByteBuffer mappedByteBuffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, fileChannel.size());
+
+        json = Charset.defaultCharset().decode(mappedByteBuffer).toString();
+        fileInputStream.close();
+
         return json;
+
+//        String json = null;
+//        InputStream is = getView().getAssetManager().open("content.json");
+//        int size = is.available();
+//        byte[] buffer = new byte[size];
+//        is.read(buffer);
+//        is.close();
+//        json = new String(buffer, "UTF-8");
+//        return json;
     }
 
     private boolean documentParser() throws IOException, JSONException {
@@ -142,8 +162,9 @@ public class PrimaryModePresenter
         return true;
     }
 
-    public void onStart(Context context) {
+    public void onPermissionsOk(Context context) {
         if (isViewAttached()) {
+            getView().showLoading(R.string.reading_document);
             try {
                 getView().showLoading(R.string.reading_document);
                 if (documentParser()) {
@@ -155,6 +176,12 @@ public class PrimaryModePresenter
                 e.printStackTrace();
                 onError(R.string.error_parsing);
             }
+        }
+    }
+
+    public void onStart() {
+        if (isViewAttached()) {
+            getView().checkPermissions();
         }
     }
 
@@ -177,7 +204,7 @@ public class PrimaryModePresenter
         }
     }
 
-    private void onError(int resIdMessage) {
+    public void onError(int resIdMessage) {
         if (isViewAttached()) {
             getView().hideLoading();
             getView().showError(resIdMessage);

@@ -1,12 +1,16 @@
 package br.com.lapic.thomas.fsm_app.ui.primarymode;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -44,6 +48,8 @@ public class PrimaryModeActivity
     @Inject
     protected PrimaryModePresenter mPresenter;
 
+    private  final String TAG = this.getClass().getSimpleName();
+    private static final int REQUEST_READ_WRITE_EXTERNAL_STORAGE = 1;
     private ArrayList<Media> mMedias;
 
     @Override
@@ -87,7 +93,7 @@ public class PrimaryModeActivity
     @Override
     protected void onStart() {
         super.onStart();
-        mPresenter.onStart(this);
+        presenter.onStart();
     }
 
     @Override
@@ -141,6 +147,30 @@ public class PrimaryModeActivity
     @Override
     public void setListMedias(ArrayList<Media> medias) {
         mMedias = medias;
+    }
+
+    @Override
+    public void checkPermissions() {
+        if ((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
+            ActivityCompat.requestPermissions(this,
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_READ_WRITE_EXTERNAL_STORAGE);
+        } else
+            presenter.onPermissionsOk(this);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case REQUEST_READ_WRITE_EXTERNAL_STORAGE: {
+                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    presenter.onPermissionsOk(this);
+                } else {
+                    presenter.onError(R.string.write_read_permission_necessary);
+                }
+                return;
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
 }
