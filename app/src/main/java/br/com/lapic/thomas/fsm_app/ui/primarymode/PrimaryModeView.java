@@ -4,6 +4,10 @@ import android.content.res.AssetManager;
 
 import com.hannesdorfmann.mosby.mvp.MvpView;
 
+import java.util.ArrayList;
+
+import br.com.lapic.thomas.fsm_app.data.model.Media;
+
 /**
  * Created by thomas on 19/08/17.
  */
@@ -20,4 +24,5 @@ public interface PrimaryModeView extends MvpView {
 
     AssetManager getAssetManager();
 
+    void setListMedias(ArrayList<Media> medias);
 }

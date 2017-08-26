@@ -16,9 +16,12 @@ import android.view.WindowManager;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+
 import javax.inject.Inject;
 
 import br.com.lapic.thomas.fsm_app.R;
+import br.com.lapic.thomas.fsm_app.data.model.Media;
 import br.com.lapic.thomas.fsm_app.injection.component.ActivityComponent;
 import br.com.lapic.thomas.fsm_app.ui.base.BaseMvpActivity;
 import br.com.lapic.thomas.fsm_app.ui.mode.ModeActivity;
@@ -40,6 +43,8 @@ public class PrimaryModeActivity
 
     @Inject
     protected PrimaryModePresenter mPresenter;
+
+    private ArrayList<Media> mMedias;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -131,6 +136,11 @@ public class PrimaryModeActivity
     @Override
     public AssetManager getAssetManager() {
         return getAssets();
+    }
+
+    @Override
+    public void setListMedias(ArrayList<Media> medias) {
+        mMedias = medias;
     }
 
 }

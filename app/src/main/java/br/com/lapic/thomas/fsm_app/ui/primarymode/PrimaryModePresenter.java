@@ -146,9 +146,10 @@ public class PrimaryModePresenter
         if (isViewAttached()) {
             try {
                 getView().showLoading(R.string.reading_document);
-                if (documentParser())
+                if (documentParser()) {
+                    getView().setListMedias(mMedias);
                     registerService(context);
-                else
+                } else
                     onError(R.string.error_parsing);
             } catch (IOException | JSONException e) {
                 e.printStackTrace();
