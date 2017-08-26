@@ -5,6 +5,8 @@ import android.net.nsd.NsdManager;
 import android.net.nsd.NsdServiceInfo;
 import android.util.Log;
 
+import java.net.InetAddress;
+
 import br.com.lapic.thomas.fsm_app.R;
 import br.com.lapic.thomas.fsm_app.ui.secondarymode.SecondaryModePresenter;
 
@@ -74,7 +76,9 @@ public class NsdHelper {
                     return;
                 }
                 mService = serviceInfo;
-                Log.e(TAG, "ServiceHost: "+mService.getHost().toString());
+                int port = mService.getPort();
+                InetAddress host = mService.getHost();
+                Log.e(TAG, host.getHostAddress() + "  " + port);
             }
         };
 
