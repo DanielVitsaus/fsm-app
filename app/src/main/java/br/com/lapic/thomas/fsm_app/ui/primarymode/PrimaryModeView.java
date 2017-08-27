@@ -20,6 +20,8 @@ public interface PrimaryModeView extends MvpView {
 
     void hideLoading();
 
+    void showContent();
+
     void showError(int resId);
 
     AssetManager getAssetManager();

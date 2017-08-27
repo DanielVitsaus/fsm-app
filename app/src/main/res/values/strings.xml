@@ -14,4 +14,6 @@
     <string name="error_found_discover">Falha ao buscar dispositivos primários</string>
     <string name="service_lost">Conexao perdida</string>
     <string name="write_read_permission_necessary">Permissão necessária para realizar a leitura das mídias</string>
+    <string name="start">Iniciar</string>
+    <string name="media_type_invalid">Tipo de mídia inválida</string>
 </resources>

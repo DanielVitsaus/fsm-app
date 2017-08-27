@@ -17,8 +17,11 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.VideoView;
 
 import java.util.ArrayList;
 
@@ -31,6 +34,7 @@ import br.com.lapic.thomas.fsm_app.ui.base.BaseMvpActivity;
 import br.com.lapic.thomas.fsm_app.ui.mode.ModeActivity;
 import butterknife.BindView;
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 
 public class PrimaryModeActivity
         extends BaseMvpActivity<PrimaryModeView, PrimaryModePresenter>
@@ -44,6 +48,15 @@ public class PrimaryModeActivity
 
     @BindView(R.id.error)
     protected RelativeLayout errorView;
+
+    @BindView(R.id.video_view)
+    protected VideoView mVideoView;
+
+    @BindView(R.id.image_view)
+    protected ImageView mImageView;
+
+    @BindView(R.id.start_button)
+    protected Button startButton;
 
     @Inject
     protected PrimaryModePresenter mPresenter;
@@ -120,6 +133,8 @@ public class PrimaryModeActivity
 
     @Override
     public void showLoading(int resIdMessage) {
+        errorView.setVisibility(View.GONE);
+        contentView.setVisibility(View.GONE);
         loadingView.setVisibility(View.VISIBLE);
         TextView textView = ButterKnife.findById(loadingView, R.id.tv_message);
         textView.setText(resIdMessage);
@@ -128,6 +143,16 @@ public class PrimaryModeActivity
     @Override
     public void hideLoading() {
         loadingView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showContent() {
+        loadingView.setVisibility(View.GONE);
+        errorView.setVisibility(View.GONE);
+        mVideoView.setVisibility(View.GONE);
+        mImageView.setVisibility(View.GONE);
+        startButton.setVisibility(View.VISIBLE);
+        contentView.setVisibility(View.VISIBLE);
     }
 
     @Override
@@ -171,6 +196,11 @@ public class PrimaryModeActivity
             }
         }
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
+    @OnClick(R.id.start_button)
+    public void onClickStart(View view) {
+        presenter.onClickStart(this);
     }
 
 }
