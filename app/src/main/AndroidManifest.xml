@@ -28,6 +28,9 @@
             android:theme="@style/AppCompat.FullScreen" />
         <activity android:name=".ui.primarymode.PrimaryModeActivity" />
         <activity android:name=".ui.secondarymode.SecondaryModeActivity"></activity>
+        <activity
+            android:name=".player.Player"
+            android:screenOrientation="landscape"/>
     </application>
 
 </manifest>

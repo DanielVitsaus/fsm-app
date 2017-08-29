@@ -13,7 +13,6 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.ServerSocket;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
@@ -29,7 +28,6 @@ import br.com.lapic.thomas.fsm_app.data.model.Media;
 import br.com.lapic.thomas.fsm_app.helper.NsdHelper;
 import br.com.lapic.thomas.fsm_app.helper.PreferencesHelper;
 import br.com.lapic.thomas.fsm_app.helper.StringHelper;
-import br.com.lapic.thomas.fsm_app.player.Player;
 import br.com.lapic.thomas.fsm_app.utils.AppConstants;
 
 /**
@@ -41,9 +39,7 @@ public class PrimaryModePresenter
 
     private String TAG = this.getClass().getSimpleName();
     private ArrayList<Media> mMedias;
-    private int indexMediaPlaying;
     private NsdHelper mNsdHelper;
-    private Player mPlayer;
 
     @Inject
     protected PreferencesHelper mPreferencesHelper;
@@ -187,10 +183,12 @@ public class PrimaryModePresenter
     }
 
     private void registerService(Context context) throws IOException {
-        mNsdHelper = new NsdHelper(context);
-        ServerSocket mServerSocket = new ServerSocket(0);
-        int mLocalPort = mServerSocket.getLocalPort();
-        mNsdHelper.registerService(mLocalPort);
+        if (mNsdHelper == null) {
+            mNsdHelper = new NsdHelper(context);
+            ServerSocket mServerSocket = new ServerSocket(0);
+            int mLocalPort = mServerSocket.getLocalPort();
+            mNsdHelper.registerService(mLocalPort);
+        }
     }
 
     private void onSuccess() {
@@ -206,21 +204,9 @@ public class PrimaryModePresenter
         }
     }
 
-    public void onClickStart(Context context) {
-        indexMediaPlaying = 0;
-        mPlayer = new Player(this, context);
-        mPlayer.setMedia(mMedias.get(indexMediaPlaying));
-        mPlayer.play(true);
+    public void onClickStart() {
+        if (isViewAttached())
+            getView().callPlayer();
     }
 
-    public void onEndMedia() {
-        indexMediaPlaying++;
-        if (mMedias.size() > indexMediaPlaying) {
-            mPlayer.setMedia(mMedias.get(indexMediaPlaying));
-            mPlayer.play(true);
-        } else {
-            indexMediaPlaying = 0;
-            getView().showContent();
-        }
-    }
 }

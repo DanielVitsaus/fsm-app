@@ -6,6 +6,7 @@ package br.com.lapic.thomas.fsm_app.utils;
 
 public class AppConstants {
 
+    public static String MEDIAS_PARCEL = "medias_parcel";
     public static String PATH_APP = "app/";
     public static String PATH_METADATA_FILE = "app/main.json";
     public static String VIDEO = "video";

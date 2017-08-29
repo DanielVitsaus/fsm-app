@@ -1,7 +1,5 @@
 package br.com.lapic.thomas.fsm_app.data.model;
 
-import android.util.ArrayMap;
-
 import java.util.HashMap;
 import java.util.Map;
 

@@ -1,12 +1,15 @@
 package br.com.lapic.thomas.fsm_app.data.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 
 /**
  * Created by thomas on 21/08/17.
  */
 
-public class Media {
+public class Media implements Parcelable {
 
     private String id;
     private String src;
@@ -22,6 +25,24 @@ public class Media {
         this.type = type;
         this.groups = groups;
     }
+
+    protected Media(Parcel in) {
+        id = in.readString();
+        src = in.readString();
+        type = in.readString();
+    }
+
+    public static final Creator<Media> CREATOR = new Creator<Media>() {
+        @Override
+        public Media createFromParcel(Parcel in) {
+            return new Media(in);
+        }
+
+        @Override
+        public Media[] newArray(int size) {
+            return new Media[size];
+        }
+    };
 
     public String getId() {
         return id;
@@ -59,5 +80,17 @@ public class Media {
         if (groups == null)
             this.groups = new ArrayList<>();
         this.groups.add(group);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(id);
+        parcel.writeString(src);
+        parcel.writeString(type);
     }
 }

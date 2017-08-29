@@ -30,8 +30,10 @@ import javax.inject.Inject;
 import br.com.lapic.thomas.fsm_app.R;
 import br.com.lapic.thomas.fsm_app.data.model.Media;
 import br.com.lapic.thomas.fsm_app.injection.component.ActivityComponent;
+import br.com.lapic.thomas.fsm_app.player.Player;
 import br.com.lapic.thomas.fsm_app.ui.base.BaseMvpActivity;
 import br.com.lapic.thomas.fsm_app.ui.mode.ModeActivity;
+import br.com.lapic.thomas.fsm_app.utils.AppConstants;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
@@ -62,7 +64,7 @@ public class PrimaryModeActivity
     protected PrimaryModePresenter mPresenter;
 
     private  final String TAG = this.getClass().getSimpleName();
-    private static final int REQUEST_READ_WRITE_EXTERNAL_STORAGE = 1;
+    private static final int REQUEST_READ_EXTERNAL_STORAGE = 1;
     private ArrayList<Media> mMedias;
 
     @Override
@@ -178,15 +180,22 @@ public class PrimaryModeActivity
     public void checkPermissions() {
         if ((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
             ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_READ_WRITE_EXTERNAL_STORAGE);
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_READ_EXTERNAL_STORAGE);
         } else
             presenter.onPermissionsOk(this);
     }
 
     @Override
+    public void callPlayer() {
+        Intent intent = new Intent(this, Player.class);
+        intent.putExtra(AppConstants.MEDIAS_PARCEL, mMedias);
+        startActivity(intent);
+    }
+
+    @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         switch (requestCode) {
-            case REQUEST_READ_WRITE_EXTERNAL_STORAGE: {
+            case REQUEST_READ_EXTERNAL_STORAGE: {
                 if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
                     presenter.onPermissionsOk(this);
                 } else {
@@ -200,7 +209,7 @@ public class PrimaryModeActivity
 
     @OnClick(R.id.start_button)
     public void onClickStart(View view) {
-        presenter.onClickStart(this);
+        presenter.onClickStart();
     }
 
 }
