@@ -95,6 +95,8 @@ public class PrimaryModePresenter
                 media.setId(mediaObject.getString(AppConstants.ID));
                 media.setType(mediaObject.getString(AppConstants.TYPE));
                 media.setSrc(mediaObject.getString(AppConstants.SRC));
+                if (media.getType().equals(AppConstants.IMAGE) || media.getType().equals(AppConstants.URL))
+                    media.setDuration(Integer.parseInt(StringHelper.removeAllChar(mediaObject.getString(AppConstants.DUR))));
                 JSONArray groupsJSONArray = mediaObject.getJSONArray(AppConstants.GROUPS);
                 if (groupsJSONArray != null) {
                     ArrayList<Group> groups = new ArrayList<>();

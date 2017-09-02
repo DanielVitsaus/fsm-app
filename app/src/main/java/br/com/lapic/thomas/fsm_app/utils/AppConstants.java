@@ -21,5 +21,5 @@ public class AppConstants {
     public static String ANCHORS = "anchors";
     public static String BEGIN = "begin";
     public static String END = "end";
-
+    public static String DUR = "dur";
 }

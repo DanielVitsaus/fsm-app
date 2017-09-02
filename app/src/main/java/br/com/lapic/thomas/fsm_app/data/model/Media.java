@@ -14,6 +14,7 @@ public class Media implements Parcelable {
     private String id;
     private String src;
     private String type;
+    private int duration;
     private ArrayList<Group> groups;
 
     public Media() {
@@ -30,6 +31,7 @@ public class Media implements Parcelable {
         id = in.readString();
         src = in.readString();
         type = in.readString();
+        duration = in.readInt();
     }
 
     public static final Creator<Media> CREATOR = new Creator<Media>() {
@@ -56,6 +58,10 @@ public class Media implements Parcelable {
         return type;
     }
 
+    public int getDuration() {
+        return duration;
+    }
+
     public ArrayList<Group> getGroups() {
         return groups;
     }
@@ -76,6 +82,10 @@ public class Media implements Parcelable {
         this.type = type;
     }
 
+    public void setDuration(int duration) {
+        this.duration = duration;
+    }
+
     public void addGroup(Group group) {
         if (groups == null)
             this.groups = new ArrayList<>();
@@ -92,5 +102,6 @@ public class Media implements Parcelable {
         parcel.writeString(id);
         parcel.writeString(src);
         parcel.writeString(type);
+        parcel.writeInt(duration);
     }
 }

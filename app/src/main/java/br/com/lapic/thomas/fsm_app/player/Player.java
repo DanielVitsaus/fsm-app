@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
@@ -12,15 +11,14 @@ import android.os.Handler;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.MediaController;
 import android.widget.VideoView;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 
 import br.com.lapic.thomas.fsm_app.R;
@@ -69,10 +67,7 @@ public class Player extends Activity implements MediaPlayer.OnCompletionListener
 
     @Override
     public void onCompletion(MediaPlayer mediaPlayer) {
-        if (mMedias.size() > indexCurrentMedia)
-            playMedia(mMedias.get(indexCurrentMedia));
-        else
-            finish();
+        onEndMedia();
     }
 
     private void configStatusBar() {
@@ -115,12 +110,9 @@ public class Player extends Activity implements MediaPlayer.OnCompletionListener
             handler.postDelayed(new Runnable() {
                 @Override
                 public void run() {
-                    if (mMedias.size() > indexCurrentMedia)
-                        playMedia(mMedias.get(indexCurrentMedia));
-                    else
-                        finish();
+                    onEndMedia();
                 }
-            }, 10000);
+            }, media.getDuration() * 1000);
         }
     }
 
@@ -185,18 +177,17 @@ public class Player extends Activity implements MediaPlayer.OnCompletionListener
         stopImage();
         stopAudio();
         stopVideo();
+        mWebView.getSettings().setJavaScriptEnabled(true);
+        mWebView.setWebViewClient(new WebViewClient());
         mWebView.loadUrl("http://" + media.getSrc());
         mWebView.setVisibility(View.VISIBLE);
         Handler handler = new Handler();
         handler.postDelayed(new Runnable() {
             @Override
             public void run() {
-                if (mMedias.size() > indexCurrentMedia)
-                    playMedia(mMedias.get(indexCurrentMedia));
-                else
-                    finish();
+                onEndMedia();
             }
-        }, 10000);
+        }, media.getDuration() * 1000);
     }
 
     private void stopWebView() {
@@ -211,6 +202,13 @@ public class Player extends Activity implements MediaPlayer.OnCompletionListener
             mWebView.destroy();
             mWebView.setVisibility(View.GONE);
         }
+    }
+
+    private void onEndMedia() {
+        if (mMedias.size() > indexCurrentMedia)
+            playMedia(mMedias.get(indexCurrentMedia));
+        else
+            finish();
     }
 
 }
