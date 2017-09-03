@@ -149,12 +149,17 @@ public class PrimaryModeActivity
 
     @Override
     public void showContent() {
-        loadingView.setVisibility(View.GONE);
-        errorView.setVisibility(View.GONE);
-        mVideoView.setVisibility(View.GONE);
-        mImageView.setVisibility(View.GONE);
-        startButton.setVisibility(View.VISIBLE);
-        contentView.setVisibility(View.VISIBLE);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                loadingView.setVisibility(View.GONE);
+                errorView.setVisibility(View.GONE);
+                mVideoView.setVisibility(View.GONE);
+                mImageView.setVisibility(View.GONE);
+                startButton.setVisibility(View.VISIBLE);
+                contentView.setVisibility(View.VISIBLE);
+            }
+        });
     }
 
     @Override

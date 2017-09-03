@@ -1,6 +1,7 @@
 package br.com.lapic.thomas.fsm_app.ui.primarymode;
 
 import android.content.Context;
+import android.net.nsd.NsdServiceInfo;
 import android.os.Environment;
 import android.util.Log;
 
@@ -13,7 +14,11 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.DatagramPacket;
+import java.net.InetAddress;
+import java.net.MulticastSocket;
 import java.net.ServerSocket;
+import java.net.UnknownHostException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
@@ -187,15 +192,14 @@ public class PrimaryModePresenter
     private void registerService(Context context) throws IOException {
         if (mNsdHelper == null) {
             mNsdHelper = new NsdHelper(context);
-            ServerSocket mServerSocket = new ServerSocket(0);
-            int mLocalPort = mServerSocket.getLocalPort();
-            mNsdHelper.registerService(mLocalPort);
+            mNsdHelper.registerService(this);
         }
     }
 
-    private void onSuccess() {
+    public void onSuccessRegisteredService(NsdServiceInfo serviceInfo) {
         if (isViewAttached()) {
             getView().hideLoading();
+            getView().showContent();
         }
     }
 
@@ -210,5 +214,7 @@ public class PrimaryModePresenter
         if (isViewAttached())
             getView().callPlayer();
     }
+
+
 
 }

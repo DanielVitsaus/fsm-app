@@ -51,6 +51,9 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
     }
 
     public void onPause() {
+        if (mNsdHelper != null) {
+            mNsdHelper.stopDiscovery();
+        }
     }
 
     public void onResume() {
@@ -79,4 +82,14 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
             getView().showMessage("Service: " + service.getServiceName() + " IP: " + service.getHost());
         }
     }
+
+    public void onResolveSuccess(NsdServiceInfo mService) {
+        if (isViewAttached()) {
+                    
+            getView().hideLoading();
+        }
+    }
+
+
+
 }
