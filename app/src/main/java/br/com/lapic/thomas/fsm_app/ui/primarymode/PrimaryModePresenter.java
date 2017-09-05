@@ -3,6 +3,8 @@ package br.com.lapic.thomas.fsm_app.ui.primarymode;
 import android.content.Context;
 import android.net.nsd.NsdServiceInfo;
 import android.os.Environment;
+import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
@@ -30,6 +32,7 @@ import br.com.lapic.thomas.fsm_app.R;
 import br.com.lapic.thomas.fsm_app.data.model.Anchor;
 import br.com.lapic.thomas.fsm_app.data.model.Group;
 import br.com.lapic.thomas.fsm_app.data.model.Media;
+import br.com.lapic.thomas.fsm_app.helper.ChatConnection;
 import br.com.lapic.thomas.fsm_app.helper.NsdHelper;
 import br.com.lapic.thomas.fsm_app.helper.PreferencesHelper;
 import br.com.lapic.thomas.fsm_app.helper.StringHelper;
@@ -57,6 +60,19 @@ public class PrimaryModePresenter
     @Override
     public void attachView(PrimaryModeView view) {
         super.attachView(view);
+        startChatConnection();
+    }
+
+    private void startChatConnection(){
+        mUpdateHandler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                String message = msg.getData().getString("msg");
+                if (message.contains(AppConstants.GET_AMOUNT_GROUPS))
+                    mConnection.sendMessage(AppConstants.TOTAL_GROUPS + mMedias.get(0).getGroups().size());
+            }
+        };
+        mConnection = new ChatConnection(mUpdateHandler);
     }
 
     public void onLeavePrimaryMode() {
@@ -186,18 +202,26 @@ public class PrimaryModePresenter
     public void onDestroy() {
         if (mNsdHelper != null)
             mNsdHelper.tearDown();
+        if (mConnection != null)
+            mConnection.tearDown();
         mNsdHelper = null;
+        mConnection = null;
     }
 
+    private Handler mUpdateHandler;
+    private ChatConnection mConnection;
+
     private void registerService(Context context) throws IOException {
-        if (mNsdHelper == null) {
+        if ((mNsdHelper == null) && (mConnection.getLocalPort() > -1)) {
             mNsdHelper = new NsdHelper(context);
-            mNsdHelper.registerService(this);
-        }
+            mNsdHelper.registerService(this, mConnection.getLocalPort());
+        } else
+            Log.e(TAG, "Nsd is instancied or ServerSocket isn't bound.");
     }
 
     public void onSuccessRegisteredService(NsdServiceInfo serviceInfo) {
         if (isViewAttached()) {
+            getView().initWifiP2P();
             getView().hideLoading();
             getView().showContent();
         }

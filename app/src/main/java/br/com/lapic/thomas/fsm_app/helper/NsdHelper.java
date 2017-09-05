@@ -54,7 +54,7 @@ public class NsdHelper {
             return "";
     }
 
-    public void registerService(final PrimaryModePresenter primaryModePresenter) throws IOException {
+    public void registerService(final PrimaryModePresenter primaryModePresenter, int localPort) throws IOException {
         mRegistrationListener = new NsdManager.RegistrationListener() {
             @Override
             public void onServiceRegistered(NsdServiceInfo nsdServiceInfo) {
@@ -71,11 +71,11 @@ public class NsdHelper {
             public void onUnregistrationFailed(NsdServiceInfo serviceInfo, int errorCode) {}
         };
 
-        ServerSocket mServerSocket = new ServerSocket(0);
-        int port = mServerSocket.getLocalPort();
+//        ServerSocket mServerSocket = new ServerSocket(0);
+//        int port = mServerSocket.getLocalPort();
         InetAddress inetAddress = getLocalHostLANAddress();
         NsdServiceInfo serviceInfo  = new NsdServiceInfo();
-        serviceInfo.setPort(port);
+        serviceInfo.setPort(localPort);
         serviceInfo.setServiceName(mServiceName);
         serviceInfo.setServiceType(SERVICE_TYPE);
         serviceInfo.setHost(inetAddress);
@@ -94,12 +94,13 @@ public class NsdHelper {
             @Override
             public void onServiceResolved(NsdServiceInfo serviceInfo) {
                 Log.e(TAG, "Resolve Succeeded. " + serviceInfo);
+                secondaryModePresenter.onResolveSuccess(serviceInfo);
                 if (serviceInfo.getHost().getHostAddress().equals(getLocalIpAddress())) {
                     Log.d(TAG, "Same IP.");
                     return;
                 }
                 mService = serviceInfo;
-                secondaryModePresenter.onResolveSuccess(mService);
+
 //                Log.e(TAG, ""+mService.describeContents());
 //                String string = new String(mService.getAttributes().get("key"));
 //                Log.e(TAG, string);

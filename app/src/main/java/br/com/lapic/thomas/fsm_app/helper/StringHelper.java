@@ -10,4 +10,8 @@ public class StringHelper {
         return str.replaceAll("[^\\d.]", "");
     }
 
+    public static String getParam(String str) {
+        return str.substring(str.lastIndexOf("=") + 1);
+    }
+
 }

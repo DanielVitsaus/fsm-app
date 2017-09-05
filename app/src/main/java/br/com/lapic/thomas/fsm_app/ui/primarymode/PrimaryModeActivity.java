@@ -1,12 +1,19 @@
 package br.com.lapic.thomas.fsm_app.ui.primarymode;
 
 import android.Manifest;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.graphics.drawable.ColorDrawable;
+import android.net.wifi.p2p.WifiP2pManager;
+import android.net.wifi.p2p.nsd.WifiP2pServiceInfo;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
@@ -29,6 +36,9 @@ import javax.inject.Inject;
 
 import br.com.lapic.thomas.fsm_app.R;
 import br.com.lapic.thomas.fsm_app.data.model.Media;
+import br.com.lapic.thomas.fsm_app.helper.ChatConnection;
+import br.com.lapic.thomas.fsm_app.helper.WiFiDirectBroadcastReceiver;
+import android.net.wifi.p2p.WifiP2pManager.Channel;
 import br.com.lapic.thomas.fsm_app.injection.component.ActivityComponent;
 import br.com.lapic.thomas.fsm_app.player.Player;
 import br.com.lapic.thomas.fsm_app.ui.base.BaseMvpActivity;
@@ -66,6 +76,11 @@ public class PrimaryModeActivity
     private  final String TAG = this.getClass().getSimpleName();
     private static final int REQUEST_READ_EXTERNAL_STORAGE = 1;
     private ArrayList<Media> mMedias;
+
+    private WifiP2pManager mManager;
+    private Channel mChannel;
+    private BroadcastReceiver mReceiver;
+    private IntentFilter mIntentFilter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -109,6 +124,18 @@ public class PrimaryModeActivity
     protected void onStart() {
         super.onStart();
         presenter.onStart();
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+//        registerReceiver(mReceiver, mIntentFilter);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+//        unregisterReceiver(mReceiver);
     }
 
     @Override
@@ -195,6 +222,20 @@ public class PrimaryModeActivity
         Intent intent = new Intent(this, Player.class);
         intent.putExtra(AppConstants.MEDIAS_PARCEL, mMedias);
         startActivity(intent);
+    }
+
+    @Override
+    public void initWifiP2P() {
+//        mManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
+//        mChannel = mManager.initialize(this, getMainLooper(), null);
+//        mReceiver = new WiFiDirectBroadcastReceiver(mManager, mChannel, this);
+//        mIntentFilter = new IntentFilter();
+//        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
+//        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
+//        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
+//        mIntentFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
+
+
     }
 
     @Override

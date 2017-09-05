@@ -1,12 +1,21 @@
 package br.com.lapic.thomas.fsm_app.ui.secondarymode;
 
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
+import android.net.nsd.NsdServiceInfo;
+import android.net.wifi.p2p.WifiP2pDeviceList;
+import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Build;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -19,6 +28,7 @@ import android.widget.TextView;
 import javax.inject.Inject;
 
 import br.com.lapic.thomas.fsm_app.R;
+import br.com.lapic.thomas.fsm_app.helper.ChatConnection;
 import br.com.lapic.thomas.fsm_app.injection.component.ActivityComponent;
 import br.com.lapic.thomas.fsm_app.ui.base.BaseMvpActivity;
 import br.com.lapic.thomas.fsm_app.ui.mode.ModeActivity;
@@ -38,6 +48,10 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
 
     @Inject
     protected SecondaryModePresenter mPresenter;
+
+    private final String TAG = this.getClass().getSimpleName();
+    private WifiP2pManager mManager;
+    private WifiP2pManager.Channel mChannel;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -101,6 +115,7 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
     @Override
     protected void onDestroy() {
         mPresenter.onDestroy();
+        mConnection.tearDown();
         super.onDestroy();
     }
 
@@ -154,6 +169,47 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
     @Override
     public void showHistoric() {
         showToast(R.string.historic_item);
+    }
+
+    WifiP2pManager.PeerListListener mPeerListListener;
+
+    private Handler mUpdateHandler;
+    private ChatConnection mConnection;
+
+    @Override
+    public void initWifiP2P(NsdServiceInfo mService) {
+//        mManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
+//        mChannel = mManager.initialize(this, getMainLooper(), null);
+//        mManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {
+//            @Override
+//            public void onSuccess() {
+//                Log.e(TAG, "OnSuccess discover");
+//            }
+//
+//            @Override
+//            public void onFailure(int reasonCode) {
+//                Log.e(TAG, "onFailure discover");
+//            }
+//        });
+
+
+    }
+
+    @Override
+    public void showDialogChoiceGroup(int amountGroups) {
+        String[] items = new String[amountGroups];
+        for (int i = 0; i < items.length; i++)
+            items[i] = "Grupo " + Integer.valueOf(i+1);
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.choice_group);
+        builder.setItems(items, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialogInterface, int i) {
+                presenter.setGroup(i);
+            }
+        });
+        builder.create().show();
+
     }
 
 }

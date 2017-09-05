@@ -1,5 +1,7 @@
 package br.com.lapic.thomas.fsm_app.ui.secondarymode;
 
+import android.net.nsd.NsdServiceInfo;
+
 import com.hannesdorfmann.mosby.mvp.MvpView;
 
 /**
@@ -20,4 +22,7 @@ public interface SecondaryModeView extends MvpView {
 
     void showHistoric();
 
+    void initWifiP2P(NsdServiceInfo mService);
+
+    void showDialogChoiceGroup(int amountGroups);
 }

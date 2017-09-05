@@ -16,4 +16,5 @@
     <string name="write_read_permission_necessary">Permissão necessária para realizar a leitura das mídias</string>
     <string name="start">Iniciar</string>
     <string name="media_type_invalid">Tipo de mídia inválida</string>
+    <string name="choice_group">Escolha o Grupo</string>
 </resources>

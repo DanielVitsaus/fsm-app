@@ -31,4 +31,6 @@ public interface PrimaryModeView extends MvpView {
     void checkPermissions();
 
     void callPlayer();
+
+    void initWifiP2P();
 }

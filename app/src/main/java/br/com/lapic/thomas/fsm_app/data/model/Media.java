@@ -63,6 +63,8 @@ public class Media implements Parcelable {
     }
 
     public ArrayList<Group> getGroups() {
+        if (groups == null)
+            this.groups = new ArrayList<>();
         return groups;
     }
 
