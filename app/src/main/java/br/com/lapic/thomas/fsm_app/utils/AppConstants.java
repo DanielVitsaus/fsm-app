@@ -25,5 +25,5 @@ public class AppConstants {
 
     public static String GET_AMOUNT_GROUPS = "get_amount_groups";
     public static String TOTAL_GROUPS = "total_groups=";
-    public static String DEVICE = "device:";
+    public static String DEVICE = "device=";
 }

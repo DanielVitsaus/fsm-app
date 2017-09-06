@@ -30,7 +30,9 @@ import javax.inject.Inject;
 
 import br.com.lapic.thomas.fsm_app.R;
 import br.com.lapic.thomas.fsm_app.data.model.Anchor;
+import br.com.lapic.thomas.fsm_app.data.model.Device;
 import br.com.lapic.thomas.fsm_app.data.model.Group;
+import br.com.lapic.thomas.fsm_app.data.model.GroupDevice;
 import br.com.lapic.thomas.fsm_app.data.model.Media;
 import br.com.lapic.thomas.fsm_app.helper.ChatConnection;
 import br.com.lapic.thomas.fsm_app.helper.NsdHelper;
@@ -48,6 +50,7 @@ public class PrimaryModePresenter
     private String TAG = this.getClass().getSimpleName();
     private ArrayList<Media> mMedias;
     private NsdHelper mNsdHelper;
+    private ArrayList<GroupDevice> groupDeviceList;
 
     @Inject
     protected PreferencesHelper mPreferencesHelper;
@@ -70,9 +73,23 @@ public class PrimaryModePresenter
                 String message = msg.getData().getString("msg");
                 if (message.contains(AppConstants.GET_AMOUNT_GROUPS))
                     mConnection.sendMessage(AppConstants.TOTAL_GROUPS + mMedias.get(0).getGroups().size());
+                else if(message.contains(AppConstants.DEVICE))
+                    addDeviceToGroup(StringHelper.getParam(message));
             }
         };
         mConnection = new ChatConnection(mUpdateHandler);
+    }
+
+    private void addDeviceToGroup(String str) {
+        String[] params = str.split("#");
+        Device device = new Device(params[0], params[1], params[2], params[3]);
+        if (groupDeviceList.contains(Integer.parseInt(params[4])))
+            groupDeviceList.get(Integer.parseInt(params[4])).addDevice(device);
+        else {
+            GroupDevice groupDevice = new GroupDevice(params[4]);
+            groupDevice.addDevice(device);
+            groupDeviceList.add(Integer.parseInt(params[4]), groupDevice);
+        }
     }
 
     public void onLeavePrimaryMode() {
@@ -181,6 +198,8 @@ public class PrimaryModePresenter
             try {
                 getView().showLoading(R.string.reading_document);
                 if (documentParser()) {
+                    if (groupDeviceList == null)
+                        groupDeviceList = new ArrayList<>();
                     getView().setListMedias(mMedias);
                     registerService(context);
                     getView().showContent();

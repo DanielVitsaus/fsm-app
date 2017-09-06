@@ -96,7 +96,7 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
     }
 
     public void onDestroy() {
-
+        mConnection.tearDown();
     }
 
     private void onSuccess() {
@@ -144,10 +144,19 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
     }
 
 
-    public void setGroup(int group) {
+    public void setGroup(final int group) {
         this.mGroup = group;
-//        if (mConnection != null) {
-//            mConnection.sendMessage(AppConstants.DEVICE);
-//        }
+        if (mConnection != null && mNsdHelper != null) {
+            new Thread(new Runnable() {
+                public void run() {
+                    mConnection.sendMessage(AppConstants.DEVICE +
+                            StringHelper.getDeviceName() + "#" +
+                            mNsdHelper.getMacAddress() + "#" +
+                            mNsdHelper.getLocalIpAddress() + "#" +
+                            mConnection.getLocalPort() + "#" +
+                            group);
+                }
+            }).start();
+        }
     }
 }

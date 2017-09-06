@@ -115,7 +115,6 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
     @Override
     protected void onDestroy() {
         mPresenter.onDestroy();
-        mConnection.tearDown();
         super.onDestroy();
     }
 
@@ -173,8 +172,8 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
 
     WifiP2pManager.PeerListListener mPeerListListener;
 
-    private Handler mUpdateHandler;
-    private ChatConnection mConnection;
+//    private Handler mUpdateHandler;
+//    private ChatConnection mConnection;
 
     @Override
     public void initWifiP2P(NsdServiceInfo mService) {
@@ -196,19 +195,24 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
     }
 
     @Override
-    public void showDialogChoiceGroup(int amountGroups) {
-        String[] items = new String[amountGroups];
-        for (int i = 0; i < items.length; i++)
-            items[i] = "Grupo " + Integer.valueOf(i+1);
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setTitle(R.string.choice_group);
-        builder.setItems(items, new DialogInterface.OnClickListener() {
+    public void showDialogChoiceGroup(final int amountGroups) {
+        runOnUiThread(new Runnable() {
             @Override
-            public void onClick(DialogInterface dialogInterface, int i) {
-                presenter.setGroup(i);
+            public void run() {
+                String[] items = new String[amountGroups];
+                for (int i = 0; i < items.length; i++)
+                    items[i] = "Grupo " + Integer.valueOf(i+1);
+                AlertDialog.Builder builder = new AlertDialog.Builder(SecondaryModeActivity.this);
+                builder.setTitle(R.string.choice_group);
+                builder.setItems(items, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        presenter.setGroup(i);
+                    }
+                });
+                builder.create().show();
             }
         });
-        builder.create().show();
 
     }
 

@@ -159,9 +159,13 @@ public class NsdHelper {
         mNsdManager.unregisterService(mRegistrationListener);
     }
 
-    private String getLocalIpAddress() {
+    public String getLocalIpAddress() {
         String ip = Formatter.formatIpAddress(mWifiManager.getConnectionInfo().getIpAddress());
         return ip;
+    }
+
+    public String getMacAddress() {
+        return mWifiManager.getConnectionInfo().getMacAddress();
     }
 
     public static InetAddress getLocalHostLANAddress() throws UnknownHostException {
