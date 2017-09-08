@@ -16,11 +16,6 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.InetAddress;
-import java.net.MulticastSocket;
-import java.net.ServerSocket;
-import java.net.UnknownHostException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
@@ -34,7 +29,7 @@ import br.com.lapic.thomas.fsm_app.data.model.Device;
 import br.com.lapic.thomas.fsm_app.data.model.Group;
 import br.com.lapic.thomas.fsm_app.data.model.GroupDevice;
 import br.com.lapic.thomas.fsm_app.data.model.Media;
-import br.com.lapic.thomas.fsm_app.helper.ChatConnection;
+import br.com.lapic.thomas.fsm_app.connection.ConfigConnection;
 import br.com.lapic.thomas.fsm_app.helper.NsdHelper;
 import br.com.lapic.thomas.fsm_app.helper.PreferencesHelper;
 import br.com.lapic.thomas.fsm_app.helper.StringHelper;
@@ -51,6 +46,8 @@ public class PrimaryModePresenter
     private ArrayList<Media> mMedias;
     private NsdHelper mNsdHelper;
     private ArrayList<GroupDevice> groupDeviceList;
+    private Handler mUpdateHandler;
+    private ConfigConnection mConfigConnection;
 
     @Inject
     protected PreferencesHelper mPreferencesHelper;
@@ -63,32 +60,33 @@ public class PrimaryModePresenter
     @Override
     public void attachView(PrimaryModeView view) {
         super.attachView(view);
-        startChatConnection();
+        startConfigConnection();
     }
 
-    private void startChatConnection(){
+    private void startConfigConnection(){
         mUpdateHandler = new Handler() {
             @Override
             public void handleMessage(Message msg) {
                 String message = msg.getData().getString("msg");
                 if (message.contains(AppConstants.GET_AMOUNT_GROUPS))
-                    mConnection.sendMessage(AppConstants.TOTAL_GROUPS + mMedias.get(0).getGroups().size());
+                    mConfigConnection.sendMessage(AppConstants.TOTAL_GROUPS + mMedias.get(0).getGroups().size());
                 else if(message.contains(AppConstants.DEVICE))
                     addDeviceToGroup(StringHelper.getParam(message));
             }
         };
-        mConnection = new ChatConnection(mUpdateHandler);
+        mConfigConnection = new ConfigConnection(mUpdateHandler);
     }
 
     private void addDeviceToGroup(String str) {
         String[] params = str.split("#");
         Device device = new Device(params[0], params[1], params[2], params[3]);
-        if (groupDeviceList.contains(Integer.parseInt(params[4])))
-            groupDeviceList.get(Integer.parseInt(params[4])).addDevice(device);
-        else {
-            GroupDevice groupDevice = new GroupDevice(params[4]);
-            groupDevice.addDevice(device);
-            groupDeviceList.add(Integer.parseInt(params[4]), groupDevice);
+        groupDeviceList.get(Integer.parseInt(params[4])).addDevice(device);
+
+        for (GroupDevice groupDevice : groupDeviceList) {
+            Log.d(TAG, "group: " + groupDevice.getId());
+            for (Device device1 : groupDevice.getDevices()) {
+                Log.d(TAG, "    device: " + device1.getId() + " " + device1.getPort() + " " + device1.getIpAddress());
+            }
         }
     }
 
@@ -123,6 +121,7 @@ public class PrimaryModePresenter
     }
 
     private boolean documentParser() throws IOException, JSONException {
+        groupDeviceList = new ArrayList<>();
         mMedias = new ArrayList<>();
         JSONObject obj = new JSONObject(loadJSONFromAsset());
         JSONArray mediasJSONArray = obj.getJSONArray(AppConstants.MEDIAS);
@@ -177,6 +176,7 @@ public class PrimaryModePresenter
                             Log.e(TAG, "ERRO ao ler anchorsArray da media: " + j);
                             return false;
                         }
+                        groupDeviceList.add(new GroupDevice(String.valueOf(j)));
                         media.addGroup(group);
                     }
                 } else {
@@ -221,26 +221,22 @@ public class PrimaryModePresenter
     public void onDestroy() {
         if (mNsdHelper != null)
             mNsdHelper.tearDown();
-        if (mConnection != null)
-            mConnection.tearDown();
+        if (mConfigConnection != null)
+            mConfigConnection.tearDown();
         mNsdHelper = null;
-        mConnection = null;
+        mConfigConnection = null;
     }
 
-    private Handler mUpdateHandler;
-    private ChatConnection mConnection;
-
     private void registerService(Context context) throws IOException {
-        if ((mNsdHelper == null) && (mConnection.getLocalPort() > -1)) {
+        if ((mNsdHelper == null) && (mConfigConnection.getLocalPort() > -1)) {
             mNsdHelper = new NsdHelper(context);
-            mNsdHelper.registerService(this, mConnection.getLocalPort());
+            mNsdHelper.registerService(this, mConfigConnection.getLocalPort());
         } else
             Log.e(TAG, "Nsd is instancied or ServerSocket isn't bound.");
     }
 
     public void onSuccessRegisteredService(NsdServiceInfo serviceInfo) {
         if (isViewAttached()) {
-            getView().initWifiP2P();
             getView().hideLoading();
             getView().showContent();
         }

@@ -11,7 +11,7 @@ import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 import javax.inject.Inject;
 
 import br.com.lapic.thomas.fsm_app.R;
-import br.com.lapic.thomas.fsm_app.helper.ChatConnection;
+import br.com.lapic.thomas.fsm_app.connection.ConfigConnection;
 import br.com.lapic.thomas.fsm_app.helper.NsdHelper;
 import br.com.lapic.thomas.fsm_app.helper.PreferencesHelper;
 import br.com.lapic.thomas.fsm_app.helper.StringHelper;
@@ -27,7 +27,7 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
     private int mGroup = -1;
     private NsdHelper mNsdHelper;
     private Handler mUpdateHandler;
-    private ChatConnection mConnection;
+    private ConfigConnection mConnection;
 
     @Inject
     protected PreferencesHelper mPreferencesHelper;
@@ -54,7 +54,7 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
                 Log.e(TAG, message);
             }
         };
-        mConnection = new ChatConnection(mUpdateHandler);
+        mConnection = new ConfigConnection(mUpdateHandler);
     }
 
     private void showDialogChoiceGroup(String amountGroups) {
@@ -76,6 +76,7 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
 
     public void onStart(Context context) {
         if (isViewAttached()) {
+            getView().checkPermissions();
             getView().showLoading(R.string.Looking_primary_device);
             discoverService(context);
         }
@@ -112,24 +113,16 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
         }
     }
 
-    public void onServiceFound(NsdServiceInfo service) {
-        if (isViewAttached()) {
-            getView().hideLoading();
-            getView().showMessage("Service: " + service.getServiceName() + " IP: " + service.getHost());
-        }
-    }
-
     public void onResolveSuccess(NsdServiceInfo mService) {
         if (isViewAttached()) {
             connectToServer(mService);
-            getView().initWifiP2P(mService);
             getView().hideLoading();
         }
     }
 
     private void connectToServer(NsdServiceInfo mService) {
         if (mService != null) {
-            Log.d(TAG, "Connecting.");
+            Log.d(TAG, "Connecting. port: " + mService.getPort());
             mConnection.connectToServer(mService.getHost(), mService.getPort());
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
@@ -158,5 +151,9 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
                 }
             }).start();
         }
+    }
+
+    public void onPermissionsOk(Context context) {
+        Log.e(TAG, "permission ok");
     }
 }

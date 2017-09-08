@@ -1,7 +1,5 @@
 package br.com.lapic.thomas.fsm_app.ui.primarymode;
 
-import android.content.res.AssetManager;
-
 import com.hannesdorfmann.mosby.mvp.MvpView;
 
 import java.util.ArrayList;
@@ -24,13 +22,10 @@ public interface PrimaryModeView extends MvpView {
 
     void showError(int resId);
 
-    AssetManager getAssetManager();
-
     void setListMedias(ArrayList<Media> medias);
 
     void checkPermissions();
 
     void callPlayer();
 
-    void initWifiP2P();
 }

@@ -10,6 +10,8 @@ import com.hannesdorfmann.mosby.mvp.MvpView;
 
 public interface SecondaryModeView extends MvpView {
 
+    void checkPermissions();
+
     void callModeActivity();
 
     void showLoading(int resIdMessage);
@@ -21,8 +23,6 @@ public interface SecondaryModeView extends MvpView {
     void showMessage(String message);
 
     void showHistoric();
-
-    void initWifiP2P(NsdServiceInfo mService);
 
     void showDialogChoiceGroup(int amountGroups);
 }

@@ -27,18 +27,25 @@ public class SplashScreenPresenter extends MvpBasePresenter<SplashScreenView> {
     @Override
     public void attachView(SplashScreenView view) {
         super.attachView(view);
-        mHandler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                String mode = mPreferencesHelper.getMode();
-                if (mode == null)
-                    getView().callModeActivity();
-                else if (mode.equals(getView().getStringRes(R.string.primary_mode)))
-                    getView().callPrimaryModeActivity();
-                else if (mode.equals(getView().getStringRes(R.string.secondary_mode)))
-                    getView().callSecondaryModeActivity();
-            }
-        }, 2000);
+//        mHandler.postDelayed(new Runnable() {
+//            @Override
+//            public void run() {
+//                String mode = mPreferencesHelper.getMode();
+//                if (mode == null)
+//                    getView().callModeActivity();
+//                else if (mode.equals(getView().getStringRes(R.string.primary_mode)))
+//                    getView().callPrimaryModeActivity();
+//                else if (mode.equals(getView().getStringRes(R.string.secondary_mode)))
+//                    getView().callSecondaryModeActivity();
+//            }
+//        }, 2000);
+        String mode = mPreferencesHelper.getMode();
+        if (mode == null)
+            getView().callModeActivity();
+        else if (mode.equals(getView().getStringRes(R.string.primary_mode)))
+            getView().callPrimaryModeActivity();
+        else if (mode.equals(getView().getStringRes(R.string.secondary_mode)))
+            getView().callSecondaryModeActivity();
     }
 
     @Override

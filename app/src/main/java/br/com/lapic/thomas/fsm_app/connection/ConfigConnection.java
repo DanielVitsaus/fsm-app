@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package br.com.lapic.thomas.fsm_app.helper;
+package br.com.lapic.thomas.fsm_app.connection;
 
 import android.os.Bundle;
 import android.os.Handler;
@@ -37,18 +37,18 @@ import java.util.concurrent.BlockingQueue;
 import br.com.lapic.thomas.fsm_app.ui.primarymode.PrimaryModePresenter;
 import br.com.lapic.thomas.fsm_app.ui.secondarymode.SecondaryModePresenter;
 
-public class ChatConnection {
+public class ConfigConnection {
 
     private Handler mUpdateHandler;
     private ChatServer mChatServer;
     private ChatClient mChatClient;
 
-    private static final String TAG = "ChatConnection";
+    private static final String TAG = "ConfigConnection";
 
     private Socket mSocket;
     private int mPort = -1;
 
-    public ChatConnection(Handler handler) {
+    public ConfigConnection(Handler handler) {
         mUpdateHandler = handler;
         mChatServer = new ChatServer(handler);
     }

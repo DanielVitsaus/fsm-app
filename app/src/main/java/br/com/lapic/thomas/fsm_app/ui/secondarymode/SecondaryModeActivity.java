@@ -1,21 +1,16 @@
 package br.com.lapic.thomas.fsm_app.ui.secondarymode;
 
-import android.content.Context;
+import android.Manifest;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
-import android.net.nsd.NsdServiceInfo;
-import android.net.wifi.p2p.WifiP2pDeviceList;
-import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Build;
-import android.os.Handler;
-import android.os.Message;
 import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -28,7 +23,6 @@ import android.widget.TextView;
 import javax.inject.Inject;
 
 import br.com.lapic.thomas.fsm_app.R;
-import br.com.lapic.thomas.fsm_app.helper.ChatConnection;
 import br.com.lapic.thomas.fsm_app.injection.component.ActivityComponent;
 import br.com.lapic.thomas.fsm_app.ui.base.BaseMvpActivity;
 import br.com.lapic.thomas.fsm_app.ui.mode.ModeActivity;
@@ -50,8 +44,7 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
     protected SecondaryModePresenter mPresenter;
 
     private final String TAG = this.getClass().getSimpleName();
-    private WifiP2pManager mManager;
-    private WifiP2pManager.Channel mChannel;
+    private static final int MY_REQUEST_WRITE_PERMISSION = 1;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -118,6 +111,32 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
         super.onDestroy();
     }
 
+    @Override
+    public void checkPermissions() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if ((ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE}, MY_REQUEST_WRITE_PERMISSION);
+            } else
+                presenter.onPermissionsOk(this);
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case MY_REQUEST_WRITE_PERMISSION: {
+                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+                    presenter.onPermissionsOk(this);
+                } else {
+                    presenter.onError(R.string.write_permission_necessary);
+                }
+                return;
+            }
+        }
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+    }
+
     private void configBars() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = this.getWindow();
@@ -168,30 +187,6 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
     @Override
     public void showHistoric() {
         showToast(R.string.historic_item);
-    }
-
-    WifiP2pManager.PeerListListener mPeerListListener;
-
-//    private Handler mUpdateHandler;
-//    private ChatConnection mConnection;
-
-    @Override
-    public void initWifiP2P(NsdServiceInfo mService) {
-//        mManager = (WifiP2pManager) getSystemService(Context.WIFI_P2P_SERVICE);
-//        mChannel = mManager.initialize(this, getMainLooper(), null);
-//        mManager.discoverPeers(mChannel, new WifiP2pManager.ActionListener() {
-//            @Override
-//            public void onSuccess() {
-//                Log.e(TAG, "OnSuccess discover");
-//            }
-//
-//            @Override
-//            public void onFailure(int reasonCode) {
-//                Log.e(TAG, "onFailure discover");
-//            }
-//        });
-
-
     }
 
     @Override
