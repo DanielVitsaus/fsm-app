@@ -24,6 +24,7 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import br.com.lapic.thomas.fsm_app.R;
+import br.com.lapic.thomas.fsm_app.connection.ServerSocketThread;
 import br.com.lapic.thomas.fsm_app.data.model.Anchor;
 import br.com.lapic.thomas.fsm_app.data.model.Device;
 import br.com.lapic.thomas.fsm_app.data.model.Group;
@@ -48,9 +49,11 @@ public class PrimaryModePresenter
     private ArrayList<GroupDevice> groupDeviceList;
     private Handler mUpdateHandler;
     private ConfigConnection mConfigConnection;
+    private ServerSocketThread serverSocketThread;
 
     @Inject
     protected PreferencesHelper mPreferencesHelper;
+
 
     @Inject
     public PrimaryModePresenter(PreferencesHelper preferencesHelper) {
@@ -98,7 +101,7 @@ public class PrimaryModePresenter
 
     private String loadJSONFromAsset() throws IOException {
 
-        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), AppConstants.PATH_METADATA_FILE);
+        File file = new File(AppConstants.FILE_PATH_DOWNLOADS, AppConstants.PATH_METADATA_FILE);
         FileInputStream fileInputStream = new FileInputStream(file);
         String json = null;
 
@@ -235,11 +238,17 @@ public class PrimaryModePresenter
             Log.e(TAG, "Nsd is instancied or ServerSocket isn't bound.");
     }
 
-    public void onSuccessRegisteredService(NsdServiceInfo serviceInfo) {
+    public void onSuccessRegisteredService() {
         if (isViewAttached()) {
+            startReceiverThread();
             getView().hideLoading();
             getView().showContent();
         }
+    }
+
+    private void startReceiverThread() {
+        serverSocketThread = new ServerSocketThread();
+        serverSocketThread.start();
     }
 
     public void onError(int resIdMessage) {

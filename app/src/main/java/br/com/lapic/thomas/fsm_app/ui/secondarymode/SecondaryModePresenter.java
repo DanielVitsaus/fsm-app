@@ -11,6 +11,7 @@ import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 import javax.inject.Inject;
 
 import br.com.lapic.thomas.fsm_app.R;
+import br.com.lapic.thomas.fsm_app.connection.ClientRxThread;
 import br.com.lapic.thomas.fsm_app.connection.ConfigConnection;
 import br.com.lapic.thomas.fsm_app.helper.NsdHelper;
 import br.com.lapic.thomas.fsm_app.helper.PreferencesHelper;
@@ -28,6 +29,8 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
     private NsdHelper mNsdHelper;
     private Handler mUpdateHandler;
     private ConfigConnection mConnection;
+    private NsdServiceInfo mServiceInfo;
+    private int SocketServerPORT = 8080;
 
     @Inject
     protected PreferencesHelper mPreferencesHelper;
@@ -113,10 +116,20 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
         }
     }
 
-    public void onResolveSuccess(NsdServiceInfo mService) {
+    public void onResolveSuccess(NsdServiceInfo nsdServiceInfo) {
         if (isViewAttached()) {
-            connectToServer(mService);
+            mServiceInfo = nsdServiceInfo;
+            connectToServer(mServiceInfo);
             getView().hideLoading();
+        }
+    }
+
+    private void sendFile() {
+        if (mServiceInfo != null) {
+            ClientRxThread clientRxThread = new ClientRxThread(mServiceInfo.getHost().getHostAddress(), SocketServerPORT);
+            clientRxThread.start();
+        } else {
+            Log.e(TAG, "NsdServiceInfo not found");
         }
     }
 
@@ -150,6 +163,7 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
                             group);
                 }
             }).start();
+            sendFile();
         }
     }
 

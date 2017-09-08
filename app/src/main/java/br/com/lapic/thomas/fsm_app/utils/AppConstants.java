@@ -1,5 +1,9 @@
 package br.com.lapic.thomas.fsm_app.utils;
 
+import android.os.Environment;
+
+import java.io.File;
+
 /**
  * Created by thomas on 26/08/17.
  */
@@ -7,6 +11,7 @@ package br.com.lapic.thomas.fsm_app.utils;
 public class AppConstants {
 
     public static String MEDIAS_PARCEL = "medias_parcel";
+    public static File FILE_PATH_DOWNLOADS = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
     public static String PATH_APP = "app/";
     public static String PATH_METADATA_FILE = "app/main.json";
     public static String VIDEO = "video";

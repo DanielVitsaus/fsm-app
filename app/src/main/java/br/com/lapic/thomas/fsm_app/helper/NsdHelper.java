@@ -59,9 +59,8 @@ public class NsdHelper {
             @Override
             public void onServiceRegistered(NsdServiceInfo nsdServiceInfo) {
                 mServiceName = nsdServiceInfo.getServiceName();
-                Log.e(TAG, "Service Registered: " + mServiceName + " | port: " + nsdServiceInfo.getPort() +
-                         " | Host : " + nsdServiceInfo.getHost() + " | type : " + nsdServiceInfo.getServiceType());
-                primaryModePresenter.onSuccessRegisteredService(nsdServiceInfo);
+                Log.e(TAG, "Service Registered: " + mServiceName);
+                primaryModePresenter.onSuccessRegisteredService();
             }
             @Override
             public void onRegistrationFailed(NsdServiceInfo arg0, int arg1) {}
