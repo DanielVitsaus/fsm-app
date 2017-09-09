@@ -23,9 +23,11 @@ import android.widget.TextView;
 import javax.inject.Inject;
 
 import br.com.lapic.thomas.fsm_app.R;
+import br.com.lapic.thomas.fsm_app.multicast.MulticastGroup;
 import br.com.lapic.thomas.fsm_app.injection.component.ActivityComponent;
 import br.com.lapic.thomas.fsm_app.ui.base.BaseMvpActivity;
 import br.com.lapic.thomas.fsm_app.ui.mode.ModeActivity;
+import br.com.lapic.thomas.fsm_app.utils.AppConstants;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -53,6 +55,9 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
         setContentView(R.layout.activity_secondary_mode);
         setTitle(getString(R.string.secondary_mode));
         ButterKnife.bind(this);
+
+        MulticastGroup group = new MulticastGroup(this, "teste", AppConstants.FIRST_MULTICAST_PORT);
+        group.startMessageReceiver();
     }
 
     @NonNull
