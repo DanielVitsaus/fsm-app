@@ -1,7 +1,6 @@
-package br.com.lapic.thomas.fsm_app.connection;
+package br.com.lapic.thomas.fsm_app.multicast;
 
 import android.content.Context;
-import android.nfc.Tag;
 import android.util.Log;
 
 /**
@@ -18,7 +17,7 @@ public class MulticastGroup extends MulticastManager {
 
     @Override
     protected Runnable getIncomingMessageAnalyseRunnable() {
-        Log.e(TAG, incomingMessage.getMessage());
+        Log.e(TAG, incomingMessage.getTag() + "   " + incomingMessage.getMessage());
         return null;
     }
 }

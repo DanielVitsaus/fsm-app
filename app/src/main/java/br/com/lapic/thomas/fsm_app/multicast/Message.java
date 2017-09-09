@@ -1,4 +1,4 @@
-package br.com.lapic.thomas.fsm_app.connection;
+package br.com.lapic.thomas.fsm_app.multicast;
 
 import java.net.InetAddress;
 

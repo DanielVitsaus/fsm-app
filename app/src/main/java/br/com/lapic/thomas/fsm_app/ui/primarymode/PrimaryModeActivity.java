@@ -21,11 +21,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.VideoView;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
 
 import br.com.lapic.thomas.fsm_app.R;
+import br.com.lapic.thomas.fsm_app.multicast.MulticastGroup;
 import br.com.lapic.thomas.fsm_app.data.model.Media;
 import br.com.lapic.thomas.fsm_app.injection.component.ActivityComponent;
 import br.com.lapic.thomas.fsm_app.player.Player;
@@ -72,6 +74,13 @@ public class PrimaryModeActivity
         setContentView(R.layout.activity_primary_mode);
         setTitle(getString(R.string.primary_mode));
         ButterKnife.bind(this);
+
+        MulticastGroup group = new MulticastGroup(this, "teste", AppConstants.FIRST_MULTICAST_PORT);
+        try {
+            group.sendMessage(true, "Mensagem de Teste");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @NonNull
