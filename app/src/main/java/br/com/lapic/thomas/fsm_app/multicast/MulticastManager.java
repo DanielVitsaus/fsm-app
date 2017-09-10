@@ -33,18 +33,19 @@ public abstract class MulticastManager {
     protected Message incomingMessage;
     private Thread receiverThread;
     private Thread senderThread;
-    private String MULTICAST_ADDRESS = AppConstants.FIRST_MULTICAST_IP;
+    private String MULTICAST_ADDRESS;
     private boolean keepAlive = false;
     private int TIME_KEEP_ALIVE = 2000;
 
     protected abstract Runnable getIncomingMessageAnalyseRunnable();
 
-    public MulticastManager(Context context, String tag, int multicastPort) {
+    public MulticastManager(Context context, String tag, String multicastIp, int multicastPort) {
         if(context == null || tag == null || tag.length() == 0 ||
                 multicastPort <= 1024 || multicastPort > 49151)
             throw new IllegalArgumentException();
         this.mContext = context.getApplicationContext();
         TAG = tag;
+        MULTICAST_ADDRESS = multicastIp;
         MULTICAST_PORT = multicastPort;
         incomingMessageHandler = new Handler(Looper.getMainLooper());
     }
@@ -60,7 +61,7 @@ public abstract class MulticastManager {
                     packet.setData(message.getBytes(), 0, message.length());
                     try {
                         serverSocket.send(packet);
-                        Log.e(TAG, "mensagem enviada para " + MULTICAST_ADDRESS + ":" + MULTICAST_PORT + " - "+  message);
+                        Log.d(TAG, "mensagem enviada para " + MULTICAST_ADDRESS + ":" + MULTICAST_PORT + " - "+  message);
                         Thread.sleep(TIME_KEEP_ALIVE);
                     } catch (IOException | InterruptedException e) {
                         e.printStackTrace();

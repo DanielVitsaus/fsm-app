@@ -1,6 +1,10 @@
 package br.com.lapic.thomas.fsm_app.ui.secondarymode;
 
 import android.Manifest;
+import android.app.Fragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -25,6 +29,7 @@ import javax.inject.Inject;
 import br.com.lapic.thomas.fsm_app.R;
 import br.com.lapic.thomas.fsm_app.multicast.MulticastGroup;
 import br.com.lapic.thomas.fsm_app.injection.component.ActivityComponent;
+import br.com.lapic.thomas.fsm_app.player.PlayerFragment;
 import br.com.lapic.thomas.fsm_app.ui.base.BaseMvpActivity;
 import br.com.lapic.thomas.fsm_app.ui.mode.ModeActivity;
 import br.com.lapic.thomas.fsm_app.utils.AppConstants;
@@ -47,6 +52,7 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
 
     private final String TAG = this.getClass().getSimpleName();
     private static final int MY_REQUEST_WRITE_PERMISSION = 1;
+    private AlertDialog.Builder builder;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -55,9 +61,6 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
         setContentView(R.layout.activity_secondary_mode);
         setTitle(getString(R.string.secondary_mode));
         ButterKnife.bind(this);
-
-        MulticastGroup group = new MulticastGroup(this, "teste", AppConstants.FIRST_MULTICAST_PORT);
-        group.startMessageReceiver();
     }
 
     @NonNull
@@ -199,21 +202,39 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                String[] items = new String[amountGroups];
-                for (int i = 0; i < items.length; i++)
-                    items[i] = "Grupo " + Integer.valueOf(i+1);
-                AlertDialog.Builder builder = new AlertDialog.Builder(SecondaryModeActivity.this);
-                builder.setTitle(R.string.choice_group);
-                builder.setItems(items, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialogInterface, int i) {
-                        presenter.setGroup(i);
-                    }
-                });
-                builder.create().show();
+                if (builder == null) {
+                    String[] items = new String[amountGroups];
+                    for (int i = 0; i < items.length; i++)
+                        items[i] = "Grupo " + Integer.valueOf(i + 1);
+                    builder = new AlertDialog.Builder(SecondaryModeActivity.this);
+                    builder.setTitle(R.string.choice_group);
+                    builder.setItems(items, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialogInterface, int i) {
+                            presenter.setGroup(i+1);
+                        }
+                    });
+                    builder.setCancelable(false);
+                    builder.create().show();
+                }
             }
         });
 
+    }
+
+    @Override
+    public Context getMyContext() {
+        return this;
+    }
+
+    @Override
+    public void startFragmentPlayer(Bundle bundle) {
+        FragmentManager fm = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fm.beginTransaction();
+        PlayerFragment fragment = new PlayerFragment();
+        fragment.setArguments(bundle);
+        fragmentTransaction.replace(android.R.id.content, fragment);
+        fragmentTransaction.commit();
     }
 
 }

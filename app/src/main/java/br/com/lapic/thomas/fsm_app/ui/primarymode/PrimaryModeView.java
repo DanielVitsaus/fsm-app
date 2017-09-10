@@ -1,5 +1,7 @@
 package br.com.lapic.thomas.fsm_app.ui.primarymode;
 
+import android.content.Context;
+
 import com.hannesdorfmann.mosby.mvp.MvpView;
 
 import java.util.ArrayList;
@@ -26,6 +28,7 @@ public interface PrimaryModeView extends MvpView {
 
     void checkPermissions();
 
-    void callPlayer();
+    Context getMyContext();
 
+    void callPlayer();
 }

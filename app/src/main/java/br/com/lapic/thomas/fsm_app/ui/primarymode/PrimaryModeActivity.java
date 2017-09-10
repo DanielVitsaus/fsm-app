@@ -1,6 +1,7 @@
 package br.com.lapic.thomas.fsm_app.ui.primarymode;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
@@ -9,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -27,6 +29,7 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import br.com.lapic.thomas.fsm_app.R;
+import br.com.lapic.thomas.fsm_app.helper.StringHelper;
 import br.com.lapic.thomas.fsm_app.multicast.MulticastGroup;
 import br.com.lapic.thomas.fsm_app.data.model.Media;
 import br.com.lapic.thomas.fsm_app.injection.component.ActivityComponent;
@@ -74,13 +77,6 @@ public class PrimaryModeActivity
         setContentView(R.layout.activity_primary_mode);
         setTitle(getString(R.string.primary_mode));
         ButterKnife.bind(this);
-
-        MulticastGroup group = new MulticastGroup(this, "teste", AppConstants.FIRST_MULTICAST_PORT);
-        try {
-            group.sendMessage(true, "Mensagem de Teste");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @NonNull
@@ -190,7 +186,7 @@ public class PrimaryModeActivity
 
     @Override
     public void setListMedias(ArrayList<Media> medias) {
-        mMedias = medias;
+        this.mMedias = medias;
     }
 
     @Override
@@ -207,8 +203,13 @@ public class PrimaryModeActivity
     @Override
     public void callPlayer() {
         Intent intent = new Intent(this, Player.class);
-        intent.putExtra(AppConstants.MEDIAS_PARCEL, mMedias);
+        intent.putParcelableArrayListExtra(AppConstants.MEDIAS_PARCEL, mMedias);
         startActivity(intent);
+    }
+
+    @Override
+    public Context getMyContext() {
+        return this;
     }
 
     @Override

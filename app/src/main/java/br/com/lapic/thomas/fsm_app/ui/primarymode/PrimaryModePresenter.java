@@ -1,8 +1,6 @@
 package br.com.lapic.thomas.fsm_app.ui.primarymode;
 
 import android.content.Context;
-import android.net.nsd.NsdServiceInfo;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -34,6 +32,7 @@ import br.com.lapic.thomas.fsm_app.connection.ConfigConnection;
 import br.com.lapic.thomas.fsm_app.helper.NsdHelper;
 import br.com.lapic.thomas.fsm_app.helper.PreferencesHelper;
 import br.com.lapic.thomas.fsm_app.helper.StringHelper;
+import br.com.lapic.thomas.fsm_app.multicast.MulticastGroup;
 import br.com.lapic.thomas.fsm_app.utils.AppConstants;
 
 /**
@@ -50,6 +49,7 @@ public class PrimaryModePresenter
     private Handler mUpdateHandler;
     private ConfigConnection mConfigConnection;
     private ServerSocketThread serverSocketThread;
+    private MulticastGroup mainMulticastGroup;
 
     @Inject
     protected PreferencesHelper mPreferencesHelper;
@@ -71,10 +71,10 @@ public class PrimaryModePresenter
             @Override
             public void handleMessage(Message msg) {
                 String message = msg.getData().getString("msg");
-                if (message.contains(AppConstants.GET_AMOUNT_GROUPS))
-                    mConfigConnection.sendMessage(AppConstants.TOTAL_GROUPS + mMedias.get(0).getGroups().size());
-                else if(message.contains(AppConstants.DEVICE))
-                    addDeviceToGroup(StringHelper.getParam(message));
+//                if (message.contains(AppConstants.GET_AMOUNT_GROUPS))
+//                    mConfigConnection.sendMessage(AppConstants.TOTAL_GROUPS + mMedias.get(0).getGroups().size());
+//                else if(message.contains(AppConstants.DEVICE))
+//                    addDeviceToGroup(StringHelper.getParam(message));
             }
         };
         mConfigConnection = new ConfigConnection(mUpdateHandler);
@@ -203,8 +203,10 @@ public class PrimaryModePresenter
                 if (documentParser()) {
                     if (groupDeviceList == null)
                         groupDeviceList = new ArrayList<>();
+                    Log.e(TAG, mMedias.get(0).getGroups().size()+"");
                     getView().setListMedias(mMedias);
                     registerService(context);
+                    startMulticastGroup();
                     getView().showContent();
                 } else
                     onError(R.string.error_parsing);
@@ -212,6 +214,17 @@ public class PrimaryModePresenter
                 e.printStackTrace();
                 onError(R.string.error_parsing);
             }
+        }
+    }
+
+    private void startMulticastGroup() throws IOException {
+        if (isViewAttached()) {
+            mainMulticastGroup = new MulticastGroup(this,
+                    getView().getMyContext(),
+                    AppConstants.GROUP_CONFIG,
+                    AppConstants.CONFIG_MULTICAST_IP,
+                    AppConstants.CONFIG_MULTICAST_PORT);
+            mainMulticastGroup.sendMessage(true, mMedias.get(0).getGroups().size() + NsdHelper.getLocalHostLANAddress().toString());
         }
     }
 
@@ -262,7 +275,5 @@ public class PrimaryModePresenter
         if (isViewAttached())
             getView().callPlayer();
     }
-
-
 
 }

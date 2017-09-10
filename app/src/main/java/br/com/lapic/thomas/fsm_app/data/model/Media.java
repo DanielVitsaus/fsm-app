@@ -32,6 +32,7 @@ public class Media implements Parcelable {
         src = in.readString();
         type = in.readString();
         duration = in.readInt();
+        groups = in.createTypedArrayList(Group.CREATOR);
     }
 
     public static final Creator<Media> CREATOR = new Creator<Media>() {
@@ -105,5 +106,6 @@ public class Media implements Parcelable {
         parcel.writeString(src);
         parcel.writeString(type);
         parcel.writeInt(duration);
+        parcel.writeTypedList(groups);
     }
 }

@@ -1,6 +1,8 @@
 package br.com.lapic.thomas.fsm_app.ui.secondarymode;
 
+import android.content.Context;
 import android.net.nsd.NsdServiceInfo;
+import android.os.Bundle;
 
 import com.hannesdorfmann.mosby.mvp.MvpView;
 
@@ -25,4 +27,8 @@ public interface SecondaryModeView extends MvpView {
     void showHistoric();
 
     void showDialogChoiceGroup(int amountGroups);
+
+    Context getMyContext();
+
+    void startFragmentPlayer(Bundle bundle);
 }

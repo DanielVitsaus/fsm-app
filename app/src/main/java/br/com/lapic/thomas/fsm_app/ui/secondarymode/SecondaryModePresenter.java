@@ -2,6 +2,7 @@ package br.com.lapic.thomas.fsm_app.ui.secondarymode;
 
 import android.content.Context;
 import android.net.nsd.NsdServiceInfo;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
@@ -16,6 +17,7 @@ import br.com.lapic.thomas.fsm_app.connection.ConfigConnection;
 import br.com.lapic.thomas.fsm_app.helper.NsdHelper;
 import br.com.lapic.thomas.fsm_app.helper.PreferencesHelper;
 import br.com.lapic.thomas.fsm_app.helper.StringHelper;
+import br.com.lapic.thomas.fsm_app.multicast.MulticastGroup;
 import br.com.lapic.thomas.fsm_app.utils.AppConstants;
 
 /**
@@ -31,6 +33,8 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
     private ConfigConnection mConnection;
     private NsdServiceInfo mServiceInfo;
     private int SocketServerPORT = 8080;
+    private MulticastGroup mainMulticastGroup;
+    private String hostIp;
 
     @Inject
     protected PreferencesHelper mPreferencesHelper;
@@ -44,6 +48,16 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
     public void attachView(SecondaryModeView view) {
         super.attachView(view);
         startChatConnection();
+        startDiscoveryMulticastGroup();
+    }
+
+    private void startDiscoveryMulticastGroup() {
+        mainMulticastGroup = new MulticastGroup(this,
+                getView().getMyContext(),
+                AppConstants.GROUP_CONFIG,
+                AppConstants.CONFIG_MULTICAST_IP,
+                AppConstants.CONFIG_MULTICAST_PORT);
+        mainMulticastGroup.startMessageReceiver();
     }
 
     private void startChatConnection() {
@@ -51,17 +65,18 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
             @Override
             public void handleMessage(Message msg) {
                 String message = msg.getData().getString("msg");
-                if (message.contains(AppConstants.TOTAL_GROUPS)) {
-                    showDialogChoiceGroup(StringHelper.getParam(message));
-                }
-                Log.e(TAG, message);
+//                if (message.contains(AppConstants.TOTAL_GROUPS)) {
+//                    showDialogChoiceGroup(StringHelper.getParam(message));
+//                }
+//                Log.e(TAG, message);
             }
         };
         mConnection = new ConfigConnection(mUpdateHandler);
     }
 
-    private void showDialogChoiceGroup(String amountGroups) {
-        if (isViewAttached()) {
+    public void showDialogChoiceGroup(String amountGroups, String hostIP) {
+        this.hostIp = hostIP;
+        if (isViewAttached() && mGroup < 0) {
             getView().showDialogChoiceGroup(Integer.parseInt(amountGroups));
         }
     }
@@ -152,19 +167,25 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
 
     public void setGroup(final int group) {
         this.mGroup = group;
-        if (mConnection != null && mNsdHelper != null) {
-            new Thread(new Runnable() {
-                public void run() {
-                    mConnection.sendMessage(AppConstants.DEVICE +
-                            StringHelper.getDeviceName() + "#" +
-                            mNsdHelper.getMacAddress() + "#" +
-                            mNsdHelper.getLocalIpAddress() + "#" +
-                            mConnection.getLocalPort() + "#" +
-                            group);
-                }
-            }).start();
-            sendFile();
+        if (isViewAttached()) {
+            Bundle bundle = new Bundle();
+            bundle.putInt(AppConstants.MY_GROUP, mGroup);
+            getView().startFragmentPlayer(bundle);
         }
+        // TODO Startar fragmento e iniciar multicast group
+//        if (mConnection != null && mNsdHelper != null) {
+//            new Thread(new Runnable() {
+//                public void run() {
+//                    mConnection.sendMessage(AppConstants.DEVICE +
+//                            StringHelper.getDeviceName() + "#" +
+//                            mNsdHelper.getMacAddress() + "#" +
+//                            mNsdHelper.getLocalIpAddress() + "#" +
+//                            mConnection.getLocalPort() + "#" +
+//                            group);
+//                }
+//            }).start();
+//            sendFile();
+//        }
     }
 
     public void onPermissionsOk(Context context) {

@@ -24,7 +24,7 @@ public class BroadCastMessenger {
 //    public void startReceiver() {
 //        try {
 //            //Keep a socket open to listen to all the UDP trafic that is destined for this port
-//            DatagramSocket socket = new DatagramSocket(AppConstants.FIRST_MULTICAST_PORT, InetAddress.getByName("0.0.0.0"));
+//            DatagramSocket socket = new DatagramSocket(AppConstants.CONFIG_MULTICAST_PORT, InetAddress.getByName("0.0.0.0"));
 //            socket.setBroadcast(true);
 //
 //            while (true) {
@@ -62,7 +62,7 @@ public class BroadCastMessenger {
 //            DatagramSocket socket = new DatagramSocket();
 //            socket.setBroadcast(true);
 //            byte[] sendData = messageStr.getBytes();
-//            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, getBroadcastAddress(), AppConstants.FIRST_MULTICAST_PORT);
+//            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, getBroadcastAddress(), AppConstants.CONFIG_MULTICAST_PORT);
 //            socket.send(sendPacket);
 //            System.out.println(getClass().getName() + "Broadcast packet sent to: " + getBroadcastAddress().getHostAddress());
 //        } catch (IOException e) {

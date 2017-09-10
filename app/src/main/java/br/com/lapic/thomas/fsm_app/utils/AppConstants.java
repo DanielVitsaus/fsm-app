@@ -32,10 +32,18 @@ public class AppConstants {
     public static String TOTAL_GROUPS = "total_groups=";
     public static String DEVICE = "device=";
 
-    public static String FIRST_MULTICAST_IP = "230.192.0.11";
-    public static int FIRST_MULTICAST_PORT = 1025;
+    public static String MY_GROUP = "my_group";
+
+    public static String CONFIG_MULTICAST_IP = "230.192.0.11";
+    public static int CONFIG_MULTICAST_PORT = 1025;
 
     public static final String BROADCAST_ACTION = "com.example.android.threadsample.BROADCAST";
     public static final String EXTENDED_DATA_STATUS = "com.example.android.threadsample.STATUS";
+
+    public static String GROUP_CONFIG = "GROUP_CONFIG";
+    public static String PLAY = "play";
+    public static String TIMESTAMP = "timestamp";
+
+    public static final int CONTENT_VIEW_ID = 10101010;
 
 }
