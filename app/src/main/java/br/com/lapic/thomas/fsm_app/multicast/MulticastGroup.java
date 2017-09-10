@@ -1,17 +1,15 @@
 package br.com.lapic.thomas.fsm_app.multicast;
 
-import android.app.Activity;
-import android.app.Fragment;
 import android.content.Context;
 import android.util.Log;
 
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 
-import br.com.lapic.thomas.fsm_app.helper.StringHelper;
+import java.util.ArrayList;
+
+import br.com.lapic.thomas.fsm_app.data.model.Media;
 import br.com.lapic.thomas.fsm_app.player.PlayerFragment;
-import br.com.lapic.thomas.fsm_app.ui.primarymode.PrimaryModeActivity;
 import br.com.lapic.thomas.fsm_app.ui.primarymode.PrimaryModePresenter;
-import br.com.lapic.thomas.fsm_app.ui.secondarymode.SecondaryModeActivity;
 import br.com.lapic.thomas.fsm_app.ui.secondarymode.SecondaryModePresenter;
 import br.com.lapic.thomas.fsm_app.utils.AppConstants;
 
@@ -49,8 +47,39 @@ public class MulticastGroup extends MulticastManager {
                 secondaryModePresenter.showDialogChoiceGroup(message[0], message[1]);
             }
         } else if (playerFragment != null) {
-            if (incomingMessage.getTag().equals(AppConstants.PLAY)) {
-                Log.e(TAG, incomingMessage.getMessage());
+            if (incomingMessage.getTag().equals(AppConstants.ACTION)) {
+                String msg = incomingMessage.getMessage();
+                String message = msg.substring(msg.indexOf(":") + 1);
+                String[] mediasString = message.split("\\+");
+                final ArrayList<Media> arrayListMedias = new ArrayList<>();
+                for (int i = 0; i < mediasString.length; i++) {
+                    String[] mediaStr = mediasString[i].split(",");
+                    Media media = new Media();
+                    media.setId(mediaStr[0]);
+                    media.setType(mediaStr[1]);
+                    media.setDuration(Integer.parseInt(mediaStr[2]));
+                    if (media.getType().equals(AppConstants.URL))
+                        media.setSrc(mediaStr[3].substring(1));
+                    else
+                        media.setSrc(mediaStr[3]);
+                    arrayListMedias.add(media);
+                }
+                Log.e(TAG, msg);
+                if (msg.contains(AppConstants.START)) {
+                    playerFragment.getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            playerFragment.playMedias(arrayListMedias);
+                        }
+                    });
+                } else {
+                    playerFragment.getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            playerFragment.stopMedias(arrayListMedias);
+                        }
+                    });
+                }
             }
         }
         return null;

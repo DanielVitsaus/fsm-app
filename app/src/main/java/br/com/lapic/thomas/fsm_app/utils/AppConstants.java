@@ -41,7 +41,9 @@ public class AppConstants {
     public static final String EXTENDED_DATA_STATUS = "com.example.android.threadsample.STATUS";
 
     public static String GROUP_CONFIG = "GROUP_CONFIG";
-    public static String PLAY = "play";
+    public static String ACTION = "ACTION";
+    public static String START = "START";
+    public static String STOP = "STOP";
     public static String TIMESTAMP = "timestamp";
 
     public static final int CONTENT_VIEW_ID = 10101010;

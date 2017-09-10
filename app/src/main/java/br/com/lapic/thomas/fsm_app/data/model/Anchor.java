@@ -1,15 +1,19 @@
 package br.com.lapic.thomas.fsm_app.data.model;
 
+import android.os.Build;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
+import android.support.annotation.RequiresApi;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 /**
  * Created by thomas on 21/08/17.
  */
 
-public class Anchor implements Parcelable {
+public class Anchor implements Parcelable, Comparator<Anchor> {
 
     private String id;
     private int begin;
@@ -98,5 +102,12 @@ public class Anchor implements Parcelable {
         parcel.writeInt(begin);
         parcel.writeInt(end);
         parcel.writeStringList(medias);
+    }
+
+
+    @Override
+    public int compare(Anchor anchor1, Anchor anchor2) {
+        return anchor1.getBegin() < anchor2.getBegin() ? 1
+                : (anchor1.getBegin() == anchor2.getBegin() ? 0 : -1);
     }
 }

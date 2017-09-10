@@ -14,7 +14,7 @@ public class Media implements Parcelable {
     private String id;
     private String src;
     private String type;
-    private int duration;
+    private int duration = -1;
     private ArrayList<Group> groups;
 
     public Media() {

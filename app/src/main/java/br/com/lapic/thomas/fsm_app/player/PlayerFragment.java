@@ -19,6 +19,7 @@ import android.widget.VideoView;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import br.com.lapic.thomas.fsm_app.R;
 import br.com.lapic.thomas.fsm_app.data.model.Media;
@@ -63,11 +64,7 @@ public class PlayerFragment extends Fragment {
     private void startMulticastGroup() {
         String multicastIp = StringHelper.incrementIp(AppConstants.CONFIG_MULTICAST_IP, mGroup);
         int multicastPort = AppConstants.CONFIG_MULTICAST_PORT + mGroup;
-        multicastGroup = new MulticastGroup(null,
-                rootView.getContext(),
-                AppConstants.PLAY,
-                StringHelper.incrementIp(AppConstants.CONFIG_MULTICAST_IP, mGroup),
-                AppConstants.CONFIG_MULTICAST_PORT + mGroup);
+        multicastGroup = new MulticastGroup(null, rootView.getContext(), AppConstants.ACTION, multicastIp, multicastPort);
         multicastGroup.setPlayerFragment(this);
         multicastGroup.startMessageReceiver();
     }
@@ -81,20 +78,48 @@ public class PlayerFragment extends Fragment {
         super.onDestroy();
     }
 
-    public void playMedia(Media media) {
-        switch (media.getType()) {
-            case "image":
-                startImage(media);
-                break;
-            case "audio":
-                startAudio(media);
-                break;
-            case "video":
-                startVideo(media);
-                break;
-            case "url":
-                startWebView(media);
-                break;
+    @Override
+    public void onStop() {
+        multicastGroup.stopMessageReceiver();
+        super.onStop();
+    }
+
+    public void playMedias(ArrayList<Media> medias) {
+        stopAll();
+        for (Media media : medias) {
+            switch (media.getType()) {
+                case "image":
+                    startImage(media);
+                    break;
+                case "audio":
+                    startAudio(media);
+                    break;
+                case "video":
+                    startVideo(media);
+                    break;
+                case "url":
+                    startWebView(media);
+                    break;
+            }
+        }
+    }
+
+    public void stopMedias(ArrayList<Media> medias) {
+        for (Media media : medias) {
+            switch (media.getType()) {
+                case "image":
+                    stopImage();
+                    break;
+                case "audio":
+                    stopAudio();
+                    break;
+                case "video":
+                    stopVideo();
+                    break;
+                case "url":
+                    stopWebView();
+                    break;
+            }
         }
     }
 
@@ -103,9 +128,9 @@ public class PlayerFragment extends Fragment {
         if (file.exists()) {
             Bitmap mBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
             mImageView.setImageBitmap(mBitmap);
-            stopVideo();
-            stopAudio();
-            stopWebView();
+//            stopVideo();
+//            stopAudio();
+//            stopWebView();
             mImageView.setVisibility(View.VISIBLE);
             Handler handler = new Handler();
             handler.postDelayed(new Runnable() {
@@ -137,9 +162,9 @@ public class PlayerFragment extends Fragment {
                         stopAudio();
                     }
                 });
-                stopImage();
-                stopVideo();
-                stopWebView();
+//                stopImage();
+//                stopVideo();
+//                stopWebView();
                 imageViewAudio.setVisibility(View.VISIBLE);
                 mMediaPlayer.start();
             } catch (IOException e) {
@@ -152,7 +177,7 @@ public class PlayerFragment extends Fragment {
         if (mMediaPlayer.isPlaying()) {
             imageViewAudio.setVisibility(View.GONE);
             mMediaPlayer.stop();
-            mMediaPlayer.release();
+            mMediaPlayer.reset();
         }
     }
 
@@ -167,9 +192,9 @@ public class PlayerFragment extends Fragment {
                     stopVideo();
                 }
             });
-            stopImage();
-            stopAudio();
-            stopWebView();
+//            stopImage();
+//            stopAudio();
+//            stopWebView();
             mWebView.setVisibility(View.GONE);
             mVideoView.setVisibility(View.VISIBLE);
             mVideoView.start();
@@ -185,9 +210,9 @@ public class PlayerFragment extends Fragment {
     }
 
     private void startWebView(Media media) {
-        stopImage();
-        stopAudio();
-        stopVideo();
+//        stopImage();
+//        stopAudio();
+//        stopVideo();
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.setWebViewClient(new WebViewClient());
         mWebView.loadUrl("http://" + media.getSrc());
@@ -214,4 +239,12 @@ public class PlayerFragment extends Fragment {
             mWebView.setVisibility(View.GONE);
         }
     }
+
+    private void stopAll(){
+        stopImage();
+        stopAudio();
+        stopVideo();
+        stopWebView();
+    }
+
 }

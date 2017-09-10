@@ -29,6 +29,7 @@ import java.util.ArrayList;
 import javax.inject.Inject;
 
 import br.com.lapic.thomas.fsm_app.R;
+import br.com.lapic.thomas.fsm_app.data.model.Group;
 import br.com.lapic.thomas.fsm_app.helper.StringHelper;
 import br.com.lapic.thomas.fsm_app.multicast.MulticastGroup;
 import br.com.lapic.thomas.fsm_app.data.model.Media;

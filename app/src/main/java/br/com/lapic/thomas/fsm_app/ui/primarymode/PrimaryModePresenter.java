@@ -205,7 +205,7 @@ public class PrimaryModePresenter
                         groupDeviceList = new ArrayList<>();
                     Log.e(TAG, mMedias.get(0).getGroups().size()+"");
                     getView().setListMedias(mMedias);
-                    registerService(context);
+//                    registerService(context);
                     startMulticastGroup();
                     getView().showContent();
                 } else
@@ -235,11 +235,11 @@ public class PrimaryModePresenter
     }
 
     public void onDestroy() {
-        if (mNsdHelper != null)
-            mNsdHelper.tearDown();
+//        if (mNsdHelper != null)
+//            mNsdHelper.tearDown();
         if (mConfigConnection != null)
             mConfigConnection.tearDown();
-        mNsdHelper = null;
+//        mNsdHelper = null;
         mConfigConnection = null;
     }
 

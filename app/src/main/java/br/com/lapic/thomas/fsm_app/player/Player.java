@@ -8,7 +8,6 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
-import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -21,14 +20,12 @@ import android.widget.VideoView;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 
 import br.com.lapic.thomas.fsm_app.R;
-import br.com.lapic.thomas.fsm_app.data.model.Group;
 import br.com.lapic.thomas.fsm_app.data.model.Media;
 import br.com.lapic.thomas.fsm_app.helper.StringHelper;
 import br.com.lapic.thomas.fsm_app.multicast.MulticastGroup;
+import br.com.lapic.thomas.fsm_app.sync.Synchronizer;
 import br.com.lapic.thomas.fsm_app.utils.AppConstants;
 
 /**
@@ -46,6 +43,7 @@ public class Player extends Activity implements MediaPlayer.OnCompletionListener
     private VideoView mVideoView;
     private WebView mWebView;
     private ArrayList<MulticastGroup> multicastGroups;
+    private ArrayList<Thread> syncs;
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -78,21 +76,20 @@ public class Player extends Activity implements MediaPlayer.OnCompletionListener
     }
 
     @Override
-    protected void onStart() {
-        super.onStart();
-        Log.e(TAG, mMedias.get(0).getGroups().size() + "");
-        multicastGroups = new ArrayList<>();
-        for (int i=0 ; i < mMedias.get(0).getGroups().size(); i++) {
-            Log.e(TAG, "teste");
-            String multicastIp = StringHelper.incrementIp(AppConstants.CONFIG_MULTICAST_IP, i+1);
-            int multicastPort = AppConstants.CONFIG_MULTICAST_PORT + (i+1);
-            MulticastGroup multicastGroup = new MulticastGroup(null, this, AppConstants.PLAY, multicastIp, multicastPort);
-            try {
-                multicastGroup.sendMessage(true, "Teste" + (i+1));
-            } catch (IOException e) {
-                e.printStackTrace();
+    protected void onResume() {
+        super.onResume();
+        if (multicastGroups == null) {
+            multicastGroups = new ArrayList<>();
+            syncs = new ArrayList<>();
+            for (int i = 0; i < mMedias.get(0).getGroups().size(); i++) {
+                String multicastIp = StringHelper.incrementIp(AppConstants.CONFIG_MULTICAST_IP, i + 1);
+                int multicastPort = AppConstants.CONFIG_MULTICAST_PORT + (i + 1);
+                MulticastGroup multicastGroup = new MulticastGroup(null, this, AppConstants.ACTION, multicastIp, multicastPort);
+                multicastGroups.add(multicastGroup);
+                Synchronizer synchronizer = new Synchronizer(i+1, mMedias.get(0).getGroup(i), multicastGroup, new Handler(), new Handler());
+                synchronizer.start();
+                syncs.add(synchronizer);
             }
-            multicastGroups.add(multicastGroup);
         }
     }
 
@@ -186,7 +183,7 @@ public class Player extends Activity implements MediaPlayer.OnCompletionListener
         if (mMediaPlayer.isPlaying()) {
             imageViewAudio.setVisibility(View.GONE);
             mMediaPlayer.stop();
-            mMediaPlayer.release();
+            mMediaPlayer.reset();
         }
     }
 

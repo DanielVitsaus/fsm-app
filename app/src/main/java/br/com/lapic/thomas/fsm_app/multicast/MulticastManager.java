@@ -55,9 +55,10 @@ public abstract class MulticastManager {
         Runnable sender = new Runnable() {
             @Override
             public void run() {
-                byte[] buf = new byte[1024];
+                byte[] buf = new byte[4098];
                 DatagramPacket packet = new DatagramPacket(buf, buf.length, group, MULTICAST_PORT);
                 do {
+                    message.replaceAll("\"","");
                     packet.setData(message.getBytes(), 0, message.length());
                     try {
                         serverSocket.send(packet);
@@ -67,6 +68,8 @@ public abstract class MulticastManager {
                         e.printStackTrace();
                     }
                 } while (sending && keepAlive);
+                sending = false;
+                senderThread = null;
             }
         };
 

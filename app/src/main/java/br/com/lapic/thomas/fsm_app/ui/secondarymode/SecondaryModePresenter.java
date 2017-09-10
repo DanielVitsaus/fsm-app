@@ -96,7 +96,7 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
         if (isViewAttached()) {
             getView().checkPermissions();
             getView().showLoading(R.string.Looking_primary_device);
-            discoverService(context);
+//            discoverService(context);
         }
     }
 

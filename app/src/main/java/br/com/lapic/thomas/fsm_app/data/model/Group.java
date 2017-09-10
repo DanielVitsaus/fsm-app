@@ -42,10 +42,14 @@ public class Group implements Parcelable{
     };
 
     public ArrayList<Media> getMedias() {
+        if (this.medias == null)
+            this.medias = new ArrayList<>();
         return medias;
     }
 
     public ArrayList<Anchor> getAnchors() {
+        if (this.anchors == null)
+            this.anchors = new ArrayList<>();
         return anchors;
     }
 
@@ -78,5 +82,13 @@ public class Group implements Parcelable{
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeTypedList(medias);
         parcel.writeTypedList(anchors);
+    }
+
+    public Media getMedia(String media) {
+        for (Media media1 : medias) {
+            if (media1.getId().equals(media))
+                return media1;
+        }
+        return null;
     }
 }
