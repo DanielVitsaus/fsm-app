@@ -55,12 +55,6 @@ public class PrimaryModeActivity
     @BindView(R.id.error)
     protected RelativeLayout errorView;
 
-    @BindView(R.id.video_view)
-    protected VideoView mVideoView;
-
-    @BindView(R.id.image_view)
-    protected ImageView mImageView;
-
     @BindView(R.id.start_button)
     protected Button startButton;
 
@@ -168,8 +162,6 @@ public class PrimaryModeActivity
             public void run() {
                 loadingView.setVisibility(View.GONE);
                 errorView.setVisibility(View.GONE);
-                mVideoView.setVisibility(View.GONE);
-                mImageView.setVisibility(View.GONE);
                 startButton.setVisibility(View.VISIBLE);
                 contentView.setVisibility(View.VISIBLE);
             }

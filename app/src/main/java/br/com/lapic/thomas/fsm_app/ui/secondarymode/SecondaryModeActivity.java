@@ -21,6 +21,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -219,7 +220,6 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
                 }
             }
         });
-
     }
 
     @Override
@@ -235,6 +235,33 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
         fragment.setArguments(bundle);
         fragmentTransaction.replace(android.R.id.content, fragment);
         fragmentTransaction.commit();
+    }
+
+    @Override
+    public void startDownloadMedias() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ProgressBar progressBar = ButterKnife.findById(loadingView, R.id.progress_bar);
+                TextView textView = ButterKnife.findById(loadingView, R.id.tv_message);
+                textView.setText(R.string.downloading_medias);
+                progressBar.setIndeterminate(false);
+                progressBar.incrementProgressBy(0);
+            }
+        });
+    }
+
+    @Override
+    public void incrementProgressBar(final int value) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                ProgressBar progressBar = ButterKnife.findById(loadingView, R.id.progress_bar);
+                TextView textView = ButterKnife.findById(loadingView, R.id.tv_message);
+                textView.setText(R.string.downloading_medias);
+                progressBar.incrementProgressBy(value);
+            }
+        });
     }
 
 }

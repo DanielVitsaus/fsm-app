@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="br.com.lapic.thomas.fsm_app.ui.secondarymode.SecondaryModeActivity">
+    tools:context="br.com.lapic.thomas.fsm_app.ui.secondarymode.SecondaryModeActivity"
+    android:layout_marginTop="-8dp">
 
     <include
         android:id="@+id/loading"

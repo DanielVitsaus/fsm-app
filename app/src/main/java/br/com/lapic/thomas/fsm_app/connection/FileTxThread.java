@@ -1,6 +1,5 @@
 package br.com.lapic.thomas.fsm_app.connection;
 
-import android.os.Environment;
 import android.util.Log;
 
 import java.io.BufferedInputStream;

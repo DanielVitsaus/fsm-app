@@ -16,7 +16,10 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.MediaController;
+import android.widget.TextView;
 import android.widget.VideoView;
+
+import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,7 +41,7 @@ public class PlayerFragment extends Fragment {
     private ImageView imageViewAudio;
     private VideoView mVideoView;
     private WebView mWebView;
-
+    private TextView message;
     private View rootView;
     private MulticastGroup multicastGroup;
     private MediaPlayer mMediaPlayer;
@@ -52,6 +55,7 @@ public class PlayerFragment extends Fragment {
         imageViewAudio = rootView.findViewById(R.id.image_audio);
         mMediaPlayer = new MediaPlayer();
         mVideoView = rootView.findViewById(R.id.video_view);
+        message = rootView.findViewById(R.id.tv_message);
         mWebView = rootView.findViewById(R.id.web_view);
         return rootView;
     }
@@ -124,6 +128,7 @@ public class PlayerFragment extends Fragment {
     }
 
     private void startImage(Media media) {
+        message.setVisibility(View.GONE);
         if (imageViewAudio.getVisibility() == View.VISIBLE)
             imageViewAudio.setVisibility(View.GONE);
         stopVideo();
@@ -142,10 +147,12 @@ public class PlayerFragment extends Fragment {
             mImageView.setImageBitmap(null);
             mImageView.destroyDrawingCache();
             mImageView.setVisibility(View.GONE);
+            showMessage();
         }
     }
 
     private void startAudio(Media media) {
+        message.setVisibility(View.GONE);
         stopVideo();
         File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), AppConstants.PATH_APP + media.getSrc());
         if (file.exists()) {
@@ -172,10 +179,12 @@ public class PlayerFragment extends Fragment {
             imageViewAudio.setVisibility(View.GONE);
             mMediaPlayer.stop();
             mMediaPlayer.reset();
+            showMessage();
         }
     }
 
     private void startVideo(Media media) {
+        message.setVisibility(View.GONE);
         stopAll();
         File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), AppConstants.PATH_APP + media.getSrc());
         if (file.exists()) {
@@ -198,10 +207,12 @@ public class PlayerFragment extends Fragment {
             mVideoView.stopPlayback();
             mVideoView.setVideoURI(null);
             mVideoView.setVisibility(View.GONE);
+            showMessage();
         }
     }
 
     private void startWebView(Media media) {
+        message.setVisibility(View.GONE);
         if (imageViewAudio.getVisibility() == View.VISIBLE)
             imageViewAudio.setVisibility(View.GONE);
         stopImage();
@@ -223,14 +234,23 @@ public class PlayerFragment extends Fragment {
             mWebView.destroyDrawingCache();
             mWebView.pauseTimers();
             mWebView.setVisibility(View.GONE);
+            showMessage();
         }
     }
 
-    private void stopAll(){
+    private void stopAll() {
         stopImage();
         stopAudio();
         stopVideo();
         stopWebView();
+    }
+
+    private void showMessage() {
+        if ((mWebView.getVisibility() == View.GONE) &&
+                (mImageView.getVisibility() == View.GONE) &&
+                (imageViewAudio.getVisibility() == View.GONE) &&
+                (mVideoView.getVisibility() == View.GONE))
+            message.setVisibility(View.VISIBLE);
     }
 
 }

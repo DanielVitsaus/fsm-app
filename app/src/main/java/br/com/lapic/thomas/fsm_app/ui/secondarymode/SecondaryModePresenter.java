@@ -40,6 +40,7 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
     private MulticastGroup downloadMulticastGroup;
     private ArrayList<String> mediasToDownload;
     private int amountGroups;
+    private int mediaDownloadCount = 0;
     private String hostIp;
 
     @Inject
@@ -164,16 +165,29 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
     }
 
     private void sendFile() {
-        if (hostIp != null) {
+        if (hostIp != null && isViewAttached()) {
+            getView().startDownloadMedias();
             ArrayList<ClientRxThread> listClientRxThread = new ArrayList<>();
             for (int i = 0; i < mediasToDownload.size(); i++) {
                 int socketPort = AppConstants.DOWNLOAD_SOCKET_PORT + ((mGroup-1) * 100) + i;
-                ClientRxThread clientRxThread = new ClientRxThread(hostIp, socketPort, mediasToDownload.get(i));
+                ClientRxThread clientRxThread = new ClientRxThread(this, hostIp, socketPort, mediasToDownload.get(i));
                 clientRxThread.start();
                 listClientRxThread.add(clientRxThread);
             }
         } else {
             Log.e(TAG, "Host IP is null");
+        }
+    }
+
+    public void onMediaDownloadFinished() {
+        this.mediaDownloadCount++;
+        if (mediaDownloadCount == mediasToDownload.size()) {
+            Bundle bundle = new Bundle();
+            bundle.putInt(AppConstants.MY_GROUP, mGroup);
+            if (isViewAttached()) getView().startFragmentPlayer(bundle);
+        } else {
+            if (isViewAttached())
+                getView().incrementProgressBar((mediaDownloadCount*100) / mediasToDownload.size());
         }
     }
 
@@ -197,11 +211,7 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
     public void setGroup(final int group) {
         this.mGroup = group;
         startDownloadMulticastGroup();
-//        if (isViewAttached()) {
-//            Bundle bundle = new Bundle();
-//            bundle.putInt(AppConstants.MY_GROUP, mGroup);
-//            getView().startFragmentPlayer(bundle);
-//        }
+
         // TODO Startar fragmento e iniciar multicast group
 //        if (mConnection != null && mNsdHelper != null) {
 //            new Thread(new Runnable() {

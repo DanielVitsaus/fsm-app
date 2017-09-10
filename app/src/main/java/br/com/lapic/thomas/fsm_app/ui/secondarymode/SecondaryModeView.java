@@ -31,4 +31,8 @@ public interface SecondaryModeView extends MvpView {
     Context getMyContext();
 
     void startFragmentPlayer(Bundle bundle);
+
+    void startDownloadMedias();
+
+    void incrementProgressBar(int value);
 }

@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
 
+import br.com.lapic.thomas.fsm_app.ui.secondarymode.SecondaryModePresenter;
 import br.com.lapic.thomas.fsm_app.utils.AppConstants;
 
 /**
@@ -19,6 +20,7 @@ import br.com.lapic.thomas.fsm_app.utils.AppConstants;
 public class ClientRxThread extends Thread {
 
     private final String mMediaName;
+    private final SecondaryModePresenter presenter;
     private String TAG = this.getClass().getSimpleName();
     private String dstAddress;
     private int dstPort;
@@ -29,7 +31,8 @@ public class ClientRxThread extends Thread {
     private BufferedOutputStream bufferedOutputStream;
     private Socket socket;
 
-    public ClientRxThread(String address, int port, String mediaName) {
+    public ClientRxThread(SecondaryModePresenter secondaryModePresenter, String address, int port, String mediaName) {
+        this.presenter = secondaryModePresenter;
         Log.e(TAG, address);
         dstAddress = address;
         dstPort = port;
@@ -57,7 +60,8 @@ public class ClientRxThread extends Thread {
                 bufferedOutputStream.write(bytes, 0, current);
                 bufferedOutputStream.flush();
             }
-            Log.e(TAG, "Finished");
+            presenter.onMediaDownloadFinished();
+            Log.e(TAG, "Download media " + mMediaName + "Finished");
 //            MainActivity.this.runOnUiThread(new Runnable() {
 //                @Override
 //                public void run() {
