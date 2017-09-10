@@ -1,5 +1,6 @@
 package br.com.lapic.thomas.fsm_app.utils;
 
+import android.content.Context;
 import android.os.Environment;
 
 import java.io.File;
@@ -34,13 +35,18 @@ public class AppConstants {
 
     public static String MY_GROUP = "my_group";
 
-    public static String CONFIG_MULTICAST_IP = "230.192.0.11";
-    public static int CONFIG_MULTICAST_PORT = 1025;
+    public static String DOWNLOAD_MULTCAST_IP = "230.192.0.11";
+    public static String CONFIG_MULTICAST_IP = "230.192.0.12";
+    public static int CONFIG_MULTICAST_PORT = 1026;
+    public static int DOWNLOAD_MULTICAST_PORT = 1025;
+
+    public static int DOWNLOAD_SOCKET_PORT = 8080;
 
     public static final String BROADCAST_ACTION = "com.example.android.threadsample.BROADCAST";
     public static final String EXTENDED_DATA_STATUS = "com.example.android.threadsample.STATUS";
 
     public static String GROUP_CONFIG = "GROUP_CONFIG";
+    public static String TO_DOWNLOAD = "TO_DOWNLOAD";
     public static String ACTION = "ACTION";
     public static String START = "START";
     public static String STOP = "STOP";

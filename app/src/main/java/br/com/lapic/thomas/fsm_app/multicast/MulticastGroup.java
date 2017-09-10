@@ -45,12 +45,16 @@ public class MulticastGroup extends MulticastManager {
             if (incomingMessage.getTag().equals(AppConstants.GROUP_CONFIG)) {
                 String[] message = incomingMessage.getMessage().split("/");
                 secondaryModePresenter.showDialogChoiceGroup(message[0], message[1]);
+            } else if (incomingMessage.getTag().equals(AppConstants.TO_DOWNLOAD)) {
+                String param = incomingMessage.getMessage();
+                String[] mediasToDownload = param.split("/");
+                secondaryModePresenter.setMediasToDownload(mediasToDownload);
             }
         } else if (playerFragment != null) {
             if (incomingMessage.getTag().equals(AppConstants.ACTION)) {
                 String msg = incomingMessage.getMessage();
-                String message = msg.substring(msg.indexOf(":") + 1);
-                String[] mediasString = message.split("\\+");
+                String param = msg.substring(msg.indexOf(":") + 1);
+                String[] mediasString = param.split("\\+");
                 final ArrayList<Media> arrayListMedias = new ArrayList<>();
                 for (int i = 0; i < mediasString.length; i++) {
                     String[] mediaStr = mediasString[i].split(",");
@@ -64,7 +68,6 @@ public class MulticastGroup extends MulticastManager {
                         media.setSrc(mediaStr[3]);
                     arrayListMedias.add(media);
                 }
-                Log.e(TAG, msg);
                 if (msg.contains(AppConstants.START)) {
                     playerFragment.getActivity().runOnUiThread(new Runnable() {
                         @Override

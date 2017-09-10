@@ -4,23 +4,31 @@ import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
 
+import br.com.lapic.thomas.fsm_app.data.model.Media;
+
 /**
  * Created by thomas on 08/09/17.
  */
 
 public class ServerSocketThread extends Thread {
 
+    private final Media mMedia;
     private String TAG = this.getClass().getSimpleName();
     private ServerSocket serverSocket;
     private FileTxThread fileTxThread;
-    private static final int SocketServerPORT = 8080;
+    private final int socketServerPORT;
     private Socket socket;
+
+    public ServerSocketThread(int downloadSocketPort, Media media) {
+        this.socketServerPORT = downloadSocketPort;
+        this.mMedia = media;
+    }
 
     @Override
     public void run() {
         socket = null;
         try {
-            serverSocket = new ServerSocket(SocketServerPORT);
+            serverSocket = new ServerSocket(socketServerPORT);
 //            MainActivity.this.runOnUiThread(new Runnable() {
 //                @Override
 //                public void run() {
@@ -29,7 +37,7 @@ public class ServerSocketThread extends Thread {
 //                }});
             while (true) {
                 socket = serverSocket.accept();
-                fileTxThread = new FileTxThread(socket);
+                fileTxThread = new FileTxThread(socket, mMedia);
                 fileTxThread.start();
             }
         } catch (IOException e) {

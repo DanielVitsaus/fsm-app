@@ -50,6 +50,7 @@ public class PrimaryModePresenter
     private ConfigConnection mConfigConnection;
     private ServerSocketThread serverSocketThread;
     private MulticastGroup mainMulticastGroup;
+    private MulticastGroup downloadMulticastGroup;
 
     @Inject
     protected PreferencesHelper mPreferencesHelper;
@@ -207,6 +208,7 @@ public class PrimaryModePresenter
                     getView().setListMedias(mMedias);
 //                    registerService(context);
                     startMulticastGroup();
+                    startReceiverThread();
                     getView().showContent();
                 } else
                     onError(R.string.error_parsing);
@@ -225,6 +227,22 @@ public class PrimaryModePresenter
                     AppConstants.CONFIG_MULTICAST_IP,
                     AppConstants.CONFIG_MULTICAST_PORT);
             mainMulticastGroup.sendMessage(true, mMedias.get(0).getGroups().size() + NsdHelper.getLocalHostLANAddress().toString());
+            downloadMulticastGroup = new MulticastGroup(this,
+                    getView().getMyContext(),
+                    AppConstants.TO_DOWNLOAD,
+                    AppConstants.DOWNLOAD_MULTCAST_IP,
+                    AppConstants.DOWNLOAD_MULTICAST_PORT);
+            String message = "";
+            for (Group group : mMedias.get(0).getGroups()) {
+                for (Media media : group.getMedias()) {
+                    if (!media.getType().equals(AppConstants.URL))
+                        message += media.getSrc().substring(media.getSrc().lastIndexOf("/")+1) + ",";
+                }
+                message = message.substring(0, message.length() -1);
+                message += "/";
+            }
+            message = message.substring(0, message.length() - 1);
+            downloadMulticastGroup.sendMessage(true, message);
         }
     }
 
@@ -260,8 +278,22 @@ public class PrimaryModePresenter
     }
 
     private void startReceiverThread() {
-        serverSocketThread = new ServerSocketThread();
-        serverSocketThread.start();
+        ArrayList<ServerSocketThread> listServerThread = new ArrayList<>();
+        int flagMediaUrl = 0;
+        for (int i = 0; i < mMedias.get(0).getGroups().size(); i++) {
+            for (int j = 0; j < mMedias.get(0).getGroup(i).getMedias().size(); j++) {
+                Media media = mMedias.get(0).getGroup(i).getMedia(j);
+                if (media.getType().equals(AppConstants.URL))
+                    flagMediaUrl++;
+                else {
+                    int socketPort = (AppConstants.DOWNLOAD_SOCKET_PORT + (i * 100) + j) - flagMediaUrl;
+                    ServerSocketThread serverSocketThrea = new ServerSocketThread(socketPort, media);
+                    serverSocketThrea.start();
+                    listServerThread.add(serverSocketThrea);
+                }
+            }
+            flagMediaUrl = 0;
+        }
     }
 
     public void onError(int resIdMessage) {

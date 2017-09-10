@@ -63,6 +63,10 @@ public class Group implements Parcelable{
         this.medias.add(media);
     }
 
+    public Media getMedia(int index) {
+        return this.medias.get(index);
+    }
+
     public void setAnchors(ArrayList<Anchor> anchors) {
         this.anchors = anchors;
     }

@@ -9,6 +9,9 @@ import android.util.Log;
 
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
 import javax.inject.Inject;
 
 import br.com.lapic.thomas.fsm_app.R;
@@ -34,6 +37,9 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
     private NsdServiceInfo mServiceInfo;
     private int SocketServerPORT = 8080;
     private MulticastGroup mainMulticastGroup;
+    private MulticastGroup downloadMulticastGroup;
+    private ArrayList<String> mediasToDownload;
+    private int amountGroups;
     private String hostIp;
 
     @Inject
@@ -60,6 +66,15 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
         mainMulticastGroup.startMessageReceiver();
     }
 
+    private void startDownloadMulticastGroup() {
+        downloadMulticastGroup = new MulticastGroup(this,
+                getView().getMyContext(),
+                AppConstants.TO_DOWNLOAD,
+                AppConstants.DOWNLOAD_MULTCAST_IP,
+                AppConstants.DOWNLOAD_MULTICAST_PORT);
+        downloadMulticastGroup.startMessageReceiver();
+    }
+
     private void startChatConnection() {
         mUpdateHandler = new Handler() {
             @Override
@@ -74,11 +89,20 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
         mConnection = new ConfigConnection(mUpdateHandler);
     }
 
-    public void showDialogChoiceGroup(String amountGroups, String hostIP) {
+    public void showDialogChoiceGroup(String totalGroups, String hostIP) {
         this.hostIp = hostIP;
         if (isViewAttached() && mGroup < 0) {
-            getView().showDialogChoiceGroup(Integer.parseInt(amountGroups));
+            this.amountGroups = Integer.parseInt(totalGroups);
+            getView().showDialogChoiceGroup(amountGroups);
         }
+    }
+
+    public void setMediasToDownload(String[] medias) {
+        downloadMulticastGroup.stopMessageReceiver();
+        String[] mediastoDownload = medias[mGroup-1].split(",");
+        mediasToDownload = new ArrayList<>();
+        Collections.addAll(mediasToDownload, mediastoDownload);
+        sendFile();
     }
 
     public void onLeaveSecondaryMode() {
@@ -140,11 +164,16 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
     }
 
     private void sendFile() {
-        if (mServiceInfo != null) {
-            ClientRxThread clientRxThread = new ClientRxThread(mServiceInfo.getHost().getHostAddress(), SocketServerPORT);
-            clientRxThread.start();
+        if (hostIp != null) {
+            ArrayList<ClientRxThread> listClientRxThread = new ArrayList<>();
+            for (int i = 0; i < mediasToDownload.size(); i++) {
+                int socketPort = AppConstants.DOWNLOAD_SOCKET_PORT + ((mGroup-1) * 100) + i;
+                ClientRxThread clientRxThread = new ClientRxThread(hostIp, socketPort, mediasToDownload.get(i));
+                clientRxThread.start();
+                listClientRxThread.add(clientRxThread);
+            }
         } else {
-            Log.e(TAG, "NsdServiceInfo not found");
+            Log.e(TAG, "Host IP is null");
         }
     }
 
@@ -167,11 +196,12 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
 
     public void setGroup(final int group) {
         this.mGroup = group;
-        if (isViewAttached()) {
-            Bundle bundle = new Bundle();
-            bundle.putInt(AppConstants.MY_GROUP, mGroup);
-            getView().startFragmentPlayer(bundle);
-        }
+        startDownloadMulticastGroup();
+//        if (isViewAttached()) {
+//            Bundle bundle = new Bundle();
+//            bundle.putInt(AppConstants.MY_GROUP, mGroup);
+//            getView().startFragmentPlayer(bundle);
+//        }
         // TODO Startar fragmento e iniciar multicast group
 //        if (mConnection != null && mNsdHelper != null) {
 //            new Thread(new Runnable() {

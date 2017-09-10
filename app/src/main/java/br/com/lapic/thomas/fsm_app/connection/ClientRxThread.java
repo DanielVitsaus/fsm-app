@@ -10,47 +10,53 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.Socket;
 
+import br.com.lapic.thomas.fsm_app.utils.AppConstants;
+
 /**
  * Created by thomas on 08/09/17.
  */
 
 public class ClientRxThread extends Thread {
 
+    private final String mMediaName;
     private String TAG = this.getClass().getSimpleName();
     private String dstAddress;
     private int dstPort;
     private int current = 0;
-    private int FILE_SIZE = 100000000;
+    private int FILE_SIZE = 30000000;
     private InputStream inputStream;
     private FileOutputStream fileOutputStream;
     private BufferedOutputStream bufferedOutputStream;
     private Socket socket;
 
-    public ClientRxThread(String address, int port) {
+    public ClientRxThread(String address, int port, String mediaName) {
         Log.e(TAG, address);
         dstAddress = address;
         dstPort = port;
+        this.mMediaName = mediaName;
     }
 
     @Override
     public void run() {
+        createFolders();
         try {
             socket = new Socket(dstAddress, dstPort);
-            File file = new File(Environment.getExternalStorageDirectory(), "teste.jpeg");
-            byte[] bytes = new byte[FILE_SIZE];
-            inputStream = socket.getInputStream();
-            fileOutputStream = new FileOutputStream(file);
-            bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
-            int bytesRead = inputStream.read(bytes, 0, bytes.length);
-            current = bytesRead;
-            do {
-                bytesRead = inputStream.read(bytes, current, (bytes.length-current));
-                if(bytesRead >= 0) current += bytesRead;
-            } while(bytesRead > -1);
+            File file = new File(AppConstants.FILE_PATH_DOWNLOADS, AppConstants.PATH_APP + AppConstants.MEDIAS + "/" + mMediaName);
+            if (!file.exists()) {
+                byte[] bytes = new byte[FILE_SIZE];
+                inputStream = socket.getInputStream();
+                fileOutputStream = new FileOutputStream(file);
+                bufferedOutputStream = new BufferedOutputStream(fileOutputStream);
+                int bytesRead = inputStream.read(bytes, 0, bytes.length);
+                current = bytesRead;
+                do {
+                    bytesRead = inputStream.read(bytes, current, (bytes.length - current));
+                    if (bytesRead >= 0) current += bytesRead;
+                } while (bytesRead > -1);
 
-            bufferedOutputStream.write(bytes, 0 , current);
-            bufferedOutputStream.flush();
-
+                bufferedOutputStream.write(bytes, 0, current);
+                bufferedOutputStream.flush();
+            }
             Log.e(TAG, "Finished");
 //            MainActivity.this.runOnUiThread(new Runnable() {
 //                @Override
@@ -81,6 +87,13 @@ public class ClientRxThread extends Thread {
                 // TODO Auto-generated catch block
                 e.printStackTrace();
             }
+        }
+    }
+
+    private void createFolders() {
+        File folder = new File(AppConstants.FILE_PATH_DOWNLOADS, AppConstants.PATH_APP + AppConstants.MEDIAS);
+        if (!folder.exists()) {
+            folder.mkdirs();
         }
     }
 
