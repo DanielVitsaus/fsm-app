@@ -8,6 +8,7 @@ import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -85,7 +86,6 @@ public class PlayerFragment extends Fragment {
     }
 
     public void playMedias(ArrayList<Media> medias) {
-        stopAll();
         for (Media media : medias) {
             switch (media.getType()) {
                 case "image":
@@ -124,21 +124,16 @@ public class PlayerFragment extends Fragment {
     }
 
     private void startImage(Media media) {
+        if (imageViewAudio.getVisibility() == View.VISIBLE)
+            imageViewAudio.setVisibility(View.GONE);
+        stopVideo();
+        stopWebView();
         File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), AppConstants.PATH_APP + media.getSrc());
         if (file.exists()) {
+            stopImage();
             Bitmap mBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
             mImageView.setImageBitmap(mBitmap);
-//            stopVideo();
-//            stopAudio();
-//            stopWebView();
             mImageView.setVisibility(View.VISIBLE);
-            Handler handler = new Handler();
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    stopImage();
-                }
-            }, media.getDuration() * 1000);
         }
     }
 
@@ -151,9 +146,11 @@ public class PlayerFragment extends Fragment {
     }
 
     private void startAudio(Media media) {
+        stopVideo();
         File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), AppConstants.PATH_APP + media.getSrc());
         if (file.exists()) {
             try {
+                stopAudio();
                 mMediaPlayer.setDataSource(file.getAbsolutePath());
                 mMediaPlayer.prepare();
                 mMediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
@@ -162,9 +159,6 @@ public class PlayerFragment extends Fragment {
                         stopAudio();
                     }
                 });
-//                stopImage();
-//                stopVideo();
-//                stopWebView();
                 imageViewAudio.setVisibility(View.VISIBLE);
                 mMediaPlayer.start();
             } catch (IOException e) {
@@ -182,6 +176,7 @@ public class PlayerFragment extends Fragment {
     }
 
     private void startVideo(Media media) {
+        stopAll();
         File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), AppConstants.PATH_APP + media.getSrc());
         if (file.exists()) {
             mVideoView.setVideoPath(file.getAbsolutePath());
@@ -192,9 +187,6 @@ public class PlayerFragment extends Fragment {
                     stopVideo();
                 }
             });
-//            stopImage();
-//            stopAudio();
-//            stopWebView();
             mWebView.setVisibility(View.GONE);
             mVideoView.setVisibility(View.VISIBLE);
             mVideoView.start();
@@ -210,20 +202,15 @@ public class PlayerFragment extends Fragment {
     }
 
     private void startWebView(Media media) {
-//        stopImage();
-//        stopAudio();
-//        stopVideo();
+        if (imageViewAudio.getVisibility() == View.VISIBLE)
+            imageViewAudio.setVisibility(View.GONE);
+        stopImage();
+        stopVideo();
+        stopWebView();
         mWebView.getSettings().setJavaScriptEnabled(true);
         mWebView.setWebViewClient(new WebViewClient());
         mWebView.loadUrl("http://" + media.getSrc());
         mWebView.setVisibility(View.VISIBLE);
-        Handler handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                stopWebView();
-            }
-        }, media.getDuration() * 1000);
     }
 
     private void stopWebView() {
@@ -235,7 +222,6 @@ public class PlayerFragment extends Fragment {
             mWebView.removeAllViews();
             mWebView.destroyDrawingCache();
             mWebView.pauseTimers();
-            mWebView.destroy();
             mWebView.setVisibility(View.GONE);
         }
     }
