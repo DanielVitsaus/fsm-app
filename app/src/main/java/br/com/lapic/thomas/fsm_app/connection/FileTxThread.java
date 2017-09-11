@@ -41,23 +41,9 @@ public class FileTxThread extends Thread {
             outputStream.write(bytes, 0, bytes.length);
             outputStream.flush();
             socket.close();
-
-            final String sentMsg = "File sent to: " + socket.getInetAddress();
-            Log.e(TAG, sentMsg);
-//            MainActivity.this.runOnUiThread(new Runnable() {
-//
-//                @Override
-//                public void run() {
-//                    Toast.makeText(MainActivity.this,
-//                            sentMsg,
-//                            Toast.LENGTH_LONG).show();
-//                }});
-
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+            final String sentMsg = "Media sended: " + mMedia.getId();
+            Log.d(TAG, sentMsg);
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } finally {
             try {
@@ -65,7 +51,6 @@ public class FileTxThread extends Thread {
                 if (outputStream != null) outputStream.close();
                 if (socket != null) socket.close();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }

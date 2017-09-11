@@ -24,8 +24,6 @@ public interface SecondaryModeView extends MvpView {
 
     void showMessage(String message);
 
-    void showHistoric();
-
     void showDialogChoiceGroup(int amountGroups);
 
     Context getMyContext();

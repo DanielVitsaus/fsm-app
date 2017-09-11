@@ -1,7 +1,6 @@
 package br.com.lapic.thomas.fsm_app.ui.secondarymode;
 
 import android.Manifest;
-import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Context;
@@ -10,11 +9,11 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -25,10 +24,14 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.cocosw.bottomsheet.BottomSheet;
+
+import java.util.ArrayList;
+
 import javax.inject.Inject;
 
 import br.com.lapic.thomas.fsm_app.R;
-import br.com.lapic.thomas.fsm_app.multicast.MulticastGroup;
+import br.com.lapic.thomas.fsm_app.data.model.Media;
 import br.com.lapic.thomas.fsm_app.injection.component.ActivityComponent;
 import br.com.lapic.thomas.fsm_app.player.PlayerFragment;
 import br.com.lapic.thomas.fsm_app.ui.base.BaseMvpActivity;
@@ -54,6 +57,9 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
     private final String TAG = this.getClass().getSimpleName();
     private static final int MY_REQUEST_WRITE_PERMISSION = 1;
     private AlertDialog.Builder builder;
+    private static final ArrayList<Media> mediasAvaiables = new ArrayList<>();
+    private PlayerFragment fragment;
+    private FragmentManager fragmentManager;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -62,6 +68,8 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
         setContentView(R.layout.activity_secondary_mode);
         setTitle(getString(R.string.secondary_mode));
         ButterKnife.bind(this);
+        fragmentManager = getFragmentManager();
+        fragment = new PlayerFragment();
     }
 
     @NonNull
@@ -85,7 +93,32 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.historic:
-                mPresenter.onShowHistoric();
+                BottomSheet.Builder bottomSheet = new BottomSheet.Builder(this);
+                int restId = R.drawable.ic_link_black_24dp;
+                for (int i = 0; i<mediasAvaiables.size(); i++) {
+                    Media media = mediasAvaiables.get(i);
+                    if (media.getType().equals(AppConstants.IMAGE))
+                        restId = R.drawable.ic_image_black_24dp;
+                    else if (media.getType().equals(AppConstants.AUDIO))
+                        restId = R.drawable.ic_audiotrack_black_24dp;
+                    else if (media.getType().equals(AppConstants.VIDEO))
+                        restId = R.drawable.ic_ondemand_video_black_24dp;
+                    else if (media.getType().equals(AppConstants.URL))
+                        restId = R.drawable.ic_link_black_24dp;
+                    bottomSheet.sheet(i, ContextCompat.getDrawable(this, restId), media.getId());
+                }
+                bottomSheet.listener(new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        Media media = mediasAvaiables.get(i);
+                        ArrayList<Media> medias = new ArrayList<>();
+                        medias.add(media);
+                        if (fragment.isVisible())
+                            fragment.playMedias(medias);
+                    }
+                });
+                bottomSheet.build();
+                bottomSheet.show();
                 break;
             case R.id.leave_secondary_mode:
                 mPresenter.onLeaveSecondaryMode();
@@ -105,18 +138,16 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
     @Override
     protected void onPause() {
         super.onPause();
-        mPresenter.onPause();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mPresenter.onResume();
     }
 
     @Override
     protected void onDestroy() {
-        mPresenter.onDestroy();
+        removeAllMedias();
         super.onDestroy();
     }
 
@@ -194,11 +225,6 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
     }
 
     @Override
-    public void showHistoric() {
-        showToast(R.string.historic_item);
-    }
-
-    @Override
     public void showDialogChoiceGroup(final int amountGroups) {
         runOnUiThread(new Runnable() {
             @Override
@@ -229,9 +255,7 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
 
     @Override
     public void startFragmentPlayer(Bundle bundle) {
-        FragmentManager fm = getFragmentManager();
-        FragmentTransaction fragmentTransaction = fm.beginTransaction();
-        PlayerFragment fragment = new PlayerFragment();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragment.setArguments(bundle);
         fragmentTransaction.replace(android.R.id.content, fragment);
         fragmentTransaction.commit();
@@ -262,6 +286,14 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
                 progressBar.incrementProgressBy(value);
             }
         });
+    }
+
+    public static void addMedia(Media media) {
+        mediasAvaiables.add(media);
+    }
+
+    public static void removeAllMedias() {
+        mediasAvaiables.clear();
     }
 
 }

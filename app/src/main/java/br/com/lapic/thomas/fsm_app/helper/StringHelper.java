@@ -2,7 +2,6 @@ package br.com.lapic.thomas.fsm_app.helper;
 
 import android.os.Build;
 import android.text.TextUtils;
-import android.util.Log;
 
 /**
  * Created by thomas on 23/08/17.

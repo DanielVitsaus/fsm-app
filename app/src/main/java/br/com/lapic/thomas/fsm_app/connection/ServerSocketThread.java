@@ -29,25 +29,17 @@ public class ServerSocketThread extends Thread {
         socket = null;
         try {
             serverSocket = new ServerSocket(socketServerPORT);
-//            MainActivity.this.runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    Log.e(TAG, "socketPort: " + serverSocket.getLocalPort());
-//                    infoPort.setText(String.valueOf(serverSocket.getLocalPort()));
-//                }});
             while (true) {
                 socket = serverSocket.accept();
                 fileTxThread = new FileTxThread(socket, mMedia);
                 fileTxThread.start();
             }
         } catch (IOException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         } finally {
             try {
                 if (socket != null) socket.close();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }

@@ -10,7 +10,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -18,20 +17,14 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.VideoView;
 
-import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.inject.Inject;
 
 import br.com.lapic.thomas.fsm_app.R;
-import br.com.lapic.thomas.fsm_app.data.model.Group;
-import br.com.lapic.thomas.fsm_app.helper.StringHelper;
-import br.com.lapic.thomas.fsm_app.multicast.MulticastGroup;
 import br.com.lapic.thomas.fsm_app.data.model.Media;
 import br.com.lapic.thomas.fsm_app.injection.component.ActivityComponent;
 import br.com.lapic.thomas.fsm_app.player.Player;
@@ -121,7 +114,6 @@ public class PrimaryModeActivity
 
     @Override
     protected void onDestroy() {
-        mPresenter.onDestroy();
         super.onDestroy();
     }
 

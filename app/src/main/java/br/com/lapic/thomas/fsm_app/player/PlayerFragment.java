@@ -7,19 +7,14 @@ import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
-import android.os.Handler;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
-import android.widget.MediaController;
 import android.widget.TextView;
 import android.widget.VideoView;
-
-import org.w3c.dom.Text;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,6 +24,7 @@ import br.com.lapic.thomas.fsm_app.R;
 import br.com.lapic.thomas.fsm_app.data.model.Media;
 import br.com.lapic.thomas.fsm_app.helper.StringHelper;
 import br.com.lapic.thomas.fsm_app.multicast.MulticastGroup;
+import br.com.lapic.thomas.fsm_app.ui.secondarymode.SecondaryModeActivity;
 import br.com.lapic.thomas.fsm_app.utils.AppConstants;
 
 /**
@@ -51,6 +47,7 @@ public class PlayerFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
         rootView = inflater.inflate(R.layout.fragment_player_layout, parent, false);
+
         mImageView = rootView.findViewById(R.id.image_view);
         imageViewAudio = rootView.findViewById(R.id.image_audio);
         mMediaPlayer = new MediaPlayer();
@@ -112,15 +109,19 @@ public class PlayerFragment extends Fragment {
         for (Media media : medias) {
             switch (media.getType()) {
                 case "image":
+                    SecondaryModeActivity.addMedia(media);
                     stopImage();
                     break;
                 case "audio":
+                    SecondaryModeActivity.addMedia(media);
                     stopAudio();
                     break;
                 case "video":
+                    SecondaryModeActivity.addMedia(media);
                     stopVideo();
                     break;
                 case "url":
+                    SecondaryModeActivity.addMedia(media);
                     stopWebView();
                     break;
             }
@@ -189,7 +190,7 @@ public class PlayerFragment extends Fragment {
         File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), AppConstants.PATH_APP + media.getSrc());
         if (file.exists()) {
             mVideoView.setVideoPath(file.getAbsolutePath());
-            mVideoView.setMediaController(new MediaController(rootView.getContext()));
+            mVideoView.setMediaController(null);
             mVideoView.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 @Override
                 public void onCompletion(MediaPlayer mediaPlayer) {

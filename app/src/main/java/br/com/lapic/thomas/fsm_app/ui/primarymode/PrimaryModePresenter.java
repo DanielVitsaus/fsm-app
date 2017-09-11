@@ -1,8 +1,6 @@
 package br.com.lapic.thomas.fsm_app.ui.primarymode;
 
 import android.content.Context;
-import android.os.Handler;
-import android.os.Message;
 import android.util.Log;
 
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
@@ -14,22 +12,22 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.UnknownHostException;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
+import java.util.Enumeration;
 
 import javax.inject.Inject;
 
 import br.com.lapic.thomas.fsm_app.R;
 import br.com.lapic.thomas.fsm_app.connection.ServerSocketThread;
 import br.com.lapic.thomas.fsm_app.data.model.Anchor;
-import br.com.lapic.thomas.fsm_app.data.model.Device;
 import br.com.lapic.thomas.fsm_app.data.model.Group;
-import br.com.lapic.thomas.fsm_app.data.model.GroupDevice;
 import br.com.lapic.thomas.fsm_app.data.model.Media;
-import br.com.lapic.thomas.fsm_app.connection.ConfigConnection;
-import br.com.lapic.thomas.fsm_app.helper.NsdHelper;
 import br.com.lapic.thomas.fsm_app.helper.PreferencesHelper;
 import br.com.lapic.thomas.fsm_app.helper.StringHelper;
 import br.com.lapic.thomas.fsm_app.multicast.MulticastGroup;
@@ -44,11 +42,6 @@ public class PrimaryModePresenter
 
     private String TAG = this.getClass().getSimpleName();
     private ArrayList<Media> mMedias;
-    private NsdHelper mNsdHelper;
-    private ArrayList<GroupDevice> groupDeviceList;
-    private Handler mUpdateHandler;
-    private ConfigConnection mConfigConnection;
-    private ServerSocketThread serverSocketThread;
     private MulticastGroup mainMulticastGroup;
     private MulticastGroup downloadMulticastGroup;
 
@@ -64,34 +57,6 @@ public class PrimaryModePresenter
     @Override
     public void attachView(PrimaryModeView view) {
         super.attachView(view);
-        startConfigConnection();
-    }
-
-    private void startConfigConnection(){
-        mUpdateHandler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                String message = msg.getData().getString("msg");
-//                if (message.contains(AppConstants.GET_AMOUNT_GROUPS))
-//                    mConfigConnection.sendMessage(AppConstants.TOTAL_GROUPS + mMedias.get(0).getGroups().size());
-//                else if(message.contains(AppConstants.DEVICE))
-//                    addDeviceToGroup(StringHelper.getParam(message));
-            }
-        };
-        mConfigConnection = new ConfigConnection(mUpdateHandler);
-    }
-
-    private void addDeviceToGroup(String str) {
-        String[] params = str.split("#");
-        Device device = new Device(params[0], params[1], params[2], params[3]);
-        groupDeviceList.get(Integer.parseInt(params[4])).addDevice(device);
-
-        for (GroupDevice groupDevice : groupDeviceList) {
-            Log.d(TAG, "group: " + groupDevice.getId());
-            for (Device device1 : groupDevice.getDevices()) {
-                Log.d(TAG, "    device: " + device1.getId() + " " + device1.getPort() + " " + device1.getIpAddress());
-            }
-        }
     }
 
     public void onLeavePrimaryMode() {
@@ -125,7 +90,6 @@ public class PrimaryModePresenter
     }
 
     private boolean documentParser() throws IOException, JSONException {
-        groupDeviceList = new ArrayList<>();
         mMedias = new ArrayList<>();
         JSONObject obj = new JSONObject(loadJSONFromAsset());
         JSONArray mediasJSONArray = obj.getJSONArray(AppConstants.MEDIAS);
@@ -180,7 +144,6 @@ public class PrimaryModePresenter
                             Log.e(TAG, "ERRO ao ler anchorsArray da media: " + j);
                             return false;
                         }
-                        groupDeviceList.add(new GroupDevice(String.valueOf(j)));
                         media.addGroup(group);
                     }
                 } else {
@@ -202,11 +165,7 @@ public class PrimaryModePresenter
             try {
                 getView().showLoading(R.string.reading_document);
                 if (documentParser()) {
-                    if (groupDeviceList == null)
-                        groupDeviceList = new ArrayList<>();
-                    Log.e(TAG, mMedias.get(0).getGroups().size()+"");
                     getView().setListMedias(mMedias);
-//                    registerService(context);
                     startMulticastGroup();
                     startReceiverThread();
                     getView().showContent();
@@ -226,7 +185,7 @@ public class PrimaryModePresenter
                     AppConstants.GROUP_CONFIG,
                     AppConstants.CONFIG_MULTICAST_IP,
                     AppConstants.CONFIG_MULTICAST_PORT);
-            mainMulticastGroup.sendMessage(true, mMedias.get(0).getGroups().size() + NsdHelper.getLocalHostLANAddress().toString());
+            mainMulticastGroup.sendMessage(true, mMedias.get(0).getGroups().size() + getLocalHostLANAddress().toString());
             downloadMulticastGroup = new MulticastGroup(this,
                     getView().getMyContext(),
                     AppConstants.TO_DOWNLOAD,
@@ -249,31 +208,6 @@ public class PrimaryModePresenter
     public void onStart() {
         if (isViewAttached()) {
             getView().checkPermissions();
-        }
-    }
-
-    public void onDestroy() {
-//        if (mNsdHelper != null)
-//            mNsdHelper.tearDown();
-        if (mConfigConnection != null)
-            mConfigConnection.tearDown();
-//        mNsdHelper = null;
-        mConfigConnection = null;
-    }
-
-    private void registerService(Context context) throws IOException {
-        if ((mNsdHelper == null) && (mConfigConnection.getLocalPort() > -1)) {
-            mNsdHelper = new NsdHelper(context);
-            mNsdHelper.registerService(this, mConfigConnection.getLocalPort());
-        } else
-            Log.e(TAG, "Nsd is instancied or ServerSocket isn't bound.");
-    }
-
-    public void onSuccessRegisteredService() {
-        if (isViewAttached()) {
-            startReceiverThread();
-            getView().hideLoading();
-            getView().showContent();
         }
     }
 
@@ -306,6 +240,39 @@ public class PrimaryModePresenter
     public void onClickStart() {
         if (isViewAttached())
             getView().callPlayer();
+    }
+
+    public static InetAddress getLocalHostLANAddress() throws UnknownHostException {
+        try {
+            InetAddress candidateAddress = null;
+            for (Enumeration ifaces = NetworkInterface.getNetworkInterfaces(); ifaces.hasMoreElements();) {
+                NetworkInterface iface = (NetworkInterface) ifaces.nextElement();
+                for (Enumeration inetAddrs = iface.getInetAddresses(); inetAddrs.hasMoreElements();) {
+                    InetAddress inetAddr = (InetAddress) inetAddrs.nextElement();
+                    if (!inetAddr.isLoopbackAddress()) {
+                        if (inetAddr.isSiteLocalAddress()) {
+                            return inetAddr;
+                        }
+                        else if (candidateAddress == null) {
+                            candidateAddress = inetAddr;
+                        }
+                    }
+                }
+            }
+            if (candidateAddress != null) {
+                return candidateAddress;
+            }
+            InetAddress jdkSuppliedAddress = InetAddress.getLocalHost();
+            if (jdkSuppliedAddress == null) {
+                throw new UnknownHostException("The JDK InetAddress.getLocalHost() method unexpectedly returned null.");
+            }
+            return jdkSuppliedAddress;
+        }
+        catch (Exception e) {
+            UnknownHostException unknownHostException = new UnknownHostException("Failed to determine LAN address: " + e);
+            unknownHostException.initCause(e);
+            throw unknownHostException;
+        }
     }
 
 }

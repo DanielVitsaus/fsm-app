@@ -86,7 +86,7 @@ public class Player extends Activity implements MediaPlayer.OnCompletionListener
                 int multicastPort = AppConstants.CONFIG_MULTICAST_PORT + (i + 1);
                 MulticastGroup multicastGroup = new MulticastGroup(null, this, AppConstants.ACTION, multicastIp, multicastPort);
                 multicastGroups.add(multicastGroup);
-                Synchronizer synchronizer = new Synchronizer(i+1, mMedias.get(0).getGroup(i), multicastGroup, new Handler(), new Handler());
+                Synchronizer synchronizer = new Synchronizer(mMedias.get(0).getGroup(i), multicastGroup, new Handler(), new Handler());
                 synchronizer.start();
                 syncs.add(synchronizer);
             }

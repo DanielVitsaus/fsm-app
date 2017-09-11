@@ -12,8 +12,6 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 
-import br.com.lapic.thomas.fsm_app.utils.AppConstants;
-
 /**
  * Created by thomas on 09/09/17.
  */

@@ -1,6 +1,5 @@
 package br.com.lapic.thomas.fsm_app.connection;
 
-import android.os.Environment;
 import android.util.Log;
 
 import java.io.BufferedOutputStream;
@@ -61,34 +60,17 @@ public class ClientRxThread extends Thread {
                 bufferedOutputStream.flush();
             }
             presenter.onMediaDownloadFinished();
-            Log.e(TAG, "Download media " + mMediaName + "Finished");
-//            MainActivity.this.runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    Toast.makeText(MainActivity.this,
-//                            "Finished",
-//                            Toast.LENGTH_LONG).show();
-//                }});
-
+            Log.d(TAG, "Download media " + mMediaName + "Finished");
         } catch (IOException e) {
             e.printStackTrace();
             final String eMsg = "Something wrong: " + e.getCause().getMessage();
-            Log.e(TAG, eMsg);
-//            MainActivity.this.runOnUiThread(new Runnable() {
-//                @Override
-//                public void run() {
-//                    Toast.makeText(MainActivity.this,
-//                            eMsg,
-//                            Toast.LENGTH_LONG).show();
-//                }});
-
+            Log.d(TAG, eMsg);
         } finally {
             try {
                 if (fileOutputStream != null) fileOutputStream.close();
                 if (bufferedOutputStream != null) bufferedOutputStream.close();
                 if (socket != null) socket.close();
             } catch (IOException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }

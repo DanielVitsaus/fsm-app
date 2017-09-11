@@ -1,7 +1,6 @@
 package br.com.lapic.thomas.fsm_app.multicast;
 
 import android.content.Context;
-import android.util.Log;
 
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 
