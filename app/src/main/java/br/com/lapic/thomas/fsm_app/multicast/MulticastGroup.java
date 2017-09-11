@@ -1,6 +1,7 @@
 package br.com.lapic.thomas.fsm_app.multicast;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 
@@ -61,10 +62,7 @@ public class MulticastGroup extends MulticastManager {
                     media.setId(mediaStr[0]);
                     media.setType(mediaStr[1]);
                     media.setDuration(Integer.parseInt(mediaStr[2]));
-                    if (media.getType().equals(AppConstants.URL))
-                        media.setSrc(mediaStr[3].substring(1));
-                    else
-                        media.setSrc(mediaStr[3]);
+                    media.setSrc(mediaStr[3]);
                     arrayListMedias.add(media);
                 }
                 if (msg.contains(AppConstants.START)) {
