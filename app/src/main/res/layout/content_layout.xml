@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_margin="-8dp">
+
+    <TextView
+        android:id="@+id/tv_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="@string/waiting_begin"
+        android:textSize="16sp"
+        android:textAlignment="center"
+        />
+
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:id="@+id/start_button"
+        android:text="@string/start"
+        android:textColor="@color/white"
+        android:tag="@string/primary_mode"
+        android:theme="@style/MyButtonGreen"
+        android:layout_alignParentBottom="true"
+        />
+
+</RelativeLayout>

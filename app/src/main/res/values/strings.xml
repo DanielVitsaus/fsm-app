@@ -1,3 +1,25 @@
 <resources>
-    <string name="app_name">fsm-app</string>
+    <string name="app_name">SyncPlayer</string>
+    <string name="primary_mode">MODO PRIMÁRIO</string>
+    <string name="secondary_mode">MODO SECUNDÁRIO</string>
+    <string name="primary_mode_slogan">Reproduza conteúdo para uma experiência coletiva</string>
+    <string name="secondary_mode_slogan">Receba conteúdo personalizado para uma experiência diferenciada</string>
+    <string name="action_menu">menu</string>
+    <string name="leave_primary_mode">Sair do modo primário</string>
+    <string name="leave_secondary_mode">Sair do modo secundário</string>
+    <string name="historic_item">Histórico</string>
+    <string name="error_parsing">Erro ao analisar documento</string>
+    <string name="reading_document">Lendo documento</string>
+    <string name="Looking_primary_device">Buscando por dispositivos primários</string>
+    <string name="error_found_discover">Falha ao buscar dispositivos primários</string>
+    <string name="service_lost">Conexao perdida</string>
+    <string name="read_permission_necessary">Permissão necessária para realizar a leitura das mídias</string>
+    <string name="write_permission_necessary">Permissão necessária para fazer download das mídias</string>
+    <string name="start">Iniciar</string>
+    <string name="media_type_invalid">Tipo de mídia inválida</string>
+    <string name="choice_group">Escolha o Grupo</string>
+    <string name="downloading_medias">Realizando download das mídias</string>
+    <string name="waiting_content">Aguardando conteúdo</string>
+    <string name="waiting_begin">Aguardando início</string>
+    <string name="close_player">Fechar player</string>
 </resources>

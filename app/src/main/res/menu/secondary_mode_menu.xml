@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:apk="http://schemas.android.com/apk/res-auto">
+
+    <item android:id="@+id/historic"
+        android:title="@string/historic_item"
+        android:icon="@drawable/ic_cast"
+        apk:showAsAction="always"
+        />
+
+    <item android:id="@+id/file"
+        android:icon="@drawable/ic_dots_vertical"
+        android:title="@string/action_menu"
+        apk:showAsAction="ifRoom" >
+        <menu>
+            <item android:id="@+id/leave_secondary_mode"
+                android:title="@string/leave_secondary_mode"
+                />
+        </menu>
+    </item>
+
+</menu>

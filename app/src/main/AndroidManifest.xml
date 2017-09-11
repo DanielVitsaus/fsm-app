@@ -1,21 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="br.com.lapic.thomas.fsm_app" >
+    xmlns:tools="http://schemas.android.com/tools"
+    package="br.com.lapic.thomas.fsm_app">
+
+
+    <uses-permission android:required="true" android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:required="true" android:name="android.permission.CHANGE_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE"/>
+    <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:required="true" android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
+        android:name=".MyApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@mipmap/ic_launch"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_round"
+        android:roundIcon="@mipmap/ic_launch"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme" >
-        <activity android:name=".MainActivity" >
+        android:theme="@style/AppTheme"
+        android:largeHeap="true"
+        android:hardwareAccelerated="false"
+        tools:replace="android:icon">
+        <activity
+            android:name=".ui.splashscreen.SplashScreenActivity"
+            android:theme="@style/AppCompat.FullScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.mode.ModeActivity"
+            android:theme="@style/AppCompat.FullScreen" />
+        <activity android:name=".ui.primarymode.PrimaryModeActivity" />
+        <activity android:name=".ui.secondarymode.SecondaryModeActivity"></activity>
+        <activity
+            android:name=".player.Player"
+            android:screenOrientation="landscape"/>
     </application>
 
 </manifest>
