@@ -12,6 +12,8 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -34,6 +36,15 @@ public class ApplicationsActivity
         extends BaseMvpActivity<ApplicationsView, ApplicationsPresenter>
         implements ApplicationsView {
 
+    @BindView(R.id.loading)
+    protected RelativeLayout loadingView;
+
+    @BindView(R.id.content)
+    protected RelativeLayout contentView;
+
+    @BindView(R.id.error)
+    protected RelativeLayout errorView;
+
     @BindView(R.id.recycler_view)
     protected RecyclerView mRecyclerView;
 
@@ -51,12 +62,8 @@ public class ApplicationsActivity
         setContentView(R.layout.activity_applications);
         ButterKnife.bind(this);
         setTitle(getString(R.string.primary_mode));
-        mListApplications = new ArrayList<>();
-        mAdapter = new CustomAdapter(this, mListApplications);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.setAdapter(mAdapter);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        implementRecyclerViewClickListeners();
+        initRecyclerView();
+        mPresenter.getApplications();
     }
 
     @NonNull
@@ -94,11 +101,46 @@ public class ApplicationsActivity
 
     @Override
     public void showError(int resId) {
-//        contentView.setVisibility(View.GONE);
-//        loadingView.setVisibility(View.GONE);
-//        errorView.setVisibility(View.VISIBLE);
-//        TextView textView = ButterKnife.findById(errorView, R.id.tv_error);
-//        textView.setText(resId);
+        contentView.setVisibility(View.GONE);
+        loadingView.setVisibility(View.GONE);
+        errorView.setVisibility(View.VISIBLE);
+        TextView textView = ButterKnife.findById(errorView, R.id.tv_error);
+        textView.setText(resId);
+    }
+
+    @Override
+    public void showLoading(int resIdMessage) {
+        errorView.setVisibility(View.GONE);
+        contentView.setVisibility(View.GONE);
+        loadingView.setVisibility(View.VISIBLE);
+        TextView textView = ButterKnife.findById(loadingView, R.id.tv_message);
+        textView.setText(resIdMessage);
+    }
+
+    @Override
+    public void hideLoading() {
+        loadingView.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void showContent() {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                loadingView.setVisibility(View.GONE);
+                errorView.setVisibility(View.GONE);
+                contentView.setVisibility(View.VISIBLE);
+            }
+        });
+    }
+
+    private void initRecyclerView() {
+        mListApplications = new ArrayList<>();
+        mAdapter = new CustomAdapter(this, mListApplications);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        implementRecyclerViewClickListeners();
     }
 
     private void implementRecyclerViewClickListeners() {

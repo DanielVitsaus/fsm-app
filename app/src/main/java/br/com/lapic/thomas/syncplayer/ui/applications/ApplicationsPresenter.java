@@ -35,7 +35,6 @@ public class ApplicationsPresenter
     @Override
     public void attachView(ApplicationsView view) {
         super.attachView(view);
-        getApplications();
     }
 
     @Override
@@ -44,30 +43,38 @@ public class ApplicationsPresenter
     }
 
     public void getApplications() {
-        DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
-        rootRef.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                GenericTypeIndicator<Map<String, App>> genericTypeIndicator =new GenericTypeIndicator<Map<String, App>>(){};
-                mApplications = dataSnapshot.getValue(genericTypeIndicator);
-                if (mApplications != null)
-                    onSuccess(mApplications);
-                else
-                    onError(R.string.error_parsing);
-            }
-            @Override
-            public void onCancelled(DatabaseError databaseError) {}
-        });
+        if (isViewAttached()) {
+            getView().showLoading(R.string.searching_apps);
+            DatabaseReference rootRef = FirebaseDatabase.getInstance().getReference();
+            rootRef.addValueEventListener(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    GenericTypeIndicator<Map<String, App>> genericTypeIndicator = new GenericTypeIndicator<Map<String, App>>() {
+                    };
+                    mApplications = dataSnapshot.getValue(genericTypeIndicator);
+                    if (mApplications != null)
+                        onSuccess(mApplications);
+                    else
+                        onError(R.string.error_parsing);
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+                }
+            });
+        }
     }
 
     private void onError(int resId) {
         if (isViewAttached()) {
+            getView().hideLoading();
             getView().showError(resId);
         }
     }
 
     private void onSuccess(Map<String, App> mApplications) {
         if (isViewAttached()) {
+            getView().showContent();
             getView().setListApplications(new ArrayList<>(mApplications.values()));
         }
     }

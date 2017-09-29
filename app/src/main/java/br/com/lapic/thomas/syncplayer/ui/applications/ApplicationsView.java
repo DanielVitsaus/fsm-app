@@ -16,4 +16,10 @@ public interface ApplicationsView extends MvpView {
     void setListApplications(List<App> listApplications);
 
     void showError(int resId);
+
+    void showLoading(int resIdMessage);
+
+    void hideLoading();
+
+    void showContent();
 }
