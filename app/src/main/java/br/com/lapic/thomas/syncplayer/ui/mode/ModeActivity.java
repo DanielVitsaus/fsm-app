@@ -9,6 +9,7 @@ import javax.inject.Inject;
 
 import br.com.lapic.thomas.syncplayer.R;
 import br.com.lapic.thomas.syncplayer.injection.component.ActivityComponent;
+import br.com.lapic.thomas.syncplayer.ui.applications.ApplicationsActivity;
 import br.com.lapic.thomas.syncplayer.ui.base.BaseMvpActivity;
 import br.com.lapic.thomas.syncplayer.ui.primarymode.PrimaryModeActivity;
 import br.com.lapic.thomas.syncplayer.ui.secondarymode.SecondaryModeActivity;
@@ -53,6 +54,12 @@ public class ModeActivity
     @Override
     public void callPrimaryModeActivity() {
         startActivity(new Intent(this, PrimaryModeActivity.class));
+        finish();
+    }
+
+    @Override
+    public void callApplicationsActivity() {
+        startActivity(new Intent(this, ApplicationsActivity.class));
         finish();
     }
 

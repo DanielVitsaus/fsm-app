@@ -3,29 +3,34 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="br.com.lapic.thomas.syncplayer">
 
-
-    <uses-permission android:required="true" android:name="android.permission.ACCESS_WIFI_STATE"/>
-    <uses-permission android:required="true" android:name="android.permission.CHANGE_WIFI_STATE"/>
-    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE"/>
+    <uses-permission
+        android:name="android.permission.ACCESS_WIFI_STATE"
+        android:required="true" />
+    <uses-permission
+        android:name="android.permission.CHANGE_WIFI_STATE"
+        android:required="true" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_MULTICAST_STATE" />
     <uses-permission android:name="android.permission.CHANGE_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:required="true" android:name="android.permission.INTERNET"/>
+    <uses-permission
+        android:name="android.permission.INTERNET"
+        android:required="true" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-        android:name="br.com.lapic.thomas.syncplayer.MyApplication"
+        android:name=".MyApplication"
         android:allowBackup="true"
+        android:hardwareAccelerated="false"
         android:icon="@mipmap/ic_launch"
         android:label="@string/app_name"
+        android:largeHeap="true"
         android:roundIcon="@mipmap/ic_launch"
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
-        android:largeHeap="true"
-        android:hardwareAccelerated="false"
         tools:replace="android:icon">
         <activity
-            android:name="br.com.lapic.thomas.syncplayer.ui.splashscreen.SplashScreenActivity"
+            android:name=".ui.splashscreen.SplashScreenActivity"
             android:theme="@style/AppCompat.FullScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -34,13 +39,14 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="br.com.lapic.thomas.syncplayer.ui.mode.ModeActivity"
+            android:name=".ui.mode.ModeActivity"
             android:theme="@style/AppCompat.FullScreen" />
-        <activity android:name="br.com.lapic.thomas.syncplayer.ui.primarymode.PrimaryModeActivity" />
-        <activity android:name="br.com.lapic.thomas.syncplayer.ui.secondarymode.SecondaryModeActivity" />
+        <activity android:name=".ui.primarymode.PrimaryModeActivity" />
+        <activity android:name=".ui.secondarymode.SecondaryModeActivity" />
         <activity
-            android:name="br.com.lapic.thomas.syncplayer.player.Player"
-            android:screenOrientation="landscape"/>
+            android:name=".player.Player"
+            android:screenOrientation="landscape" />
+        <activity android:name=".ui.applications.ApplicationsActivity"></activity>
     </application>
 
 </manifest>

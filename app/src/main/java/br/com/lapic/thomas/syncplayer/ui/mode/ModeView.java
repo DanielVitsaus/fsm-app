@@ -17,5 +17,7 @@ public interface ModeView
 
     void callPrimaryModeActivity();
 
+    void callApplicationsActivity();
+
     void callSecondaryModeActivity();
 }

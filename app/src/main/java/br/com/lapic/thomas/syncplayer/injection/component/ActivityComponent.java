@@ -5,6 +5,7 @@ import android.content.Context;
 import br.com.lapic.thomas.syncplayer.injection.ActivityContext;
 import br.com.lapic.thomas.syncplayer.injection.PerActivity;
 import br.com.lapic.thomas.syncplayer.injection.module.ActivityModule;
+import br.com.lapic.thomas.syncplayer.ui.applications.ApplicationsActivity;
 import br.com.lapic.thomas.syncplayer.ui.mode.ModeActivity;
 import br.com.lapic.thomas.syncplayer.ui.primarymode.PrimaryModeActivity;
 import br.com.lapic.thomas.syncplayer.ui.secondarymode.SecondaryModeActivity;
@@ -25,6 +26,8 @@ public interface ActivityComponent {
     void inject(PrimaryModeActivity primaryModeActivity);
 
     void inject(SecondaryModeActivity secondaryModeActivity);
+
+    void inject(ApplicationsActivity applicationsActivity);
 
     @ActivityContext
     Context context();

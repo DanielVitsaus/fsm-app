@@ -37,7 +37,8 @@ public class ModePresenter
         mPreferencesHelper.putMode(mode);
         if (isViewAttached()) {
             if (mPreferencesHelper.getMode().equals(getView().getStringRes(R.string.primary_mode)))
-                getView().callPrimaryModeActivity();
+//                getView().callPrimaryModeActivity();
+                getView().callApplicationsActivity();
             else
                 getView().callSecondaryModeActivity();
         }
