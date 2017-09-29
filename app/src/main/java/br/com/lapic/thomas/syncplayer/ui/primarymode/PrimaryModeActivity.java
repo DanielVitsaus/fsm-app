@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -21,10 +22,12 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import br.com.lapic.thomas.syncplayer.R;
+import br.com.lapic.thomas.syncplayer.data.model.App;
 import br.com.lapic.thomas.syncplayer.data.model.Media;
 import br.com.lapic.thomas.syncplayer.injection.component.ActivityComponent;
 import br.com.lapic.thomas.syncplayer.player.Player;
@@ -56,6 +59,7 @@ public class PrimaryModeActivity
 
     private  final String TAG = this.getClass().getSimpleName();
     private static final int REQUEST_READ_EXTERNAL_STORAGE = 1;
+    private static final int MY_PERMISSIONS_REQUEST_WRITE_READ = 1;
     private ArrayList<Media> mMedias;
 
     @Override
@@ -65,6 +69,15 @@ public class PrimaryModeActivity
         setContentView(R.layout.activity_primary_mode);
         setTitle(getString(R.string.primary_mode));
         ButterKnife.bind(this);
+        if (getIntent().getExtras() != null &&
+                getIntent().getExtras().getParcelable(AppConstants.APP_PARCEL) != null) {
+            App app = getIntent().getExtras().getParcelable(AppConstants.APP_PARCEL);
+            mPresenter.setMedias(app.getMedias());
+            mPresenter.setUseLocalApp(false);
+            mPresenter.setStorageId(app.getId());
+        } else
+            mPresenter.setUseLocalApp(true);
+        checkPermissions();
     }
 
     @NonNull
@@ -99,7 +112,6 @@ public class PrimaryModeActivity
     @Override
     protected void onStart() {
         super.onStart();
-        presenter.onStart();
     }
 
     @Override
@@ -110,6 +122,12 @@ public class PrimaryModeActivity
     @Override
     protected void onPause() {
         super.onPause();
+    }
+
+    @Override
+    protected void onStop() {
+        mPresenter.onLeavePrimaryMode();
+        super.onStop();
     }
 
     @Override
@@ -176,13 +194,37 @@ public class PrimaryModeActivity
 
     @Override
     public void checkPermissions() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            if ((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_READ_EXTERNAL_STORAGE);
-            } else
-                presenter.onPermissionsOk(this);
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.M) {
+//            if ((ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)) {
+//                ActivityCompat.requestPermissions(this,
+//                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE}, REQUEST_READ_EXTERNAL_STORAGE);
+//            } else
+//                presenter.onPermissionsOk(this);
+            mPresenter.onPermissionsOk(this);
+        } else {
+            if (requestPermissions())
+                mPresenter.onPermissionsOk(this);
         }
+    }
+
+    private boolean requestPermissions() {
+        int permissionWrite = ContextCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        int storagePermission = ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE);
+
+        List<String> listPermissionsNeeded = new ArrayList<>();
+        if (storagePermission != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.READ_EXTERNAL_STORAGE);
+        }
+        if (permissionWrite != PackageManager.PERMISSION_GRANTED) {
+            listPermissionsNeeded.add(Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        }
+        if (!listPermissionsNeeded.isEmpty()) {
+            ActivityCompat.requestPermissions(this,
+                    listPermissionsNeeded.toArray(new String[listPermissionsNeeded.size()]), MY_PERMISSIONS_REQUEST_WRITE_READ);
+            return false;
+        }
+
+        return true;
     }
 
     @Override
@@ -199,17 +241,26 @@ public class PrimaryModeActivity
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+//        switch (requestCode) {
+//            case REQUEST_READ_EXTERNAL_STORAGE: {
+//                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+//                    presenter.onPermissionsOk(this);
+//                } else {
+//                    presenter.onError(R.string.read_permission_necessary);
+//                }
+//                return;
+//            }
+//        }
+//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
-            case REQUEST_READ_EXTERNAL_STORAGE: {
-                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
+            case MY_PERMISSIONS_REQUEST_WRITE_READ:
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     presenter.onPermissionsOk(this);
                 } else {
                     presenter.onError(R.string.read_permission_necessary);
                 }
-                return;
-            }
+                break;
         }
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @OnClick(R.id.start_button)

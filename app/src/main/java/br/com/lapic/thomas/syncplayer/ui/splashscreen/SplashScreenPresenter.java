@@ -34,7 +34,8 @@ public class SplashScreenPresenter extends MvpBasePresenter<SplashScreenView> {
                 if (mode == null)
                     getView().callModeActivity();
                 else if (mode.equals(getView().getStringRes(R.string.primary_mode)))
-                    getView().callPrimaryModeActivity();
+//                    getView().callPrimaryModeActivity();
+                    getView().callApplicationsActivity();
                 else if (mode.equals(getView().getStringRes(R.string.secondary_mode)))
                     getView().callSecondaryModeActivity();
             }

@@ -53,5 +53,5 @@ public class AppConstants {
 
     public static final int CONTENT_VIEW_ID = 10101010;
 
-    public static String App_parcel = "app_parcel";
+    public static String APP_PARCEL = "app_parcel";
 }

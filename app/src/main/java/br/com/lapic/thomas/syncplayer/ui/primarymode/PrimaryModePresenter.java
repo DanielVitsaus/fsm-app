@@ -1,8 +1,15 @@
 package br.com.lapic.thomas.syncplayer.ui.primarymode;
 
 import android.content.Context;
+import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.firebase.storage.FileDownloadTask;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 
 import org.json.JSONArray;
@@ -12,6 +19,7 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.UnknownHostException;
@@ -26,6 +34,7 @@ import javax.inject.Inject;
 import br.com.lapic.thomas.syncplayer.R;
 import br.com.lapic.thomas.syncplayer.connection.ServerSocketThread;
 import br.com.lapic.thomas.syncplayer.data.model.Anchor;
+import br.com.lapic.thomas.syncplayer.data.model.App;
 import br.com.lapic.thomas.syncplayer.data.model.Group;
 import br.com.lapic.thomas.syncplayer.data.model.Media;
 import br.com.lapic.thomas.syncplayer.helper.PreferencesHelper;
@@ -44,10 +53,13 @@ public class PrimaryModePresenter
     private ArrayList<Media> mMedias;
     private MulticastGroup mainMulticastGroup;
     private MulticastGroup downloadMulticastGroup;
+    private boolean useLocalApp;
+    private String storageId;
+    private static int fileCount = 0;
+    private ArrayList<String> mediasToDownload = new ArrayList<>();
 
     @Inject
     protected PreferencesHelper mPreferencesHelper;
-
 
     @Inject
     public PrimaryModePresenter(PreferencesHelper preferencesHelper) {
@@ -161,21 +173,72 @@ public class PrimaryModePresenter
 
     public void onPermissionsOk(Context context) {
         if (isViewAttached()) {
-            getView().showLoading(R.string.reading_document);
-            try {
+            if (useLocalApp) {
                 getView().showLoading(R.string.reading_document);
-                if (documentParser()) {
-                    getView().setListMedias(mMedias);
-                    startMulticastGroup();
-                    startReceiverThread();
-                    getView().showContent();
-                } else
+                try {
+                    getView().showLoading(R.string.reading_document);
+                    if (documentParser()) {
+                        getView().setListMedias(mMedias);
+                        startMulticastGroup();
+                        startReceiverThread();
+                        getView().showContent();
+                    } else
+                        onError(R.string.error_parsing);
+                } catch (IOException | JSONException e) {
+                    e.printStackTrace();
                     onError(R.string.error_parsing);
-            } catch (IOException | JSONException e) {
-                e.printStackTrace();
-                onError(R.string.error_parsing);
+                }
+            } else {
+                getView().showLoading(R.string.downloading_content_application);
+                startDownloadMedias();
             }
         }
+    }
+
+    private void startDownloadMedias() {
+        StorageReference storageRef = FirebaseStorage.getInstance().getReference();
+        mediasToDownload = new ArrayList<>();
+        for (Media mMedia : mMedias) {
+            mediasToDownload.add(storageId + mMedia.getSrc());
+            Log.e(TAG, storageId + mMedia.getSrc());
+            for (Group group : mMedia.getGroups()) {
+                for (Media media : group.getMedias()) {
+                    if (!media.getType().equals(AppConstants.URL)) {
+                        mediasToDownload.add(storageId + media.getSrc());
+                        Log.e(TAG, storageId + media.getSrc());
+                    }
+                }
+            }
+        }
+        fileCount = 0;
+        for (String pathMedia : mediasToDownload) {
+            File folder = new File(AppConstants.FILE_PATH_DOWNLOADS, storageId + "medias");
+            if (!folder.exists()) {
+                folder.mkdirs();
+            }
+            String fileName = pathMedia.substring(pathMedia.lastIndexOf("/") + 1);
+            final File file = new File(folder, fileName);
+            if (!file.exists()) {
+                storageRef.child(pathMedia).getFile(file).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
+                        Log.e(TAG, "Success: ");
+                    }
+                }).addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        Log.e(TAG, file.getAbsolutePath());
+                    }
+                });
+            } else
+                addCountFiles();
+        }
+    }
+
+    private void addCountFiles() {
+        fileCount++;
+        if (fileCount == mediasToDownload.size())
+            Log.e(TAG, "finishDownloadMedias");
     }
 
     private void startMulticastGroup() throws IOException {
@@ -205,11 +268,11 @@ public class PrimaryModePresenter
         }
     }
 
-    public void onStart() {
-        if (isViewAttached()) {
-            getView().checkPermissions();
-        }
-    }
+//    public void onStart() {
+//        if (isViewAttached()) {
+//            getView().checkPermissions();
+//        }
+//    }
 
     private void startReceiverThread() {
         ArrayList<ServerSocketThread> listServerThread = new ArrayList<>();
@@ -275,4 +338,15 @@ public class PrimaryModePresenter
         }
     }
 
+    public void setUseLocalApp(boolean value) {
+        this.useLocalApp = value;
+    }
+
+    public void setStorageId(String storageId) {
+        this.storageId = storageId + "/";
+    }
+
+    public void setMedias(ArrayList<Media> medias) {
+        mMedias = medias;
+    }
 }

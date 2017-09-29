@@ -15,4 +15,6 @@ public interface SplashScreenView extends MvpView {
     void callPrimaryModeActivity();
 
     void callSecondaryModeActivity();
+
+    void callApplicationsActivity();
 }

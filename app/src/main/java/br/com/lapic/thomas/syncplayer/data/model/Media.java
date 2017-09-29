@@ -13,6 +13,7 @@ public class Media implements Parcelable {
 
     private String id;
     private String src;
+    private String url;
     private String type;
     private int duration = -1;
     private ArrayList<Group> groups;
@@ -20,9 +21,10 @@ public class Media implements Parcelable {
     public Media() {
     }
 
-    public Media(String id, String src, String type, ArrayList<Group> groups) {
+    public Media(String id, String src, String url, String type, ArrayList<Group> groups) {
         this.id = id;
         this.src = src;
+        this.url = url;
         this.type = type;
         this.groups = groups;
     }
@@ -30,6 +32,7 @@ public class Media implements Parcelable {
     protected Media(Parcel in) {
         id = in.readString();
         src = in.readString();
+        url = in.readString();
         type = in.readString();
         duration = in.readInt();
         groups = in.createTypedArrayList(Group.CREATOR);
@@ -53,6 +56,10 @@ public class Media implements Parcelable {
 
     public String getSrc() {
         return src;
+    }
+
+    public String getUrl() {
+        return url;
     }
 
     public String getType() {
@@ -104,6 +111,7 @@ public class Media implements Parcelable {
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(id);
         parcel.writeString(src);
+        parcel.writeString(url);
         parcel.writeString(type);
         parcel.writeInt(duration);
         parcel.writeTypedList(groups);

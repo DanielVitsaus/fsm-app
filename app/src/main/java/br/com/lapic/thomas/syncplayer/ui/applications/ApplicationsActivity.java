@@ -9,6 +9,9 @@ import android.os.Bundle;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -78,18 +81,26 @@ public class ApplicationsActivity
     }
 
     @Override
-    public String getStringRes(int resId) {
-        return getString(resId);
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.applications_menu, menu);
+        return true;
+    }
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.use_local_app:
+                callPrimaryModeActivity(null);
+                break;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+        return super.onOptionsItemSelected(item);
     }
 
-    private void configBars() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            Window window = this.getWindow();
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(ContextCompat.getColor(this, R.color.material_green_700));
-        }
-        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.material_green_a200)));
+    @Override
+    public String getStringRes(int resId) {
+        return getString(resId);
     }
 
     @Override
@@ -134,6 +145,16 @@ public class ApplicationsActivity
         });
     }
 
+    private void configBars() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            Window window = this.getWindow();
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.setStatusBarColor(ContextCompat.getColor(this, R.color.material_green_700));
+        }
+        getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.material_green_a200)));
+    }
+
     private void initRecyclerView() {
         mListApplications = new ArrayList<>();
         mAdapter = new CustomAdapter(this, mListApplications);
@@ -157,7 +178,7 @@ public class ApplicationsActivity
 
     private void callPrimaryModeActivity(App app) {
         Intent intent = new Intent(this, PrimaryModeActivity.class);
-        intent.putExtra(AppConstants.App_parcel, app);
+        intent.putExtra(AppConstants.APP_PARCEL, app);
         startActivity(intent);
     }
 
