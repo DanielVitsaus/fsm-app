@@ -39,14 +39,14 @@ public class Synchronizer extends Thread {
                 public void run() {
                     sendMessage(AppConstants.START, anchor.getMedias());
                 }
-            }, anchor.getBegin() * 1000);
+            }, anchor.getBeginInt() * 1000);
 
             handler2.postDelayed(new Runnable() {
                 @Override
                 public void run() {
                     sendMessage(AppConstants.STOP, anchor.getMedias());
                 }
-            }, anchor.getEnd() * 1000);
+            }, anchor.getEndInt() * 1000);
             Log.e(TAG, anchor.getMedia(0) + " " +  anchor.getBegin() + " " +anchor.getEnd());
         }
 

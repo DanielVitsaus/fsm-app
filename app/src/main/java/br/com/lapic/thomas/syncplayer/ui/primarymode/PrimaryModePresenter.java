@@ -128,8 +128,8 @@ public class PrimaryModePresenter
                                 JSONObject anchorObject = anchorsArray.getJSONObject(k);
                                 Anchor anchor = new Anchor();
                                 anchor.setId(anchorObject.getString(AppConstants.ID));
-                                anchor.setBegin(Integer.parseInt(StringHelper.removeAllChar(anchorObject.getString(AppConstants.BEGIN))));
-                                anchor.setEnd(Integer.parseInt(StringHelper.removeAllChar(anchorObject.getString(AppConstants.END))));
+                                anchor.setBegin(StringHelper.removeAllChar(anchorObject.getString(AppConstants.BEGIN)));
+                                anchor.setEnd(StringHelper.removeAllChar(anchorObject.getString(AppConstants.END)));
                                 JSONArray mediasIdJSONArray = anchorObject.getJSONArray(AppConstants.MEDIAS);
                                 if (mediasIdJSONArray != null) {
                                     for (int w=0; w < mediasIdJSONArray.length(); w++) // medias de uma anchor

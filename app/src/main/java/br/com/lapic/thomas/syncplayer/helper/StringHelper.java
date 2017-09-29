@@ -55,4 +55,9 @@ public class StringHelper {
         return prefixIp + String.valueOf(val);
     }
 
+    public static int removeLettersAndParseInt(String str) {
+        String string = removeAllChar(str);
+        return Integer.parseInt(string);
+    }
+
 }

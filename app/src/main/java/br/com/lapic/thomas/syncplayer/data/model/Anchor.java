@@ -6,6 +6,8 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 import java.util.Comparator;
 
+import br.com.lapic.thomas.syncplayer.helper.StringHelper;
+
 /**
  * Created by thomas on 21/08/17.
  */
@@ -13,24 +15,17 @@ import java.util.Comparator;
 public class Anchor implements Parcelable, Comparator<Anchor> {
 
     private String id;
-    private int begin;
-    private int end;
+    private String begin;
+    private String end;
     private ArrayList<String> medias;
 
     public Anchor() {
     }
 
-    public Anchor(String id, int begin, int end, ArrayList<String> medias) {
-        this.id = id;
-        this.begin = begin;
-        this.end = end;
-        this.medias = medias;
-    }
-
     protected Anchor(Parcel in) {
         id = in.readString();
-        begin = in.readInt();
-        end = in.readInt();
+        begin = in.readString();
+        end = in.readString();
         medias = in.createStringArrayList();
     }
 
@@ -50,11 +45,19 @@ public class Anchor implements Parcelable, Comparator<Anchor> {
         return id;
     }
 
-    public int getBegin() {
+    public int getBeginInt() {
+        return StringHelper.removeLettersAndParseInt(begin);
+    }
+
+    public String getBegin() {
         return begin;
     }
 
-    public int getEnd() {
+    public int getEndInt() {
+        return StringHelper.removeLettersAndParseInt(end);
+    }
+
+    public String getEnd() {
         return end;
     }
 
@@ -70,11 +73,19 @@ public class Anchor implements Parcelable, Comparator<Anchor> {
         this.id = id;
     }
 
-    public void setBegin(int begin) {
+    public void setBeginInt(int begin) {
+        this.begin = begin + "s";
+    }
+
+    public void setBegin(String begin) {
         this.begin = begin;
     }
 
-    public void setEnd(int end) {
+    public void setEndInt(int end) {
+        this.end = end + "s";
+    }
+
+    public void setEnd(String end) {
         this.end = end;
     }
 
@@ -96,15 +107,16 @@ public class Anchor implements Parcelable, Comparator<Anchor> {
     @Override
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeString(id);
-        parcel.writeInt(begin);
-        parcel.writeInt(end);
+        parcel.writeString(begin);
+        parcel.writeString(end);
         parcel.writeStringList(medias);
     }
 
 
     @Override
     public int compare(Anchor anchor1, Anchor anchor2) {
-        return anchor1.getBegin() < anchor2.getBegin() ? 1
+        return StringHelper.removeLettersAndParseInt(anchor1.getBegin()) < StringHelper.removeLettersAndParseInt(anchor2.getBegin()) ? 1
                 : (anchor1.getBegin() == anchor2.getBegin() ? 0 : -1);
     }
+
 }

@@ -1,27 +1,48 @@
 package br.com.lapic.thomas.syncplayer.ui.applications;
 
+import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
 import br.com.lapic.thomas.syncplayer.R;
+import br.com.lapic.thomas.syncplayer.adapters.CustomAdapter;
+import br.com.lapic.thomas.syncplayer.data.model.App;
+import br.com.lapic.thomas.syncplayer.events.RecyclerClickListener;
+import br.com.lapic.thomas.syncplayer.events.RecyclerTouchListener;
 import br.com.lapic.thomas.syncplayer.injection.component.ActivityComponent;
 import br.com.lapic.thomas.syncplayer.ui.base.BaseMvpActivity;
+import br.com.lapic.thomas.syncplayer.ui.primarymode.PrimaryModeActivity;
+import br.com.lapic.thomas.syncplayer.utils.AppConstants;
+import butterknife.BindView;
 import butterknife.ButterKnife;
 
 public class ApplicationsActivity
         extends BaseMvpActivity<ApplicationsView, ApplicationsPresenter>
         implements ApplicationsView {
 
+    @BindView(R.id.recycler_view)
+    protected RecyclerView mRecyclerView;
+
+    private CustomAdapter mAdapter;
+    private List<App> mListApplications;
+
     @Inject
     protected ApplicationsPresenter mPresenter;
+    private String TAG = this.getClass().getSimpleName();
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -30,6 +51,12 @@ public class ApplicationsActivity
         setContentView(R.layout.activity_applications);
         ButterKnife.bind(this);
         setTitle(getString(R.string.primary_mode));
+        mListApplications = new ArrayList<>();
+        mAdapter = new CustomAdapter(this, mListApplications);
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.setAdapter(mAdapter);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        implementRecyclerViewClickListeners();
     }
 
     @NonNull
@@ -56,6 +83,40 @@ public class ApplicationsActivity
             window.setStatusBarColor(ContextCompat.getColor(this, R.color.material_green_700));
         }
         getSupportActionBar().setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.material_green_a200)));
+    }
+
+    @Override
+    public void setListApplications(List<App> listApplications) {
+        this.mListApplications = listApplications;
+        mAdapter.setList(listApplications);
+        mAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void showError(int resId) {
+//        contentView.setVisibility(View.GONE);
+//        loadingView.setVisibility(View.GONE);
+//        errorView.setVisibility(View.VISIBLE);
+//        TextView textView = ButterKnife.findById(errorView, R.id.tv_error);
+//        textView.setText(resId);
+    }
+
+    private void implementRecyclerViewClickListeners() {
+        mRecyclerView.addOnItemTouchListener(new RecyclerTouchListener(this, mRecyclerView, new RecyclerClickListener() {
+            @Override
+            public void onClick(View view, int position) {
+                callPrimaryModeActivity(mListApplications.get(position));
+            }
+            @Override
+            public void onLongClick(View view, int position) {}
+        }));
+    }
+
+
+    private void callPrimaryModeActivity(App app) {
+        Intent intent = new Intent(this, PrimaryModeActivity.class);
+        intent.putExtra(AppConstants.App_parcel, app);
+        startActivity(intent);
     }
 
 }
