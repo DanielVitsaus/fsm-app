@@ -73,6 +73,7 @@ public class PrimaryModePresenter
 
     public void onLeavePrimaryMode() {
         mPreferencesHelper.clear();
+        stopMulticastGroups();
         if (isViewAttached())
             getView().callModeActivity();
     }
@@ -178,10 +179,8 @@ public class PrimaryModePresenter
                 try {
                     getView().showLoading(R.string.reading_document);
                     if (documentParser()) {
-                        getView().setListMedias(mMedias);
-                        startMulticastGroup();
-                        startReceiverThread();
-                        getView().showContent();
+                        setStorageId("app/");
+                        onSuccessPrepared();
                     } else
                         onError(R.string.error_parsing);
                 } catch (IOException | JSONException e) {
@@ -222,7 +221,7 @@ public class PrimaryModePresenter
                 storageRef.child(pathMedia).getFile(file).addOnSuccessListener(new OnSuccessListener<FileDownloadTask.TaskSnapshot>() {
                     @Override
                     public void onSuccess(FileDownloadTask.TaskSnapshot taskSnapshot) {
-                        Log.e(TAG, "Success: ");
+                        addCountFiles();
                     }
                 }).addOnFailureListener(new OnFailureListener() {
                     @Override
@@ -237,8 +236,9 @@ public class PrimaryModePresenter
 
     private void addCountFiles() {
         fileCount++;
-        if (fileCount == mediasToDownload.size())
-            Log.e(TAG, "finishDownloadMedias");
+        if (fileCount == mediasToDownload.size()) {
+            onSuccessPrepared();
+        }
     }
 
     private void startMulticastGroup() throws IOException {
@@ -248,7 +248,9 @@ public class PrimaryModePresenter
                     AppConstants.GROUP_CONFIG,
                     AppConstants.CONFIG_MULTICAST_IP,
                     AppConstants.CONFIG_MULTICAST_PORT);
-            mainMulticastGroup.sendMessage(true, mMedias.get(0).getGroups().size() + getLocalHostLANAddress().toString());
+            mainMulticastGroup.sendMessage(true, mMedias.get(0).getGroups().size() +
+                            getLocalHostLANAddress().toString() + "/" +
+                            storageId.substring(0, storageId.length()-1));
             downloadMulticastGroup = new MulticastGroup(this,
                     getView().getMyContext(),
                     AppConstants.TO_DOWNLOAD,
@@ -268,11 +270,12 @@ public class PrimaryModePresenter
         }
     }
 
-//    public void onStart() {
-//        if (isViewAttached()) {
-//            getView().checkPermissions();
-//        }
-//    }
+    private void stopMulticastGroups() {
+        if (mainMulticastGroup != null)
+            mainMulticastGroup.stopKeepAlive();
+        if (downloadMulticastGroup != null)
+            downloadMulticastGroup.stopKeepAlive();
+    }
 
     private void startReceiverThread() {
         ArrayList<ServerSocketThread> listServerThread = new ArrayList<>();
@@ -284,7 +287,7 @@ public class PrimaryModePresenter
                     flagMediaUrl++;
                 else {
                     int socketPort = (AppConstants.DOWNLOAD_SOCKET_PORT + (i * 100) + j) - flagMediaUrl;
-                    ServerSocketThread serverSocketThrea = new ServerSocketThread(socketPort, media);
+                    ServerSocketThread serverSocketThrea = new ServerSocketThread(socketPort, storageId, media);
                     serverSocketThrea.start();
                     listServerThread.add(serverSocketThrea);
                 }
@@ -297,6 +300,19 @@ public class PrimaryModePresenter
         if (isViewAttached()) {
             getView().hideLoading();
             getView().showError(resIdMessage);
+        }
+    }
+
+    public void onSuccessPrepared() {
+        if (isViewAttached()) {
+            try {
+                getView().setListMedias(mMedias);
+                startMulticastGroup();
+                startReceiverThread();
+                getView().showContent();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

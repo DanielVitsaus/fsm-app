@@ -19,19 +19,21 @@ import br.com.lapic.thomas.syncplayer.utils.AppConstants;
 public class FileTxThread extends Thread {
 
     private final Media mMedia;
+    private final String pathApp;
     private String TAG = this.getClass().getSimpleName();
     private Socket socket;
     private BufferedInputStream bufferedInputStream;
     private OutputStream outputStream;
 
-    public FileTxThread(Socket socket, Media media) {
+    public FileTxThread(Socket socket, String pathApp, Media media) {
         this.socket= socket;
+        this.pathApp = pathApp;
         this.mMedia = media;
     }
 
     @Override
     public void run() {
-        File file = new File(AppConstants.FILE_PATH_DOWNLOADS, AppConstants.PATH_APP + mMedia.getSrc());
+        File file = new File(AppConstants.FILE_PATH_DOWNLOADS, pathApp + mMedia.getSrc());
         byte[] bytes = new byte[(int) file.length()];
         try {
             bufferedInputStream = new BufferedInputStream(new FileInputStream(file));

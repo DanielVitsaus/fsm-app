@@ -13,14 +13,16 @@ import br.com.lapic.thomas.syncplayer.data.model.Media;
 public class ServerSocketThread extends Thread {
 
     private final Media mMedia;
+    private final String pathApp;
     private String TAG = this.getClass().getSimpleName();
     private ServerSocket serverSocket;
     private FileTxThread fileTxThread;
     private final int socketServerPORT;
     private Socket socket;
 
-    public ServerSocketThread(int downloadSocketPort, Media media) {
+    public ServerSocketThread(int downloadSocketPort, String pathApp, Media media) {
         this.socketServerPORT = downloadSocketPort;
+        this.pathApp = pathApp;
         this.mMedia = media;
     }
 
@@ -31,7 +33,7 @@ public class ServerSocketThread extends Thread {
             serverSocket = new ServerSocket(socketServerPORT);
             while (true) {
                 socket = serverSocket.accept();
-                fileTxThread = new FileTxThread(socket, mMedia);
+                fileTxThread = new FileTxThread(socket, pathApp,  mMedia);
                 fileTxThread.start();
             }
         } catch (IOException e) {

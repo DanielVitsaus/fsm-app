@@ -31,6 +31,7 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
     private int amountGroups;
     private int mediaDownloadCount = 0;
     private String hostIp;
+    private String pathApp;
 
     @Inject
     protected PreferencesHelper mPreferencesHelper;
@@ -112,7 +113,7 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
             ArrayList<ClientRxThread> listClientRxThread = new ArrayList<>();
             for (int i = 0; i < mediasToDownload.size(); i++) {
                 int socketPort = AppConstants.DOWNLOAD_SOCKET_PORT + ((mGroup-1) * 100) + i;
-                ClientRxThread clientRxThread = new ClientRxThread(this, hostIp, socketPort, mediasToDownload.get(i));
+                ClientRxThread clientRxThread = new ClientRxThread(this, hostIp, socketPort, pathApp, mediasToDownload.get(i));
                 clientRxThread.start();
                 listClientRxThread.add(clientRxThread);
             }
@@ -137,6 +138,10 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
     public void setGroup(final int group) {
         this.mGroup = group;
         startDownloadMulticastGroup();
+    }
+
+    public void setPathApp(final String pathApp) {
+        this.pathApp = pathApp;
     }
 
     public void onPermissionsOk(Context context) {

@@ -126,7 +126,6 @@ public class PrimaryModeActivity
 
     @Override
     protected void onStop() {
-        mPresenter.onLeavePrimaryMode();
         super.onStop();
     }
 

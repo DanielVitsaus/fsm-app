@@ -20,6 +20,7 @@ public class ClientRxThread extends Thread {
 
     private final String mMediaName;
     private final SecondaryModePresenter presenter;
+    private final String pathApp;
     private String TAG = this.getClass().getSimpleName();
     private String dstAddress;
     private int dstPort;
@@ -30,11 +31,12 @@ public class ClientRxThread extends Thread {
     private BufferedOutputStream bufferedOutputStream;
     private Socket socket;
 
-    public ClientRxThread(SecondaryModePresenter secondaryModePresenter, String address, int port, String mediaName) {
+    public ClientRxThread(SecondaryModePresenter secondaryModePresenter, String address, int port, String pathApp, String mediaName) {
         this.presenter = secondaryModePresenter;
         Log.e(TAG, address);
         dstAddress = address;
         dstPort = port;
+        this.pathApp = pathApp;
         this.mMediaName = mediaName;
     }
 
@@ -43,7 +45,7 @@ public class ClientRxThread extends Thread {
         createFolders();
         try {
             socket = new Socket(dstAddress, dstPort);
-            File file = new File(AppConstants.FILE_PATH_DOWNLOADS, AppConstants.PATH_APP + AppConstants.MEDIAS + "/" + mMediaName);
+            File file = new File(AppConstants.FILE_PATH_DOWNLOADS, pathApp + AppConstants.MEDIAS + "/" + mMediaName);
             if (!file.exists()) {
                 byte[] bytes = new byte[FILE_SIZE];
                 inputStream = socket.getInputStream();
@@ -77,7 +79,7 @@ public class ClientRxThread extends Thread {
     }
 
     private void createFolders() {
-        File folder = new File(AppConstants.FILE_PATH_DOWNLOADS, AppConstants.PATH_APP + AppConstants.MEDIAS);
+        File folder = new File(AppConstants.FILE_PATH_DOWNLOADS, pathApp + AppConstants.MEDIAS);
         if (!folder.exists()) {
             folder.mkdirs();
         }

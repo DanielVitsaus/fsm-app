@@ -1,6 +1,7 @@
 package br.com.lapic.thomas.syncplayer.multicast;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 
@@ -43,6 +44,7 @@ public class MulticastGroup extends MulticastManager {
         } else if (secondaryModePresenter != null) {
             if (incomingMessage.getTag().equals(AppConstants.GROUP_CONFIG)) {
                 String[] message = incomingMessage.getMessage().split("/");
+                secondaryModePresenter.setPathApp(message[2]);
                 secondaryModePresenter.showDialogChoiceGroup(message[0], message[1]);
             } else if (incomingMessage.getTag().equals(AppConstants.TO_DOWNLOAD)) {
                 String param = incomingMessage.getMessage();
