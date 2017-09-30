@@ -19,7 +19,10 @@
     <string name="media_type_invalid">Tipo de mídia inválida</string>
     <string name="choice_group">Escolha o Grupo</string>
     <string name="downloading_medias">Realizando download das mídias</string>
+    <string name="downloading_content_application">Realizando download do conteúdo da aplicação</string>
     <string name="waiting_content">Aguardando conteúdo</string>
     <string name="waiting_begin">Aguardando início</string>
     <string name="close_player">Fechar player</string>
+    <string name="searching_apps">Buscando Aplicações</string>
+    <string name="use_local_app">Utilizar aplicação local</string>
 </resources>
