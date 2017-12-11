@@ -8,6 +8,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -44,6 +45,7 @@ public class Player extends Activity implements MediaPlayer.OnCompletionListener
     private WebView mWebView;
     private ArrayList<MulticastGroup> multicastGroups;
     private ArrayList<Thread> syncs;
+    private String folderApp;
 
     @Override
     public void onCreate(Bundle bundle) {
@@ -51,7 +53,9 @@ public class Player extends Activity implements MediaPlayer.OnCompletionListener
         configStatusBar();
         setContentView(R.layout.player_activity);
         mMedias = getIntent().getParcelableArrayListExtra(AppConstants.MEDIAS_PARCEL);
-        if (mMedias != null) {
+        folderApp = getIntent().getStringExtra(AppConstants.PATH_APP);
+        if (mMedias != null && folderApp != null) {
+            folderApp += "/";
             mImageView = findViewById(R.id.image_view);
             imageViewAudio = findViewById(R.id.image_audio);
             mMediaPlayer = new MediaPlayer();
@@ -86,7 +90,7 @@ public class Player extends Activity implements MediaPlayer.OnCompletionListener
                 int multicastPort = AppConstants.CONFIG_MULTICAST_PORT + (i + 1);
                 MulticastGroup multicastGroup = new MulticastGroup(null, this, AppConstants.ACTION, multicastIp, multicastPort);
                 multicastGroups.add(multicastGroup);
-                Synchronizer synchronizer = new Synchronizer(mMedias.get(0).getGroup(i), multicastGroup, new Handler(), new Handler());
+                Synchronizer synchronizer = new Synchronizer(this, mMedias.get(0).getGroup(i), multicastGroup, new Handler(), new Handler());
                 synchronizer.start();
                 syncs.add(synchronizer);
             }
@@ -135,7 +139,7 @@ public class Player extends Activity implements MediaPlayer.OnCompletionListener
     }
 
     private void startImage(Media media) {
-        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), AppConstants.PATH_APP + media.getSrc());
+        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), folderApp + media.getSrc());
         if (file.exists()) {
             Bitmap mBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());
             mImageView.setImageBitmap(mBitmap);
@@ -162,7 +166,7 @@ public class Player extends Activity implements MediaPlayer.OnCompletionListener
     }
 
     private void startAudio(Media media) {
-        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), AppConstants.PATH_APP + media.getSrc());
+        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), folderApp + media.getSrc());
         if (file.exists()) {
             try {
                 mMediaPlayer.setDataSource(file.getAbsolutePath());
@@ -188,7 +192,8 @@ public class Player extends Activity implements MediaPlayer.OnCompletionListener
     }
 
     private void startVideo(Media media) {
-        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), AppConstants.PATH_APP + media.getSrc());
+        File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), folderApp + media.getSrc());
+        Log.e(TAG, file.getAbsolutePath());
         if (file.exists()) {
             mVideoView.setVideoPath(file.getAbsolutePath());
             mVideoView.setMediaController(new MediaController(this));

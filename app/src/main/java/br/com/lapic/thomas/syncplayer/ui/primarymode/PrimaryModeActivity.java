@@ -61,6 +61,7 @@ public class PrimaryModeActivity
     private static final int REQUEST_READ_EXTERNAL_STORAGE = 1;
     private static final int MY_PERMISSIONS_REQUEST_WRITE_READ = 1;
     private ArrayList<Media> mMedias;
+    private App mApp;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,10 +72,10 @@ public class PrimaryModeActivity
         ButterKnife.bind(this);
         if (getIntent().getExtras() != null &&
                 getIntent().getExtras().getParcelable(AppConstants.APP_PARCEL) != null) {
-            App app = getIntent().getExtras().getParcelable(AppConstants.APP_PARCEL);
-            mPresenter.setMedias(app.getMedias());
+            mApp = getIntent().getExtras().getParcelable(AppConstants.APP_PARCEL);
+            mPresenter.setMedias(mApp.getMedias());
             mPresenter.setUseLocalApp(false);
-            mPresenter.setStorageId(app.getId());
+            mPresenter.setStorageId(mApp.getId());
         } else
             mPresenter.setUseLocalApp(true);
         checkPermissions();
@@ -230,6 +231,7 @@ public class PrimaryModeActivity
     public void callPlayer() {
         Intent intent = new Intent(this, Player.class);
         intent.putParcelableArrayListExtra(AppConstants.MEDIAS_PARCEL, mMedias);
+        intent.putExtra(AppConstants.PATH_APP, mApp.getId());
         startActivity(intent);
     }
 

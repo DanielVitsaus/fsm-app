@@ -199,12 +199,10 @@ public class PrimaryModePresenter
         mediasToDownload = new ArrayList<>();
         for (Media mMedia : mMedias) {
             mediasToDownload.add(storageId + mMedia.getSrc());
-            Log.e(TAG, storageId + mMedia.getSrc());
             for (Group group : mMedia.getGroups()) {
                 for (Media media : group.getMedias()) {
                     if (!media.getType().equals(AppConstants.URL)) {
                         mediasToDownload.add(storageId + media.getSrc());
-                        Log.e(TAG, storageId + media.getSrc());
                     }
                 }
             }
@@ -251,22 +249,22 @@ public class PrimaryModePresenter
             mainMulticastGroup.sendMessage(true, mMedias.get(0).getGroups().size() +
                             getLocalHostLANAddress().toString() + "/" +
                             storageId.substring(0, storageId.length()-1));
-            downloadMulticastGroup = new MulticastGroup(this,
-                    getView().getMyContext(),
-                    AppConstants.TO_DOWNLOAD,
-                    AppConstants.DOWNLOAD_MULTCAST_IP,
-                    AppConstants.DOWNLOAD_MULTICAST_PORT);
-            String message = "";
-            for (Group group : mMedias.get(0).getGroups()) {
-                for (Media media : group.getMedias()) {
-                    if (!media.getType().equals(AppConstants.URL))
-                        message += media.getSrc().substring(media.getSrc().lastIndexOf("/")+1) + ",";
-                }
-                message = message.substring(0, message.length() -1);
-                message += "/";
-            }
-            message = message.substring(0, message.length() - 1);
-            downloadMulticastGroup.sendMessage(true, message);
+//            downloadMulticastGroup = new MulticastGroup(this,
+//                    getView().getMyContext(),
+//                    AppConstants.TO_DOWNLOAD,
+//                    AppConstants.DOWNLOAD_MULTCAST_IP,
+//                    AppConstants.DOWNLOAD_MULTICAST_PORT);
+//            String message = "";
+//            for (Group group : mMedias.get(0).getGroups()) {
+//                for (Media media : group.getMedias()) {
+//                    if (!media.getType().equals(AppConstants.URL))
+//                        message += media.getSrc().substring(media.getSrc().lastIndexOf("/")+1) + ",";
+//                }
+//                message = message.substring(0, message.length() -1);
+//                message += "/";
+//            }
+//            message = message.substring(0, message.length() - 1);
+//            downloadMulticastGroup.sendMessage(true, message);
         }
     }
 
@@ -308,7 +306,7 @@ public class PrimaryModePresenter
             try {
                 getView().setListMedias(mMedias);
                 startMulticastGroup();
-                startReceiverThread();
+//                startReceiverThread();
                 getView().showContent();
             } catch (IOException e) {
                 e.printStackTrace();
@@ -365,4 +363,6 @@ public class PrimaryModePresenter
     public void setMedias(ArrayList<Media> medias) {
         mMedias = medias;
     }
+
+
 }
