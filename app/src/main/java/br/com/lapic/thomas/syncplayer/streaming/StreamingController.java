@@ -59,10 +59,17 @@ public class StreamingController {
         String typeMedia = media[0];
         String mediaSrc = media[1];
         String ipPort = null;
+        String command;
         switch (typeMedia) {
             case "video":
                 ipPort = "230.192.0.11:7005";
-                executeCommand(mediaSrc, ipPort);
+                command = "-re -i /storage/emulated/0/Download/" + mediaSrc + " -acodec copy -vcodec copy -f rtp_mpegts rtp://" + ipPort;
+                executeCommand(command);
+                break;
+            case "image":
+                ipPort = "230.192.0.11:7006";
+                command = "-loop 1 -i /storage/emulated/0/Download/" + mediaSrc + " -f lavfi -i anullsrc=channel_layout=5.1:sample_rate=48000 -t 5 -c:v libx264 -t 20 -pix_fmt yuv420p -vf scale=1280:720 -y -f rtp_mpegts rtp://" + ipPort;
+                executeCommand(command);
                 break;
             default:
                 Log.e(TAG, "Mídia não suportada");
@@ -71,8 +78,7 @@ public class StreamingController {
         return ipPort;
     }
 
-    private void executeCommand(String mediaSrc, String ipPort) {
-        String command = "-re -i /storage/emulated/0/Download/" + mediaSrc + " -acodec copy -vcodec copy -f rtp_mpegts rtp://" + ipPort;
+    private void executeCommand(String command) {
         Log.e(TAG, "COMMAND: ffmpeg " + command);
         final String cmd[] = command.split(" ");
         try {
@@ -87,7 +93,7 @@ public class StreamingController {
                 }
                 @Override
                 public void onProgress(String s) {
-                    Log.d(TAG, "Started command : ffmpeg "+ cmd);
+//                    Log.d(TAG, "Started command : ffmpeg "+ cmd);
                 }
                 @Override
                 public void onStart() {
