@@ -5,13 +5,11 @@ import android.os.Handler;
 import android.util.Log;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import br.com.lapic.thomas.syncplayer.data.model.Anchor;
 import br.com.lapic.thomas.syncplayer.data.model.Group;
-import br.com.lapic.thomas.syncplayer.data.model.Media;
-import br.com.lapic.thomas.syncplayer.multicast.MulticastGroup;
-import br.com.lapic.thomas.syncplayer.streaming.StreamingController;
+import br.com.lapic.thomas.syncplayer.network.multicast.MulticastGroup;
+import br.com.lapic.thomas.syncplayer.network.streaming.StreamingController;
 import br.com.lapic.thomas.syncplayer.utils.AppConstants;
 
 /**
@@ -74,7 +72,7 @@ public class Synchronizer extends Thread {
 //        } catch (IOException e) {
 //            e.printStackTrace();
 //        }
-        String message = action + ":" + ipPort;
+        String message = action + " rtp://" + ipPort;
         try {
             Log.e(TAG, message);
             mMulticastGroup.sendMessage(false, message);

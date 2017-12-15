@@ -1,4 +1,4 @@
-package br.com.lapic.thomas.syncplayer.multicast;
+package br.com.lapic.thomas.syncplayer.network.multicast;
 
 import java.net.InetAddress;
 

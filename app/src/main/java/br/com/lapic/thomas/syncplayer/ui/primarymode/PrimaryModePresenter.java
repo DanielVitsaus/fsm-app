@@ -1,7 +1,6 @@
 package br.com.lapic.thomas.syncplayer.ui.primarymode;
 
 import android.content.Context;
-import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.util.Log;
 
@@ -19,7 +18,6 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.lang.reflect.Array;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
 import java.net.UnknownHostException;
@@ -32,14 +30,13 @@ import java.util.Enumeration;
 import javax.inject.Inject;
 
 import br.com.lapic.thomas.syncplayer.R;
-import br.com.lapic.thomas.syncplayer.connection.ServerSocketThread;
+import br.com.lapic.thomas.syncplayer.network.unicast.ServerSocketThread;
 import br.com.lapic.thomas.syncplayer.data.model.Anchor;
-import br.com.lapic.thomas.syncplayer.data.model.App;
 import br.com.lapic.thomas.syncplayer.data.model.Group;
 import br.com.lapic.thomas.syncplayer.data.model.Media;
 import br.com.lapic.thomas.syncplayer.helper.PreferencesHelper;
 import br.com.lapic.thomas.syncplayer.helper.StringHelper;
-import br.com.lapic.thomas.syncplayer.multicast.MulticastGroup;
+import br.com.lapic.thomas.syncplayer.network.multicast.MulticastGroup;
 import br.com.lapic.thomas.syncplayer.utils.AppConstants;
 
 /**
@@ -246,9 +243,21 @@ public class PrimaryModePresenter
                     AppConstants.GROUP_CONFIG,
                     AppConstants.CONFIG_MULTICAST_IP,
                     AppConstants.CONFIG_MULTICAST_PORT);
-            mainMulticastGroup.sendMessage(true, mMedias.get(0).getGroups().size() +
-                            getLocalHostLANAddress().toString() + "/" +
-                            storageId.substring(0, storageId.length()-1));
+//            mainMulticastGroup.sendMessage(true, mMedias.get(0).getGroups().size() +
+//                            getLocalHostLANAddress().toString() + "/" +
+//                            storageId.substring(0, storageId.length()-1));
+            StringBuilder types = new StringBuilder();
+            for (Group group : mMedias.get(0).getGroups()) {
+                if (group.getMode().equals(AppConstants.MODE_PASSIVE))
+                    types.append("1,");
+                else
+                    types.append("2,");
+            }
+            types.deleteCharAt(types.length()-1);
+            mainMulticastGroup.sendMessage(true, mMedias.get(0).getGroups().size() + "/" +
+                    types.toString() + "/" +
+                    storageId.substring(0, storageId.length() -1));
+
 //            downloadMulticastGroup = new MulticastGroup(this,
 //                    getView().getMyContext(),
 //                    AppConstants.TO_DOWNLOAD,

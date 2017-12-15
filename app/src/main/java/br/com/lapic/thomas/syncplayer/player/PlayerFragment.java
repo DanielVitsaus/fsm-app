@@ -2,11 +2,15 @@ package br.com.lapic.thomas.syncplayer.player;
 
 
 import android.app.Fragment;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.Environment;
+import android.support.v4.content.LocalBroadcastManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +27,7 @@ import java.util.ArrayList;
 import br.com.lapic.thomas.syncplayer.R;
 import br.com.lapic.thomas.syncplayer.data.model.Media;
 import br.com.lapic.thomas.syncplayer.helper.StringHelper;
-import br.com.lapic.thomas.syncplayer.multicast.MulticastGroup;
+import br.com.lapic.thomas.syncplayer.network.multicast.MulticastGroup;
 import br.com.lapic.thomas.syncplayer.ui.secondarymode.SecondaryModeActivity;
 import br.com.lapic.thomas.syncplayer.utils.AppConstants;
 
@@ -65,6 +69,7 @@ public class PlayerFragment extends Fragment {
 
     private void startMulticastGroup() {
         String multicastIp = StringHelper.incrementIp(AppConstants.CONFIG_MULTICAST_IP, mGroup);
+        Log.e(TAG, multicastIp);
         int multicastPort = AppConstants.CONFIG_MULTICAST_PORT + mGroup;
         multicastGroup = new MulticastGroup(null, rootView.getContext(), AppConstants.ACTION, multicastIp, multicastPort);
         multicastGroup.setPlayerFragment(this);
@@ -252,6 +257,11 @@ public class PlayerFragment extends Fragment {
                 (imageViewAudio.getVisibility() == View.GONE) &&
                 (mVideoView.getVisibility() == View.GONE))
             message.setVisibility(View.VISIBLE);
+    }
+
+    public void sendMessageToFinishVideoVLCActivity() {
+        Log.e(TAG, "CHAMOU");
+        LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(AppConstants.SHOULD_FINISH));
     }
 
 }

@@ -18,8 +18,6 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
-
-
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -48,8 +46,11 @@
         <activity
             android:name=".player.Player"
             android:screenOrientation="landscape"
-            android:theme="@style/AppCompat.FullScreen"/>
-        <activity android:name=".ui.applications.ApplicationsActivity"></activity>
+            android:theme="@style/AppCompat.FullScreen" />
+        <activity android:name=".ui.applications.ApplicationsActivity" />
+        <activity android:name=".player.VideoVLCActivity"
+            android:screenOrientation="landscape"
+            android:theme="@style/AppCompat.FullScreen"></activity>
     </application>
 
 </manifest>

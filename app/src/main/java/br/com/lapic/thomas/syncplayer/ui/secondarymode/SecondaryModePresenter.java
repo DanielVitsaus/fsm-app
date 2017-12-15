@@ -12,9 +12,10 @@ import java.util.Collections;
 import javax.inject.Inject;
 
 import br.com.lapic.thomas.syncplayer.R;
-import br.com.lapic.thomas.syncplayer.connection.ClientRxThread;
+import br.com.lapic.thomas.syncplayer.data.model.App;
+import br.com.lapic.thomas.syncplayer.network.unicast.ClientRxThread;
 import br.com.lapic.thomas.syncplayer.helper.PreferencesHelper;
-import br.com.lapic.thomas.syncplayer.multicast.MulticastGroup;
+import br.com.lapic.thomas.syncplayer.network.multicast.MulticastGroup;
 import br.com.lapic.thomas.syncplayer.utils.AppConstants;
 
 /**
@@ -24,8 +25,9 @@ import br.com.lapic.thomas.syncplayer.utils.AppConstants;
 public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> {
 
     private final String TAG = this.getClass().getSimpleName();
-    private int mGroup = -1;
+    private int mGroupNumber = -1;
     private MulticastGroup mainMulticastGroup;
+    private MulticastGroup deviceClassMulticastGroup;
     private MulticastGroup downloadMulticastGroup;
     private ArrayList<String> mediasToDownload;
     private int amountGroups;
@@ -56,6 +58,15 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
         mainMulticastGroup.startMessageReceiver();
     }
 
+    private void startMulticastGroupDeviceClass() {
+        deviceClassMulticastGroup = new MulticastGroup(this,
+                getView().getMyContext(),
+                AppConstants.GROUP_DEVICE_CLASS,
+                AppConstants.CONFIG_MULTICAST_IP + mGroupNumber,
+                AppConstants.CONFIG_MULTICAST_PORT);
+        deviceClassMulticastGroup.startMessageReceiver();
+    }
+
     private void startDownloadMulticastGroup() {
         downloadMulticastGroup = new MulticastGroup(this,
                 getView().getMyContext(),
@@ -65,17 +76,17 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
         downloadMulticastGroup.startMessageReceiver();
     }
 
-    public void showDialogChoiceGroup(String totalGroups, String hostIP) {
-        this.hostIp = hostIP;
-        if (isViewAttached() && mGroup < 0) {
+    public void showDialogChoiceGroup(String totalGroups, String classesDevices) {
+//        this.hostIp = hostIP;
+        if (isViewAttached() && mGroupNumber < 0) {
             this.amountGroups = Integer.parseInt(totalGroups);
-            getView().showDialogChoiceGroup(amountGroups);
+            getView().showDialogChoiceGroup(amountGroups, classesDevices.split(","));
         }
     }
 
     public void setMediasToDownload(String[] medias) {
         downloadMulticastGroup.stopMessageReceiver();
-        String[] mediastoDownload = medias[mGroup-1].split(",");
+        String[] mediastoDownload = medias[mGroupNumber -1].split(",");
         mediasToDownload = new ArrayList<>();
         Collections.addAll(mediasToDownload, mediastoDownload);
         sendFile();
@@ -112,7 +123,7 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
             getView().startDownloadMedias();
             ArrayList<ClientRxThread> listClientRxThread = new ArrayList<>();
             for (int i = 0; i < mediasToDownload.size(); i++) {
-                int socketPort = AppConstants.DOWNLOAD_SOCKET_PORT + ((mGroup-1) * 100) + i;
+                int socketPort = AppConstants.DOWNLOAD_SOCKET_PORT + ((mGroupNumber -1) * 100) + i;
                 ClientRxThread clientRxThread = new ClientRxThread(this, hostIp, socketPort, pathApp, mediasToDownload.get(i));
                 clientRxThread.start();
                 listClientRxThread.add(clientRxThread);
@@ -126,7 +137,7 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
         this.mediaDownloadCount++;
         if (mediaDownloadCount == mediasToDownload.size()) {
             Bundle bundle = new Bundle();
-            bundle.putInt(AppConstants.MY_GROUP, mGroup);
+            bundle.putInt(AppConstants.MY_GROUP, mGroupNumber);
             if (isViewAttached()) getView().startFragmentPlayer(bundle);
         } else {
             if (isViewAttached())
@@ -135,9 +146,16 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
     }
 
 
-    public void setGroup(final int group) {
-        this.mGroup = group;
-        startDownloadMulticastGroup();
+    public void setGroup(final int groupNumber, int typeClassDevice) {
+        this.mGroupNumber = groupNumber;
+        if (typeClassDevice == AppConstants.PASSIVE_CLASS) {
+            startMulticastGroupDeviceClass();
+            Bundle bundle = new Bundle();
+            bundle.putInt(AppConstants.MY_GROUP, mGroupNumber);
+            if (isViewAttached()) getView().startFragmentPlayer(bundle);
+        } else {
+//            startDownloadMulticastGroup();
+        }
     }
 
     public void setPathApp(final String pathApp) {

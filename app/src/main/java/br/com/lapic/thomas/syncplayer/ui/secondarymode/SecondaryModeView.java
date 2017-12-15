@@ -23,7 +23,7 @@ public interface SecondaryModeView extends MvpView {
 
     void showMessage(String message);
 
-    void showDialogChoiceGroup(int amountGroups);
+    void showDialogChoiceGroup(int amountGroups, String[] classesDevice);
 
     Context getMyContext();
 
@@ -32,4 +32,5 @@ public interface SecondaryModeView extends MvpView {
     void startDownloadMedias();
 
     void incrementProgressBar(int value);
+
 }

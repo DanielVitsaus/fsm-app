@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import br.com.lapic.thomas.syncplayer.R;
 import br.com.lapic.thomas.syncplayer.data.model.Media;
 import br.com.lapic.thomas.syncplayer.helper.StringHelper;
-import br.com.lapic.thomas.syncplayer.multicast.MulticastGroup;
+import br.com.lapic.thomas.syncplayer.network.multicast.MulticastGroup;
 import br.com.lapic.thomas.syncplayer.sync.Synchronizer;
 import br.com.lapic.thomas.syncplayer.utils.AppConstants;
 

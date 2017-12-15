@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -225,7 +226,7 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
     }
 
     @Override
-    public void showDialogChoiceGroup(final int amountGroups) {
+    public void showDialogChoiceGroup(final int amountGroups, final String[] classesDevice) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -238,7 +239,7 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
                     builder.setItems(items, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            presenter.setGroup(i+1);
+                            presenter.setGroup(i+1, Integer.parseInt(classesDevice[i]));
                         }
                     });
                     builder.setCancelable(false);

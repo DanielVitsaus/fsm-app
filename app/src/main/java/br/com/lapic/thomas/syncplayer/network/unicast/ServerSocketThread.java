@@ -1,4 +1,4 @@
-package br.com.lapic.thomas.syncplayer.connection;
+package br.com.lapic.thomas.syncplayer.network.unicast;
 
 import java.io.IOException;
 import java.net.ServerSocket;
