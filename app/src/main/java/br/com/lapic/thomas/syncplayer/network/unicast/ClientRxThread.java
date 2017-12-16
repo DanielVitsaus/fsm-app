@@ -25,7 +25,7 @@ public class ClientRxThread extends Thread {
     private String dstAddress;
     private int dstPort;
     private int current = 0;
-    private int FILE_SIZE = 30000000;
+    private int FILE_SIZE = 40000000;
     private InputStream inputStream;
     private FileOutputStream fileOutputStream;
     private BufferedOutputStream bufferedOutputStream;
@@ -33,7 +33,6 @@ public class ClientRxThread extends Thread {
 
     public ClientRxThread(SecondaryModePresenter secondaryModePresenter, String address, int port, String pathApp, String mediaName) {
         this.presenter = secondaryModePresenter;
-        Log.e(TAG, address);
         dstAddress = address;
         dstPort = port;
         this.pathApp = pathApp;

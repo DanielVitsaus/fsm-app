@@ -13,6 +13,7 @@ import javax.inject.Inject;
 
 import br.com.lapic.thomas.syncplayer.R;
 import br.com.lapic.thomas.syncplayer.data.model.App;
+import br.com.lapic.thomas.syncplayer.helper.StringHelper;
 import br.com.lapic.thomas.syncplayer.network.unicast.ClientRxThread;
 import br.com.lapic.thomas.syncplayer.helper.PreferencesHelper;
 import br.com.lapic.thomas.syncplayer.network.multicast.MulticastGroup;
@@ -34,6 +35,7 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
     private int mediaDownloadCount = 0;
     private String hostIp;
     private String pathApp;
+    private String[] mClassesDevices;
 
     @Inject
     protected PreferencesHelper mPreferencesHelper;
@@ -55,6 +57,7 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
                 AppConstants.GROUP_CONFIG,
                 AppConstants.CONFIG_MULTICAST_IP,
                 AppConstants.CONFIG_MULTICAST_PORT);
+        Log.e(TAG, AppConstants.CONFIG_MULTICAST_IP);
         mainMulticastGroup.startMessageReceiver();
     }
 
@@ -62,8 +65,9 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
         deviceClassMulticastGroup = new MulticastGroup(this,
                 getView().getMyContext(),
                 AppConstants.GROUP_DEVICE_CLASS,
-                AppConstants.CONFIG_MULTICAST_IP + mGroupNumber,
+                StringHelper.incrementIp(AppConstants.CONFIG_MULTICAST_IP, mGroupNumber),
                 AppConstants.CONFIG_MULTICAST_PORT);
+        Log.e(TAG, StringHelper.incrementIp(AppConstants.CONFIG_MULTICAST_IP, mGroupNumber));
         deviceClassMulticastGroup.startMessageReceiver();
     }
 
@@ -73,23 +77,36 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
                 AppConstants.TO_DOWNLOAD,
                 AppConstants.DOWNLOAD_MULTCAST_IP,
                 AppConstants.DOWNLOAD_MULTICAST_PORT);
+        Log.e(TAG, AppConstants.DOWNLOAD_MULTCAST_IP);
         downloadMulticastGroup.startMessageReceiver();
     }
 
-    public void showDialogChoiceGroup(String totalGroups, String classesDevices) {
-//        this.hostIp = hostIP;
+    public void showDialogChoiceGroup(String totalGroups, String classesDevices, String hostIP) {
+        this.hostIp = hostIP;
+        this.mClassesDevices = classesDevices.split(",");
         if (isViewAttached() && mGroupNumber < 0) {
             this.amountGroups = Integer.parseInt(totalGroups);
-            getView().showDialogChoiceGroup(amountGroups, classesDevices.split(","));
+            getView().showDialogChoiceGroup(amountGroups, mClassesDevices);
         }
     }
 
     public void setMediasToDownload(String[] medias) {
         downloadMulticastGroup.stopMessageReceiver();
-        String[] mediastoDownload = medias[mGroupNumber -1].split(",");
-        mediasToDownload = new ArrayList<>();
-        Collections.addAll(mediasToDownload, mediastoDownload);
-        sendFile();
+        for (int i = 0; i < medias.length; i++) {
+            String[] mediasSplited = medias[i].split(":");
+            Log.e(TAG, mediasSplited[0]);
+            Log.e(TAG, mediasSplited[1]);
+            if (Integer.parseInt(mediasSplited[0]) == mGroupNumber) {
+                String[] mediastoDownload = mediasSplited[1].split(",");
+                mediasToDownload = new ArrayList<>();
+                Collections.addAll(mediasToDownload, mediastoDownload);
+                sendFile();
+            }
+        }
+//        String[] mediastoDownload = medias[mGroupNumber -1].split(",");
+//        mediasToDownload = new ArrayList<>();
+//        Collections.addAll(mediasToDownload, mediastoDownload);
+//        sendFile();
     }
 
     public void onLeaveSecondaryMode() {
@@ -154,15 +171,25 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
             bundle.putInt(AppConstants.MY_GROUP, mGroupNumber);
             if (isViewAttached()) getView().startFragmentPlayer(bundle);
         } else {
-//            startDownloadMulticastGroup();
+            startDownloadMulticastGroup();
         }
     }
 
     public void setPathApp(final String pathApp) {
+        AppConstants.PATH_APP = pathApp;
         this.pathApp = pathApp;
     }
 
     public void onPermissionsOk(Context context) {
         Log.e(TAG, "permission ok");
+    }
+
+    public void onStop() {
+        if (deviceClassMulticastGroup != null)
+            deviceClassMulticastGroup.stopMessageReceiver();
+        if (mainMulticastGroup != null)
+            mainMulticastGroup.stopMessageReceiver();
+        if (downloadMulticastGroup != null)
+            downloadMulticastGroup.stopMessageReceiver();
     }
 }

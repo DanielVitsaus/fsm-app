@@ -140,6 +140,7 @@ public class PlayerFragment extends Fragment {
         stopVideo();
         stopWebView();
         File file = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS), AppConstants.PATH_APP + media.getSrc());
+        Log.e(TAG, file.getAbsolutePath());
         if (file.exists()) {
             stopImage();
             Bitmap mBitmap = BitmapFactory.decodeFile(file.getAbsolutePath());

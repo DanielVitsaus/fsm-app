@@ -147,6 +147,12 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
     }
 
     @Override
+    protected void onStop() {
+        mPresenter.onStop();
+        super.onStop();
+    }
+
+    @Override
     protected void onDestroy() {
         removeAllMedias();
         super.onDestroy();
