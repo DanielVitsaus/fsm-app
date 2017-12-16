@@ -49,6 +49,7 @@ public class PrimaryModePresenter
 
     private String TAG = this.getClass().getSimpleName();
     private ArrayList<Media> mMedias;
+    private MulticastGroup callbackMulticastGroup;
     private MulticastGroup mainMulticastGroup;
     private MulticastGroup downloadMulticastGroup;
     private boolean useLocalApp;
@@ -331,9 +332,20 @@ public class PrimaryModePresenter
         }
     }
 
+    private void startCallbackMulticastGroup() {
+        callbackMulticastGroup = new MulticastGroup(this,
+                getView().getMyContext(),
+                AppConstants.GROUP_CALLBACK,
+                AppConstants.CALLBACK_MULTICAST_IP,
+                AppConstants.CALLBACK_MULTICAST_PORT);
+        callbackMulticastGroup.startMessageReceiver();
+    }
+
     public void onClickStart() {
-        if (isViewAttached())
+        if (isViewAttached()) {
+            startCallbackMulticastGroup();
             getView().callPlayer();
+        }
     }
 
     public static InetAddress getLocalHostLANAddress() throws UnknownHostException {
@@ -382,4 +394,8 @@ public class PrimaryModePresenter
     }
 
 
+    public void showActionFromSecondDevice(String message) {
+        if (isViewAttached())
+            getView().showAlert(message);
+    }
 }

@@ -1,11 +1,14 @@
 package br.com.lapic.thomas.syncplayer.ui.secondarymode;
 
+import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -67,7 +70,6 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
                 AppConstants.GROUP_DEVICE_CLASS,
                 StringHelper.incrementIp(AppConstants.CONFIG_MULTICAST_IP, mGroupNumber),
                 AppConstants.CONFIG_MULTICAST_PORT);
-        Log.e(TAG, StringHelper.incrementIp(AppConstants.CONFIG_MULTICAST_IP, mGroupNumber));
         deviceClassMulticastGroup.startMessageReceiver();
     }
 

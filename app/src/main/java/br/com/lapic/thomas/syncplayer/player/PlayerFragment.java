@@ -261,7 +261,6 @@ public class PlayerFragment extends Fragment {
     }
 
     public void sendMessageToFinishVideoVLCActivity() {
-        Log.e(TAG, "CHAMOU");
         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(AppConstants.SHOULD_FINISH));
     }
 

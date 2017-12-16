@@ -20,6 +20,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -267,6 +268,16 @@ public class PrimaryModeActivity
     @OnClick(R.id.start_button)
     public void onClickStart(View view) {
         presenter.onClickStart();
+    }
+
+    @Override
+    public void showAlert(final String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                showToast(message);
+            }
+        });
     }
 
 }

@@ -8,9 +8,12 @@ import android.content.res.Configuration;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
+import android.support.v4.view.GestureDetectorCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.Gravity;
+import android.view.MotionEvent;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 import android.view.ViewGroup;
@@ -21,13 +24,18 @@ import org.videolan.libvlc.LibVLC;
 import org.videolan.libvlc.Media;
 import org.videolan.libvlc.MediaPlayer;
 
+import java.io.IOException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 
 import br.com.lapic.thomas.syncplayer.R;
+import br.com.lapic.thomas.syncplayer.helper.StringHelper;
+import br.com.lapic.thomas.syncplayer.network.multicast.MulticastGroup;
 import br.com.lapic.thomas.syncplayer.utils.AppConstants;
 
-public class VideoVLCActivity extends AppCompatActivity implements IVLCVout.Callback {
+public class VideoVLCActivity
+        extends AppCompatActivity
+        implements IVLCVout.Callback, GestureDetector.OnGestureListener, GestureDetector.OnDoubleTapListener {
 
     public final static String TAG = "MainActivity";
     private String mFilePath;
@@ -37,6 +45,8 @@ public class VideoVLCActivity extends AppCompatActivity implements IVLCVout.Call
     private MediaPlayer mMediaPlayer = null;
     private int mVideoWidth;
     private int mVideoHeight;
+    private MulticastGroup callbackMulticastGroup;
+    private GestureDetectorCompat mDetector;
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
@@ -55,6 +65,10 @@ public class VideoVLCActivity extends AppCompatActivity implements IVLCVout.Call
         mSurface = (SurfaceView) findViewById(R.id.surface);
         holder = mSurface.getHolder();
         LocalBroadcastManager.getInstance(this).registerReceiver(broadcastReceiver, new IntentFilter(AppConstants.SHOULD_FINISH));
+
+        mDetector = new GestureDetectorCompat(this, this);
+        mDetector.setOnDoubleTapListener(this);
+        startMainMulticastGroup();
     }
 
     @Override
@@ -81,7 +95,6 @@ public class VideoVLCActivity extends AppCompatActivity implements IVLCVout.Call
         releasePlayer();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
     }
-
 
     /**
      * Used to set size for SurfaceView
@@ -216,6 +229,73 @@ public class VideoVLCActivity extends AppCompatActivity implements IVLCVout.Call
         Toast.makeText(this, "Error with hardware acceleration", Toast.LENGTH_LONG).show();
     }
 
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        this.mDetector.onTouchEvent(event);
+        return super.onTouchEvent(event);
+    }
+
+    @Override
+    public boolean onSingleTapConfirmed(MotionEvent e) {
+//        Log.e(TAG, "onSingleTapConfirmed: " + e.toString());
+        sendMessage(e.toString());
+        return true;
+    }
+
+    @Override
+    public boolean onDoubleTap(MotionEvent e) {
+//        Log.e(TAG, "onDoubleTap: " + e.toString());
+        sendMessage(e.toString());
+        return true;
+    }
+
+    @Override
+    public boolean onDoubleTapEvent(MotionEvent e) {
+//        Log.e(TAG, "onDoubleTapEvent: " + e.toString());
+        sendMessage(e.toString());
+        return true;
+    }
+
+    @Override
+    public boolean onDown(MotionEvent e) {
+//        Log.e(TAG,"onDown: " + e.toString());
+        sendMessage(e.toString());
+        return false;
+    }
+
+    @Override
+    public void onShowPress(MotionEvent e) {
+//        Log.e(TAG, "onShowPress: " + e.toString());
+        sendMessage(e.toString());
+    }
+
+    @Override
+    public boolean onSingleTapUp(MotionEvent e) {
+//        Log.e(TAG, "onSingleTapUp: " + e.toString());
+        sendMessage(e.toString());
+        return true;
+    }
+
+    @Override
+    public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+//        Log.e(TAG, "onScroll: " + e1.toString() + e2.toString());
+        sendMessage(e1.toString() + e2.toString());
+        return true;
+    }
+
+    @Override
+    public void onLongPress(MotionEvent e) {
+//        Log.e(TAG, "onLongPress: " + e.toString());
+        sendMessage(e.toString());
+    }
+
+    @Override
+    public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+//        Log.e(TAG, "onFling: " + e1.toString() + e2.toString());
+        sendMessage(e1.toString() + e2.toString());
+        return true;
+    }
+
     private static class MyPlayerListener implements MediaPlayer.EventListener {
         private WeakReference<VideoVLCActivity> mOwner;
 
@@ -241,6 +321,23 @@ public class VideoVLCActivity extends AppCompatActivity implements IVLCVout.Call
         }
     }
 
+    private void sendMessage(String message) {
+        try {
+            callbackMulticastGroup.sendMessage(false, message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+//        Intent intent = new Intent(AppConstants.SEND_MESSAGE_ACTION_TO_MAIN_DEVICE);
+//        intent.putExtra(AppConstants.ACTION_MESSAGE, message);
+//        LocalBroadcastManager.getInstance(this).sendBroadcast(intent);
+    }
 
+    private void startMainMulticastGroup() {
+        callbackMulticastGroup = new MulticastGroup(null,
+                this,
+                AppConstants.GROUP_CALLBACK,
+                AppConstants.CALLBACK_MULTICAST_IP,
+                AppConstants.CALLBACK_MULTICAST_PORT);
+    }
 
 }

@@ -31,4 +31,6 @@ public interface PrimaryModeView extends MvpView {
     Context getMyContext();
 
     void callPlayer();
+
+    void showAlert(String Message);
 }

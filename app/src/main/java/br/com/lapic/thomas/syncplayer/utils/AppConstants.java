@@ -1,5 +1,6 @@
 package br.com.lapic.thomas.syncplayer.utils;
 
+import android.content.IntentFilter;
 import android.os.Environment;
 
 import java.io.File;
@@ -35,9 +36,11 @@ public class AppConstants {
 
     public static String MY_GROUP = "my_group";
 
+    public static String CALLBACK_MULTICAST_IP = "230.192.0.10";
     public static String DOWNLOAD_MULTCAST_IP = "230.192.0.11";
     public static String CONFIG_MULTICAST_IP = "230.192.0.12";
     public static String STREAMING_MULTICAST_IP_BASE = "230.192.0.20";
+    public static int CALLBACK_MULTICAST_PORT = 1027;
     public static int CONFIG_MULTICAST_PORT = 1026;
     public static int DOWNLOAD_MULTICAST_PORT = 1025;
 
@@ -46,6 +49,7 @@ public class AppConstants {
     public static final String BROADCAST_ACTION = "com.example.android.threadsample.BROADCAST";
     public static final String EXTENDED_DATA_STATUS = "com.example.android.threadsample.STATUS";
 
+    public static String GROUP_CALLBACK = "GROUP_CALLBACK";
     public static String GROUP_CONFIG = "GROUP_CONFIG";
     public static String GROUP_DEVICE_CLASS = "GROUP_DEVICE_CLASS";
     public static String TO_DOWNLOAD = "TO_DOWNLOAD";
@@ -63,4 +67,6 @@ public class AppConstants {
     public static int ACTIVE_CLASS = 2;
     public static String STREAMING_URL = "video_url";
     public static String SHOULD_FINISH = "should_finish";
+    public static String ACTION_MESSAGE = "action_message";
+    public static String SEND_MESSAGE_ACTION_TO_MAIN_DEVICE = "send_message_action_to_main_device";
 }

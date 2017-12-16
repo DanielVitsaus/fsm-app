@@ -47,6 +47,8 @@ public class MulticastGroup extends MulticastManager {
 
         if (primaryModePresenter != null) {
 
+            primaryModePresenter.showActionFromSecondDevice(incomingMessage.getMessage());
+
         } else if (secondaryModePresenter != null) {
             if (incomingMessage.getTag().equals(AppConstants.GROUP_CONFIG)) {
                 String[] msgSplited = incomingMessage.getMessage().split("/");
