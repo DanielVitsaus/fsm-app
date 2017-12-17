@@ -50,6 +50,7 @@ public class VideoVLCActivity
     private BroadcastReceiver broadcastReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.e(TAG, "DEVE PARAR 3");
             VideoVLCActivity.this.finish();
         }
     };
@@ -92,6 +93,7 @@ public class VideoVLCActivity
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        Log.e(TAG, "DEVE PARAR 4");
         releasePlayer();
         LocalBroadcastManager.getInstance(this).unregisterReceiver(broadcastReceiver);
     }

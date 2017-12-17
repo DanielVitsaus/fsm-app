@@ -245,7 +245,7 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
                     builder.setItems(items, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            presenter.setGroup(i+1, Integer.parseInt(classesDevice.get(i)));
+                            presenter.setGroup(i+1, Integer.parseInt(String.valueOf(classesDevice.get(i).charAt(0))));
                         }
                     });
                     builder.setCancelable(false);

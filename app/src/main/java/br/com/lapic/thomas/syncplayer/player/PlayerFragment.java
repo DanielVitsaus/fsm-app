@@ -267,6 +267,7 @@ public class PlayerFragment extends Fragment {
     }
 
     public void sendMessageToFinishVideoVLCActivity() {
+        Log.e(TAG, "DEVE PARAR 2");
         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(AppConstants.SHOULD_FINISH));
     }
 
