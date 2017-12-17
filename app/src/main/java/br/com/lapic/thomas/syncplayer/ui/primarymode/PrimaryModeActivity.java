@@ -20,6 +20,7 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -61,6 +62,7 @@ public class PrimaryModeActivity
     private static final int REQUEST_READ_EXTERNAL_STORAGE = 1;
     private static final int MY_PERMISSIONS_REQUEST_WRITE_READ = 1;
     private ArrayList<Media> mMedias;
+    private App mApp;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -71,10 +73,10 @@ public class PrimaryModeActivity
         ButterKnife.bind(this);
         if (getIntent().getExtras() != null &&
                 getIntent().getExtras().getParcelable(AppConstants.APP_PARCEL) != null) {
-            App app = getIntent().getExtras().getParcelable(AppConstants.APP_PARCEL);
-            mPresenter.setMedias(app.getMedias());
+            mApp = getIntent().getExtras().getParcelable(AppConstants.APP_PARCEL);
+            mPresenter.setMedias(mApp.getMedias());
             mPresenter.setUseLocalApp(false);
-            mPresenter.setStorageId(app.getId());
+            mPresenter.setStorageId(mApp.getId());
         } else
             mPresenter.setUseLocalApp(true);
         checkPermissions();
@@ -230,6 +232,7 @@ public class PrimaryModeActivity
     public void callPlayer() {
         Intent intent = new Intent(this, Player.class);
         intent.putParcelableArrayListExtra(AppConstants.MEDIAS_PARCEL, mMedias);
+        intent.putExtra(AppConstants.PATH_APP, mApp.getId());
         startActivity(intent);
     }
 
@@ -240,17 +243,6 @@ public class PrimaryModeActivity
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        switch (requestCode) {
-//            case REQUEST_READ_EXTERNAL_STORAGE: {
-//                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-//                    presenter.onPermissionsOk(this);
-//                } else {
-//                    presenter.onError(R.string.read_permission_necessary);
-//                }
-//                return;
-//            }
-//        }
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_WRITE_READ:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
@@ -265,6 +257,16 @@ public class PrimaryModeActivity
     @OnClick(R.id.start_button)
     public void onClickStart(View view) {
         presenter.onClickStart();
+    }
+
+    @Override
+    public void showAlert(final String message) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                showToast(message);
+            }
+        });
     }
 
 }

@@ -13,6 +13,7 @@ public class Group implements Parcelable{
 
     private ArrayList<Media> medias;
     private ArrayList<Anchor> anchors;
+    private String mode;
 
     public Group() {
     }
@@ -25,6 +26,7 @@ public class Group implements Parcelable{
     protected Group(Parcel in) {
         medias = in.createTypedArrayList(Media.CREATOR);
         anchors = in.createTypedArrayList(Anchor.CREATOR);
+        mode = in.readString();
     }
 
     public static final Creator<Group> CREATOR = new Creator<Group>() {
@@ -51,6 +53,10 @@ public class Group implements Parcelable{
         return anchors;
     }
 
+    public String getMode() {
+        return mode;
+    }
+
     public void setMedias(ArrayList<Media> medias) {
         this.medias = medias;
     }
@@ -75,6 +81,10 @@ public class Group implements Parcelable{
         this.anchors.add(anchor);
     }
 
+    public void setMode(String mode) {
+        this.mode = mode;
+    }
+
     @Override
     public int describeContents() {
         return 0;
@@ -84,6 +94,7 @@ public class Group implements Parcelable{
     public void writeToParcel(Parcel parcel, int i) {
         parcel.writeTypedList(medias);
         parcel.writeTypedList(anchors);
+        parcel.writeString(mode);
     }
 
     public Media getMedia(String media) {

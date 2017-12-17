@@ -45,8 +45,16 @@
         <activity android:name=".ui.secondarymode.SecondaryModeActivity" />
         <activity
             android:name=".player.Player"
-            android:screenOrientation="landscape" />
-        <activity android:name=".ui.applications.ApplicationsActivity"></activity>
+            android:screenOrientation="landscape"
+            android:theme="@style/AppCompat.FullScreen" />
+        <activity android:name=".ui.applications.ApplicationsActivity" />
+        <activity
+            android:name=".player.VideoVLCActivity"
+            android:screenOrientation="landscape"
+            android:theme="@style/AppCompat.FullScreen" />
+        <activity
+            android:name=".ui.settings.SettingsActivity"
+            android:label="@string/title_activity_settings" />
     </application>
 
 </manifest>

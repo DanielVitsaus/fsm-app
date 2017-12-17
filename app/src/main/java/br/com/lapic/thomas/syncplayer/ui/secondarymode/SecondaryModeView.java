@@ -5,6 +5,8 @@ import android.os.Bundle;
 
 import com.hannesdorfmann.mosby.mvp.MvpView;
 
+import java.util.ArrayList;
+
 /**
  * Created by thomas on 19/08/17.
  */
@@ -23,7 +25,7 @@ public interface SecondaryModeView extends MvpView {
 
     void showMessage(String message);
 
-    void showDialogChoiceGroup(int amountGroups);
+    void showDialogChoiceGroup(int amountGroups, ArrayList<String> classesDevice);
 
     Context getMyContext();
 
@@ -32,4 +34,5 @@ public interface SecondaryModeView extends MvpView {
     void startDownloadMedias();
 
     void incrementProgressBar(int value);
+
 }

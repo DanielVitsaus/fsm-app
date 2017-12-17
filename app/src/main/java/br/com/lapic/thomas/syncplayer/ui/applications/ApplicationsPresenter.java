@@ -49,8 +49,7 @@ public class ApplicationsPresenter
             rootRef.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
-                    GenericTypeIndicator<Map<String, App>> genericTypeIndicator = new GenericTypeIndicator<Map<String, App>>() {
-                    };
+                    GenericTypeIndicator<Map<String, App>> genericTypeIndicator = new GenericTypeIndicator<Map<String, App>>() {};
                     mApplications = dataSnapshot.getValue(genericTypeIndicator);
                     if (mApplications != null)
                         onSuccess(mApplications);

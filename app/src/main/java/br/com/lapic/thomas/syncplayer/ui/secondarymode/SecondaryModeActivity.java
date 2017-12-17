@@ -36,6 +36,7 @@ import br.com.lapic.thomas.syncplayer.injection.component.ActivityComponent;
 import br.com.lapic.thomas.syncplayer.player.PlayerFragment;
 import br.com.lapic.thomas.syncplayer.ui.base.BaseMvpActivity;
 import br.com.lapic.thomas.syncplayer.ui.mode.ModeActivity;
+import br.com.lapic.thomas.syncplayer.ui.settings.SettingsActivity;
 import br.com.lapic.thomas.syncplayer.utils.AppConstants;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -120,6 +121,10 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
                 bottomSheet.build();
                 bottomSheet.show();
                 break;
+            case R.id.settings:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                break;
             case R.id.leave_secondary_mode:
                 mPresenter.onLeaveSecondaryMode();
                 break;
@@ -136,13 +141,15 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
+    protected void onResume() {
+        super.onResume();
+        mPresenter.onResume(this);
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    protected void onStop() {
+        mPresenter.onStop();
+        super.onStop();
     }
 
     @Override
@@ -225,7 +232,7 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
     }
 
     @Override
-    public void showDialogChoiceGroup(final int amountGroups) {
+    public void showDialogChoiceGroup(final int amountGroups, final ArrayList<String> classesDevice) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -238,7 +245,7 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
                     builder.setItems(items, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            presenter.setGroup(i+1);
+                            presenter.setGroup(i+1, Integer.parseInt(String.valueOf(classesDevice.get(i).charAt(0))));
                         }
                     });
                     builder.setCancelable(false);
