@@ -243,17 +243,6 @@ public class PrimaryModeActivity
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-//        switch (requestCode) {
-//            case REQUEST_READ_EXTERNAL_STORAGE: {
-//                if ((grantResults.length > 0) && (grantResults[0] == PackageManager.PERMISSION_GRANTED)) {
-//                    presenter.onPermissionsOk(this);
-//                } else {
-//                    presenter.onError(R.string.read_permission_necessary);
-//                }
-//                return;
-//            }
-//        }
-//        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_WRITE_READ:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {

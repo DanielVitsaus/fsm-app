@@ -68,22 +68,19 @@ public class StreamingController {
         switch (typeMedia) {
             case "video":
                 ipPort = AppConstants.STREAMING_MULTICAST_IP_BASE + ":7005";
-//                command = "-re -i /storage/emulated/0/Download/" + mediaSrc + " -acodec copy -vcodec copy -f rtp_mpegts rtp://" + ipPort;
-//                command = "-re -i /storage/emulated/0/Download/" + mediaSrc + " -acodec copy -vcodec copy -an -f rtp rtp://" + ipPort;
                 command = "-re -i /storage/emulated/0/Download/" + mediaSrc + " -acodec copy -vcodec copy -f rtp_mpegts rtp://" + ipPort;
                 executeCommand(command);
                 break;
             case "image":
                 ipPort = AppConstants.STREAMING_MULTICAST_IP_BASE + ":7006";
-//                command = "-loop 1 -i /storage/emulated/0/Download/" + mediaSrc + " -f lavfi -i anullsrc=channel_layout=5.1:sample_rate=48000 -t 5 -c:v libx264 -t 20 -pix_fmt yuv420p -vf scale=1280:720 -y -f rtp_mpegts rtp://" + ipPort;
                 command = "-loop 1 -i /storage/emulated/0/Download/"+ mediaSrc + " -g 10 -c:v libx264 -t 20 -pix_fmt yuv420p -vf scale=854:480 -f rtp_mpegts rtp://" + ipPort;
                 executeCommand(command);
                 break;
-//            case "audio":
-//                ipPort = AppConstants.STREAMING_MULTICAST_IP_BASE + ":7007";
-//                command = "-re -i /storage/emulated/0/Download/" + mediaSrc + " -acodec libmp3lame -ab 128k -ac 2 -ar 44100 -f rtp rtp://" + ipPort;
-//                executeCommand(command);
-//                break;
+            case "audio":
+                ipPort = AppConstants.STREAMING_MULTICAST_IP_BASE + ":7007";
+                command = "-re -i /storage/emulated/0/Download/" + mediaSrc + " -acodec copy -f rtp_mpegts rtp://" + ipPort;
+                executeCommand(command);
+                break;
             default:
                 Log.e(TAG, "Mídia não suportada");
                 break;

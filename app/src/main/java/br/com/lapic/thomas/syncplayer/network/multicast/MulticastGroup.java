@@ -57,7 +57,6 @@ public class MulticastGroup extends MulticastManager {
             } else if (incomingMessage.getTag().equals(AppConstants.TO_DOWNLOAD)) {
                 String message = incomingMessage.getMessage();
                 String[] mediasToDownload = message.split("/");
-                Log.e(TAG, mediasToDownload[0]);
                 secondaryModePresenter.setMediasToDownload(mediasToDownload);
             }
         } else if (playerFragment != null) {
@@ -68,16 +67,16 @@ public class MulticastGroup extends MulticastManager {
                     String action = msgSplited[0];
                     String param = msgSplited[1];
                     if (action.equals(AppConstants.START)) {
+                        Log.e(TAG, "DEVE INICIAR");
                         Intent intent = new Intent(mContext, VideoVLCActivity.class);
                         intent.putExtra(AppConstants.STREAMING_URL, param);
                         mContext.startActivity(intent);
-                        Log.e(TAG, msg);
                     } else if (action.contains(AppConstants.STOP)) {
+                        Log.e(TAG, "DEVE PARAR");
                         playerFragment.sendMessageToFinishVideoVLCActivity();
                     }
                     Log.e(TAG, msg);
                 } else {
-                    Log.e(TAG, msg);
                     //START:media2,video,-1,medias/media2.mp4+
                     String param = msg.substring(msg.indexOf(":") + 1);
                     //media2,video,-1,medias/media2.mp4+
