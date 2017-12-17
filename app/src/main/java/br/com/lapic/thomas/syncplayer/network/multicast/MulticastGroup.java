@@ -71,6 +71,7 @@ public class MulticastGroup extends MulticastManager {
                         Intent intent = new Intent(mContext, VideoVLCActivity.class);
                         intent.putExtra(AppConstants.STREAMING_URL, param);
                         mContext.startActivity(intent);
+                        Log.e(TAG, msg);
                     } else if (action.contains(AppConstants.STOP)) {
                         playerFragment.sendMessageToFinishVideoVLCActivity();
                     }

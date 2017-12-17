@@ -67,6 +67,12 @@ public class PlayerFragment extends Fragment {
         startMulticastGroup();
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        startMulticastGroup();
+    }
+
     private void startMulticastGroup() {
         String multicastIp = StringHelper.incrementIp(AppConstants.CONFIG_MULTICAST_IP, mGroup);
         Log.e(TAG, multicastIp);
