@@ -9,6 +9,7 @@ import android.util.Log;
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -38,7 +39,7 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
     private int mediaDownloadCount = 0;
     private String hostIp;
     private String pathApp;
-    private String[] mClassesDevices;
+    private ArrayList<String> mClassesDevices;
 
     @Inject
     protected PreferencesHelper mPreferencesHelper;
@@ -85,11 +86,77 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
 
     public void showDialogChoiceGroup(String totalGroups, String classesDevices, String hostIP) {
         this.hostIp = hostIP;
-        this.mClassesDevices = classesDevices.split(",");
+
+        //Filtra os tipos de acordo com as mídias suportadas pelo dispositivos
+        ArrayList<String> classes = new ArrayList<>();
+        Collections.addAll(classes, classesDevices.split(","));
+        for (int i = 0; i < classes.size(); i++) {
+            if (Integer.parseInt(String.valueOf(classes.get(i).charAt(0))) == AppConstants.ACTIVE_CLASS) {
+                String types = classes.get(i);
+                if (!verifyGroup(types.substring(types.indexOf("(") + 1, types.indexOf(")")).split(";")))
+                    classes.remove(i);
+            }
+        }
+
+        this.mClassesDevices = classes;
         if (isViewAttached() && mGroupNumber < 0) {
-            this.amountGroups = Integer.parseInt(totalGroups);
+            this.amountGroups = classes.size();
             getView().showDialogChoiceGroup(amountGroups, mClassesDevices);
         }
+    }
+
+    private boolean verifyGroup(String[] types) {
+        boolean result = true;
+
+        for (int i = 0; i < types.length; i++) {
+            switch (types[i]) {
+                case "png":
+                    if (!mPreferencesHelper.getSupportPng())
+                        result = false;
+                    break;
+                case "jpeg":
+                    if (!mPreferencesHelper.getSupportJpeg())
+                        result = false;
+                    break;
+                case "jpg":
+                    if (!mPreferencesHelper.getSupportJpeg())
+                        result = false;
+                    break;
+                case "mpeg4":
+                    if (!mPreferencesHelper.getSupportMpeg4())
+                        result = false;
+                    break;
+                case "mp4":
+                    if (!mPreferencesHelper.getSupportMpeg4())
+                        result = false;
+                    break;
+                case "3gp":
+                    if (!mPreferencesHelper.getSupport3gp())
+                        result = false;
+                    break;
+                case "mov":
+                    if (!mPreferencesHelper.getSupportMov())
+                        result = false;
+                    break;
+                case "mpeg3":
+                    if (!mPreferencesHelper.getSupportMpeg3())
+                        result = false;
+                    break;
+                case "mp3":
+                    if (!mPreferencesHelper.getSupportMpeg3())
+                        result = false;
+                    break;
+                case "wav":
+                    if (!mPreferencesHelper.getSupportWav())
+                        result = false;
+                    break;
+                default:
+                    Log.e(TAG, "Mídia não suportada");
+                    break;
+            }
+        }
+
+        return result;
     }
 
     public void setMediasToDownload(String[] medias) {
@@ -112,7 +179,7 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
     }
 
     public void onLeaveSecondaryMode() {
-        mPreferencesHelper.clear();
+        mPreferencesHelper.clearMode();
         if (isViewAttached())
             getView().callModeActivity();
     }
@@ -122,6 +189,10 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
             getView().checkPermissions();
             getView().showLoading(R.string.Looking_primary_device);
         }
+    }
+
+    public void onResume(Context context) {
+        startDiscoveryMulticastGroup();
     }
 
     private void onSuccess() {

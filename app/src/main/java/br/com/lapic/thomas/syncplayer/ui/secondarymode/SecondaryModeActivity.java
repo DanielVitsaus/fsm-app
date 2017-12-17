@@ -3,11 +3,9 @@ package br.com.lapic.thomas.syncplayer.ui.secondarymode;
 import android.Manifest;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
@@ -15,9 +13,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.AlertDialog;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -40,6 +36,7 @@ import br.com.lapic.thomas.syncplayer.injection.component.ActivityComponent;
 import br.com.lapic.thomas.syncplayer.player.PlayerFragment;
 import br.com.lapic.thomas.syncplayer.ui.base.BaseMvpActivity;
 import br.com.lapic.thomas.syncplayer.ui.mode.ModeActivity;
+import br.com.lapic.thomas.syncplayer.ui.settings.SettingsActivity;
 import br.com.lapic.thomas.syncplayer.utils.AppConstants;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -124,6 +121,10 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
                 bottomSheet.build();
                 bottomSheet.show();
                 break;
+            case R.id.settings:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
+                break;
             case R.id.leave_secondary_mode:
                 mPresenter.onLeaveSecondaryMode();
                 break;
@@ -140,13 +141,9 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-    }
-
-    @Override
     protected void onResume() {
         super.onResume();
+        mPresenter.onResume(this);
     }
 
     @Override
@@ -235,7 +232,7 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
     }
 
     @Override
-    public void showDialogChoiceGroup(final int amountGroups, final String[] classesDevice) {
+    public void showDialogChoiceGroup(final int amountGroups, final ArrayList<String> classesDevice) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -248,7 +245,7 @@ public class SecondaryModeActivity extends BaseMvpActivity<SecondaryModeView, Se
                     builder.setItems(items, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialogInterface, int i) {
-                            presenter.setGroup(i+1, Integer.parseInt(classesDevice[i]));
+                            presenter.setGroup(i+1, Integer.parseInt(classesDevice.get(i)));
                         }
                     });
                     builder.setCancelable(false);

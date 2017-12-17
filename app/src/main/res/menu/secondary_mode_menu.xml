@@ -13,6 +13,9 @@
         android:title="@string/action_menu"
         apk:showAsAction="ifRoom" >
         <menu>
+            <item android:id="@+id/settings"
+                android:title="@string/settings"
+                />
             <item android:id="@+id/leave_secondary_mode"
                 android:title="@string/leave_secondary_mode"
                 />

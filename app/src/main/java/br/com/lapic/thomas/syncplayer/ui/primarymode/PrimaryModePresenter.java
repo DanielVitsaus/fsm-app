@@ -71,7 +71,7 @@ public class PrimaryModePresenter
     }
 
     public void onLeavePrimaryMode() {
-        mPreferencesHelper.clear();
+        mPreferencesHelper.clearMode();
         stopMulticastGroups();
         if (isViewAttached())
             getView().callModeActivity();
@@ -252,8 +252,10 @@ public class PrimaryModePresenter
             for (Group group : mMedias.get(0).getGroups()) {
                 if (group.getMode().equals(AppConstants.MODE_PASSIVE))
                     types.append("1,");
-                else
-                    types.append("2,");
+                else {
+                    String typeMedias = getMediaFormats(group);
+                    types.append("2"+ typeMedias +",");
+                }
             }
             types.deleteCharAt(types.length()-1);
             mainMulticastGroup.sendMessage(true, mMedias.get(0).getGroups().size() + "/" +
@@ -398,4 +400,18 @@ public class PrimaryModePresenter
         if (isViewAttached())
             getView().showAlert(message);
     }
+
+    private String getMediaFormats(Group group) {
+        String formats = "(";
+        for (Media media : group.getMedias()) {
+            String ext = media.getSrc().substring(media.getSrc().lastIndexOf(".") + 1);
+            if (!formats.contains(ext))
+                formats += ext + ";";
+        }
+        formats = formats.substring(0, formats.length() - 1) + ")";
+        Log.e(TAG, formats);
+        return formats;
+    }
+
 }
+

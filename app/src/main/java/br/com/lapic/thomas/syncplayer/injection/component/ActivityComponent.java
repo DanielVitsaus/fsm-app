@@ -9,6 +9,7 @@ import br.com.lapic.thomas.syncplayer.ui.applications.ApplicationsActivity;
 import br.com.lapic.thomas.syncplayer.ui.mode.ModeActivity;
 import br.com.lapic.thomas.syncplayer.ui.primarymode.PrimaryModeActivity;
 import br.com.lapic.thomas.syncplayer.ui.secondarymode.SecondaryModeActivity;
+import br.com.lapic.thomas.syncplayer.ui.settings.SettingsActivity;
 import br.com.lapic.thomas.syncplayer.ui.splashscreen.SplashScreenActivity;
 import dagger.Component;
 
@@ -28,6 +29,8 @@ public interface ActivityComponent {
     void inject(SecondaryModeActivity secondaryModeActivity);
 
     void inject(ApplicationsActivity applicationsActivity);
+
+    void inject(SettingsActivity settingsActivity);
 
     @ActivityContext
     Context context();
