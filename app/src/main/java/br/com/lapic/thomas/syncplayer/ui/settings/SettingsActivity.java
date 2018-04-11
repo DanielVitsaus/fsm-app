@@ -39,6 +39,9 @@ public class SettingsActivity extends BaseMvpActivity<SettingsView, SettingsPres
     @BindView(R.id.switch_wav)
     protected Switch switchWav;
 
+    @BindView(R.id.switch_app)
+    protected Switch switchApp;
+
     @Inject
     protected SettingsPresenter mPresenter;
 
@@ -68,6 +71,7 @@ public class SettingsActivity extends BaseMvpActivity<SettingsView, SettingsPres
         switchMov.setChecked(presenter.getSupportMov());
         switchMpeg3.setChecked(presenter.getSupportMpeg3());
         switchWav.setChecked(presenter.getSupportWav());
+        switchApp.setChecked(presenter.getSupportApp());
     }
 
     @NonNull
@@ -114,6 +118,11 @@ public class SettingsActivity extends BaseMvpActivity<SettingsView, SettingsPres
     @OnCheckedChanged(R.id.switch_wav)
     public void onChangedSwitchWav(CompoundButton buttonView, boolean isChecked) {
         presenter.setSupportWav(isChecked);
+    }
+
+    @OnCheckedChanged(R.id.switch_app)
+    public void onChangedSwitchApp(CompoundButton buttonView, boolean isChecked) {
+        presenter.setSupportApp(isChecked);
     }
 
 }

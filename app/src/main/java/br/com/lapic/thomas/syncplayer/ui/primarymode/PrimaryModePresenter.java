@@ -404,9 +404,13 @@ public class PrimaryModePresenter
     private String getMediaFormats(Group group) {
         String formats = "(";
         for (Media media : group.getMedias()) {
-            String ext = media.getSrc().substring(media.getSrc().lastIndexOf(".") + 1);
-            if (!formats.contains(ext))
-                formats += ext + ";";
+            if (media.getType().equals(AppConstants.APP)) {
+                formats += media.getType() + ";";
+            } else {
+                String ext = media.getSrc().substring(media.getSrc().lastIndexOf(".") + 1);
+                if (!formats.contains(ext))
+                    formats += ext + ";";
+            }
         }
         formats = formats.substring(0, formats.length() - 1) + ")";
         Log.e(TAG, formats);

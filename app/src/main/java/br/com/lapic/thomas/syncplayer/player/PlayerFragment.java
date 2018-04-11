@@ -270,5 +270,4 @@ public class PlayerFragment extends Fragment {
         Log.e(TAG, "DEVE PARAR 2");
         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(AppConstants.SHOULD_FINISH));
     }
-
 }

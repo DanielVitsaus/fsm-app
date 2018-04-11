@@ -22,6 +22,7 @@ public class PreferencesHelper {
     private static final String SUPPORT_MOV = "SUPPORT_MOV";
     private static final String SUPPORT_MPEG3 = "SUPPORT_MPEG3";
     private static final String SUPPORT_WAV = "SUPPORT_WAV";
+    private static final String SUPPORT_APP = "SUPPORT_APP";
 
     private final SharedPreferences mPref;
 
@@ -101,6 +102,14 @@ public class PreferencesHelper {
 
     public boolean getSupportWav() {
         return mPref.getBoolean(SUPPORT_WAV, false);
+    }
+
+    public void putSupportApp(boolean value) {
+        mPref.edit().putBoolean(SUPPORT_APP, value).apply();
+    }
+
+    public boolean getSupportApp() {
+        return  mPref.getBoolean(SUPPORT_APP, false);
     }
 
 }

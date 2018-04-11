@@ -110,4 +110,6 @@
     <string name="mpeg3">mpeg3</string>
     <string name="wav">wav</string>
     <string name="audio">audio</string>
+    <string name="others">Outros</string>
+    <string name="app">aplicação</string>
 </resources>
