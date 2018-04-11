@@ -20,6 +20,7 @@ public class AppConstants {
     public static String IMAGE = "image";
     public static String AUDIO = "audio";
     public static String URL = "url";
+    public static String APP = "app";
     public static String MEDIAS = "medias";
     public static String ID = "id";
     public static String SRC = "src";

@@ -200,7 +200,7 @@ public class PrimaryModePresenter
             mediasToDownload.add(storageId + mMedia.getSrc());
             for (Group group : mMedia.getGroups()) {
                 for (Media media : group.getMedias()) {
-                    if (!media.getType().equals(AppConstants.URL)) {
+                    if ((!media.getType().equals(AppConstants.URL)) && (!media.getType().equals(AppConstants.APP))) {
                         mediasToDownload.add(storageId + media.getSrc());
                     }
                 }
@@ -274,7 +274,7 @@ public class PrimaryModePresenter
                 if (group.getMode().equals(AppConstants.MODE_ACTIVE)) {
                     message += groupNumber + ":";
                     for (Media media : group.getMedias()) {
-                        if (!media.getType().equals(AppConstants.URL))
+                        if ((!media.getType().equals(AppConstants.URL)) && (!media.getType().equals(AppConstants.APP)))
                             message += media.getSrc().substring(media.getSrc().lastIndexOf("/") + 1) + ",";
                     }
                     message = message.substring(0, message.length() - 1);
