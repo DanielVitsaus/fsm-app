@@ -1,27 +1,27 @@
 {
   "project_info": {
-    "project_number": "191812777668",
-    "firebase_url": "https://syncplayer-c2753.firebaseio.com",
-    "project_id": "syncplayer-c2753",
-    "storage_bucket": "syncplayer-c2753.appspot.com"
+    "project_number": "778093931225",
+    "firebase_url": "https://syncplayerapp-d1d85.firebaseio.com",
+    "project_id": "syncplayerapp-d1d85",
+    "storage_bucket": "syncplayerapp-d1d85.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:191812777668:android:b262424289e60ab7",
+        "mobilesdk_app_id": "1:778093931225:android:12b9c421fe726c43",
         "android_client_info": {
-          "package_name": "br.com.lapic.thomas.syncplayer"
+          "package_name": "com.lapic.thomas.syncplayer"
         }
       },
       "oauth_client": [
         {
-          "client_id": "191812777668-i6g90qms2ip3oo5md197rv507fjkh4n9.apps.googleusercontent.com",
+          "client_id": "778093931225-ags5hvntvgf4tetghrlbtg5sfg470i0e.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyAekZL9OYvkVsvew30nQM6_8tSNhuQkqwo"
+          "current_key": "AIzaSyCJddB-P6I5V2YkkuB5P2hBXi40N_A1v_o"
         }
       ],
       "services": {
