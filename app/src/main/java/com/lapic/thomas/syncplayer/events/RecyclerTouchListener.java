@@ -1,4 +1,4 @@
-package br.com.lapic.thomas.syncplayer.events;
+package com.lapic.thomas.syncplayer.events;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;

@@ -1,4 +1,4 @@
-package br.com.lapic.thomas.syncplayer.data.model;
+package com.lapic.thomas.syncplayer.data.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -6,7 +6,7 @@ import android.os.Parcelable;
 import java.util.ArrayList;
 import java.util.Comparator;
 
-import br.com.lapic.thomas.syncplayer.helper.StringHelper;
+import com.lapic.thomas.syncplayer.helper.StringHelper;
 
 /**
  * Created by thomas on 21/08/17.

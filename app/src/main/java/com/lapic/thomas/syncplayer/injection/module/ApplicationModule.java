@@ -1,9 +1,9 @@
-package br.com.lapic.thomas.syncplayer.injection.module;
+package com.lapic.thomas.syncplayer.injection.module;
 
 import android.app.Application;
 import android.content.Context;
 
-import br.com.lapic.thomas.syncplayer.injection.ApplicationContext;
+import com.lapic.thomas.syncplayer.injection.ApplicationContext;
 import dagger.Module;
 import dagger.Provides;
 

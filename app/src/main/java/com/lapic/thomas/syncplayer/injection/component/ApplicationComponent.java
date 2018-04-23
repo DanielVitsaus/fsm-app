@@ -1,13 +1,13 @@
-package br.com.lapic.thomas.syncplayer.injection.component;
+package com.lapic.thomas.syncplayer.injection.component;
 
 import android.app.Application;
 import android.content.Context;
 
 import javax.inject.Singleton;
 
-import br.com.lapic.thomas.syncplayer.MyApplication;
-import br.com.lapic.thomas.syncplayer.injection.ApplicationContext;
-import br.com.lapic.thomas.syncplayer.injection.module.ApplicationModule;
+import com.lapic.thomas.syncplayer.MyApplication;
+import com.lapic.thomas.syncplayer.injection.ApplicationContext;
+import com.lapic.thomas.syncplayer.injection.module.ApplicationModule;
 import dagger.Component;
 
 /**

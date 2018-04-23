@@ -1,11 +1,11 @@
-package br.com.lapic.thomas.syncplayer.helper;
+package com.lapic.thomas.syncplayer.helper;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 
 import javax.inject.Inject;
 
-import br.com.lapic.thomas.syncplayer.injection.ApplicationContext;
+import com.lapic.thomas.syncplayer.injection.ApplicationContext;
 
 /**
  * Created by thomas on 19/08/17.

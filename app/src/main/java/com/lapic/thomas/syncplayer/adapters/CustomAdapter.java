@@ -1,4 +1,4 @@
-package br.com.lapic.thomas.syncplayer.adapters;
+package com.lapic.thomas.syncplayer.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -9,8 +9,8 @@ import android.widget.TextView;
 
 import java.util.List;
 
-import br.com.lapic.thomas.syncplayer.R;
-import br.com.lapic.thomas.syncplayer.data.model.App;
+import com.lapic.thomas.syncplayer.R;
+import com.lapic.thomas.syncplayer.data.model.App;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 

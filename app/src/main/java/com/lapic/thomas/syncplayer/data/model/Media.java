@@ -1,4 +1,4 @@
-package br.com.lapic.thomas.syncplayer.data.model;
+package com.lapic.thomas.syncplayer.data.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;

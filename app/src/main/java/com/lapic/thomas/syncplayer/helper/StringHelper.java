@@ -1,4 +1,4 @@
-package br.com.lapic.thomas.syncplayer.helper;
+package com.lapic.thomas.syncplayer.helper;
 
 import android.os.Build;
 import android.text.TextUtils;

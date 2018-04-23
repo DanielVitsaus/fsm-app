@@ -1,16 +1,16 @@
-package br.com.lapic.thomas.syncplayer.injection.component;
+package com.lapic.thomas.syncplayer.injection.component;
 
 import android.content.Context;
 
-import br.com.lapic.thomas.syncplayer.injection.ActivityContext;
-import br.com.lapic.thomas.syncplayer.injection.PerActivity;
-import br.com.lapic.thomas.syncplayer.injection.module.ActivityModule;
-import br.com.lapic.thomas.syncplayer.ui.applications.ApplicationsActivity;
-import br.com.lapic.thomas.syncplayer.ui.mode.ModeActivity;
-import br.com.lapic.thomas.syncplayer.ui.primarymode.PrimaryModeActivity;
-import br.com.lapic.thomas.syncplayer.ui.secondarymode.SecondaryModeActivity;
-import br.com.lapic.thomas.syncplayer.ui.settings.SettingsActivity;
-import br.com.lapic.thomas.syncplayer.ui.splashscreen.SplashScreenActivity;
+import com.lapic.thomas.syncplayer.injection.ActivityContext;
+import com.lapic.thomas.syncplayer.injection.PerActivity;
+import com.lapic.thomas.syncplayer.injection.module.ActivityModule;
+import com.lapic.thomas.syncplayer.ui.applications.ApplicationsActivity;
+import com.lapic.thomas.syncplayer.ui.mode.ModeActivity;
+import com.lapic.thomas.syncplayer.ui.primarymode.PrimaryModeActivity;
+import com.lapic.thomas.syncplayer.ui.secondarymode.SecondaryModeActivity;
+import com.lapic.thomas.syncplayer.ui.settings.SettingsActivity;
+import com.lapic.thomas.syncplayer.ui.splashscreen.SplashScreenActivity;
 import dagger.Component;
 
 /**

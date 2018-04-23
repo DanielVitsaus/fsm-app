@@ -1,4 +1,4 @@
-package br.com.lapic.thomas.syncplayer.injection;
+package com.lapic.thomas.syncplayer.injection;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
