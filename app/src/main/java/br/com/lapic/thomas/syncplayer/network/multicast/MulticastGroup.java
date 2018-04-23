@@ -1,8 +1,10 @@
 package br.com.lapic.thomas.syncplayer.network.multicast;
 
 import android.app.Activity;
+import android.app.Fragment;
 import android.content.Context;
 import android.content.Intent;
+import android.net.Uri;
 import android.util.Log;
 
 import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
@@ -56,12 +58,13 @@ public class MulticastGroup extends MulticastManager {
                 secondaryModePresenter.showDialogChoiceGroup(msgSplited[0], msgSplited[1], msgSplited[2]);
             } else if (incomingMessage.getTag().equals(AppConstants.TO_DOWNLOAD)) {
                 String message = incomingMessage.getMessage();
+                Log.e(TAG, incomingMessage.getMessage());
                 String[] mediasToDownload = message.split("/");
                 secondaryModePresenter.setMediasToDownload(mediasToDownload);
             }
         } else if (playerFragment != null) {
             if (incomingMessage.getTag().equals(AppConstants.ACTION)) {
-                String msg = incomingMessage.getMessage();
+                final String msg = incomingMessage.getMessage();
                 if (msg.contains("rtp://")) { //deve fazer o streaming
                     String[] msgSplited = msg.split(" ");
                     String action = msgSplited[0];
@@ -76,6 +79,19 @@ public class MulticastGroup extends MulticastManager {
                         playerFragment.sendMessageToFinishVideoVLCActivity();
                     }
                     Log.e(TAG, msg);
+                } else if (msg.contains("START:app:")) {
+                    final String urlInstantApp = msg.replace("START:app:","");
+                    playerFragment.getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Uri uri = Uri.parse(urlInstantApp);
+                            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+                            intent.addCategory(Intent.CATEGORY_BROWSABLE);
+                            playerFragment.getActivity().startActivity(intent);
+                        }
+                    });
+                } else if (msg.contains("STOP:app")) {
+
                 } else {
                     //START:media2,video,-1,medias/media2.mp4+
                     String param = msg.substring(msg.indexOf(":") + 1);

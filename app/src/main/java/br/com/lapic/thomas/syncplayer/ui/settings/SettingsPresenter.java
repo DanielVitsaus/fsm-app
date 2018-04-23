@@ -75,4 +75,13 @@ public class SettingsPresenter extends MvpBasePresenter<SettingsView> {
     public boolean getSupportWav() {
         return mPreferencesHelper.getSupportWav();
     }
+
+    public void setSupportApp(boolean value) {
+        mPreferencesHelper.putSupportApp(value);
+    }
+
+    public boolean getSupportApp() {
+        return mPreferencesHelper.getSupportApp();
+    }
+
 }

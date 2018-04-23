@@ -91,6 +91,7 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
         ArrayList<String> classes = new ArrayList<>();
         Collections.addAll(classes, classesDevices.split(","));
         for (int i = 0; i < classes.size(); i++) {
+            Log.d(TAG, classesDevices + " ----- " + hostIP);
             if (Integer.parseInt(String.valueOf(classes.get(i).charAt(0))) == AppConstants.ACTIVE_CLASS) {
                 String types = classes.get(i);
                 if (!verifyGroup(types.substring(types.indexOf("(") + 1, types.indexOf(")")).split(";")))
@@ -150,6 +151,10 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
                     if (!mPreferencesHelper.getSupportWav())
                         result = false;
                     break;
+                case "app":
+                    if (!mPreferencesHelper.getSupportApp())
+                        result = false;
+                    break;
                 default:
                     Log.e(TAG, "Mídia não suportada");
                     break;
@@ -162,15 +167,22 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
     public void setMediasToDownload(String[] medias) {
         downloadMulticastGroup.stopMessageReceiver();
         for (int i = 0; i < medias.length; i++) {
-            String[] mediasSplited = medias[i].split(":");
-            Log.e(TAG, mediasSplited[0]);
-            Log.e(TAG, mediasSplited[1]);
-            if (Integer.parseInt(mediasSplited[0]) == mGroupNumber) {
-                String[] mediastoDownload = mediasSplited[1].split(",");
-                mediasToDownload = new ArrayList<>();
-                Collections.addAll(mediasToDownload, mediastoDownload);
-                sendFile();
+            if (medias[i].contains(":")) {
+                String[] mediasSplited = medias[i].split(":");
+                Log.e(TAG, mediasSplited[0]);
+                Log.e(TAG, mediasSplited[1]);
+                if (Integer.parseInt(mediasSplited[0]) == mGroupNumber) {
+                    String[] mediastoDownload = mediasSplited[1].split(",");
+                    mediasToDownload = new ArrayList<>();
+                    Collections.addAll(mediasToDownload, mediastoDownload);
+                    sendFile();
+                }
             }
+        }
+        if (mediasToDownload == null) {
+            Bundle bundle = new Bundle();
+            bundle.putInt(AppConstants.MY_GROUP, mGroupNumber);
+            if (isViewAttached()) getView().startFragmentPlayer(bundle);
         }
 //        String[] mediastoDownload = medias[mGroupNumber -1].split(",");
 //        mediasToDownload = new ArrayList<>();

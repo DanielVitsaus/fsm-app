@@ -200,7 +200,7 @@ public class PrimaryModePresenter
             mediasToDownload.add(storageId + mMedia.getSrc());
             for (Group group : mMedia.getGroups()) {
                 for (Media media : group.getMedias()) {
-                    if (!media.getType().equals(AppConstants.URL)) {
+                    if ((!media.getType().equals(AppConstants.URL)) && (!media.getType().equals(AppConstants.APP))) {
                         mediasToDownload.add(storageId + media.getSrc());
                     }
                 }
@@ -274,7 +274,7 @@ public class PrimaryModePresenter
                 if (group.getMode().equals(AppConstants.MODE_ACTIVE)) {
                     message += groupNumber + ":";
                     for (Media media : group.getMedias()) {
-                        if (!media.getType().equals(AppConstants.URL))
+                        if ((!media.getType().equals(AppConstants.URL)) && (!media.getType().equals(AppConstants.APP)))
                             message += media.getSrc().substring(media.getSrc().lastIndexOf("/") + 1) + ",";
                     }
                     message = message.substring(0, message.length() - 1);
@@ -404,9 +404,13 @@ public class PrimaryModePresenter
     private String getMediaFormats(Group group) {
         String formats = "(";
         for (Media media : group.getMedias()) {
-            String ext = media.getSrc().substring(media.getSrc().lastIndexOf(".") + 1);
-            if (!formats.contains(ext))
-                formats += ext + ";";
+            if (media.getType().equals(AppConstants.APP)) {
+                formats += media.getType() + ";";
+            } else {
+                String ext = media.getSrc().substring(media.getSrc().lastIndexOf(".") + 1);
+                if (!formats.contains(ext))
+                    formats += ext + ";";
+            }
         }
         formats = formats.substring(0, formats.length() - 1) + ")";
         Log.e(TAG, formats);

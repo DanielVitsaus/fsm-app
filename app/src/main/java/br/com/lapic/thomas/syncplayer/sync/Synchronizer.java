@@ -81,9 +81,13 @@ public class Synchronizer extends Thread {
     public void sendMessage(String action, ArrayList<String> medias) {
         String str = action + ":";
         for (String media : medias) {
-            String mediaName = media.substring(media.lastIndexOf("/") + 1, media.lastIndexOf("."));
-            Media mMedia = mGroup.getMedia(mediaName);
-            str += mMedia.getId() + "," + mMedia.getType() + "," + mMedia.getDuration() + "," + mMedia.getSrc() + "+";
+            if (media.contains(AppConstants.APP)) {
+                str += media;
+            } else {
+                String mediaName = media.substring(media.lastIndexOf("/") + 1, media.lastIndexOf("."));
+                Media mMedia = mGroup.getMedia(mediaName);
+                str += mMedia.getId() + "," + mMedia.getType() + "," + mMedia.getDuration() + "," + mMedia.getSrc() + "+";
+            }
         }
         try {
             Log.e(TAG, str);
