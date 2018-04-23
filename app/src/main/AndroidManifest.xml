@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="br.com.lapic.thomas.syncplayer">
+    package="com.lapic.thomas.syncplayer">
 
     <uses-permission
         android:name="android.permission.ACCESS_WIFI_STATE"
@@ -19,7 +19,7 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
-        android:name=".MyApplication"
+        android:name="com.lapic.thomas.syncplayer.MyApplication"
         android:allowBackup="true"
         android:hardwareAccelerated="false"
         android:icon="@mipmap/ic_launch"
@@ -30,7 +30,7 @@
         android:theme="@style/AppTheme"
         tools:replace="android:icon">
         <activity
-            android:name=".ui.splashscreen.SplashScreenActivity"
+            android:name="com.lapic.thomas.syncplayer.ui.splashscreen.SplashScreenActivity"
             android:theme="@style/AppCompat.FullScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,21 +39,21 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.mode.ModeActivity"
+            android:name="com.lapic.thomas.syncplayer.ui.mode.ModeActivity"
             android:theme="@style/AppCompat.FullScreen" />
-        <activity android:name=".ui.primarymode.PrimaryModeActivity" />
-        <activity android:name=".ui.secondarymode.SecondaryModeActivity" />
+        <activity android:name="com.lapic.thomas.syncplayer.ui.primarymode.PrimaryModeActivity" />
+        <activity android:name="com.lapic.thomas.syncplayer.ui.secondarymode.SecondaryModeActivity" />
         <activity
-            android:name=".player.Player"
+            android:name="com.lapic.thomas.syncplayer.player.Player"
             android:screenOrientation="landscape"
             android:theme="@style/AppCompat.FullScreen" />
-        <activity android:name=".ui.applications.ApplicationsActivity" />
+        <activity android:name="com.lapic.thomas.syncplayer.ui.applications.ApplicationsActivity" />
         <activity
-            android:name=".player.VideoVLCActivity"
+            android:name="com.lapic.thomas.syncplayer.player.VideoVLCActivity"
             android:screenOrientation="landscape"
             android:theme="@style/AppCompat.FullScreen" />
         <activity
-            android:name=".ui.settings.SettingsActivity"
+            android:name="com.lapic.thomas.syncplayer.ui.settings.SettingsActivity"
             android:label="@string/title_activity_settings" />
     </application>
 

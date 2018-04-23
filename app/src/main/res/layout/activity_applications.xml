@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="br.com.lapic.thomas.syncplayer.ui.applications.ApplicationsActivity">
+    tools:context="com.lapic.thomas.syncplayer.ui.applications.ApplicationsActivity">
 
     <include
         android:id="@+id/loading"
