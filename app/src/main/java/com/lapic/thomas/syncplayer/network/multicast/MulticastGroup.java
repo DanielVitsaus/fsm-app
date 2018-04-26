@@ -63,6 +63,7 @@ public class MulticastGroup extends MulticastManager {
             primaryModePresenter.showActionFromSecondDevice(incomingMessage.getMessage());
         } else if (secondaryModePresenter != null) {
             if (incomingMessage.getTag().equals(AppConstants.GROUP_CONFIG)) {
+                Log.e(TAG, incomingMessage.getMessage());
                 String[] msgSplited = incomingMessage.getMessage().split("/");
                 secondaryModePresenter.setPathApp("/" + msgSplited[3]);
                 secondaryModePresenter.showDialogChoiceGroup(msgSplited[0], msgSplited[1], msgSplited[2]);

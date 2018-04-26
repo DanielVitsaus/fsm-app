@@ -254,6 +254,13 @@ public class Player extends Activity implements MediaPlayer.OnCompletionListener
         if (indexCurrentMedia == 1) {
             mVideoView.seekTo(mVideoView.getDuration() - 1);
         } else {
+            String appUrl = mMedias.get(1).getGroup(0).getAnchors().get(0).getMedia(0);
+//            Log.e(TAG, appUrl);
+            try {
+                multicastGroups.get(0).sendMessage(false, "START:" + appUrl.replace("-1", String.valueOf(level)));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
             multicastGroup.stopMessageReceiver();
             multicastGroup.stopKeepAlive();
             finish();
@@ -278,12 +285,19 @@ public class Player extends Activity implements MediaPlayer.OnCompletionListener
         level = which;
         if (mMedias.size() > indexCurrentMedia) {
             //startGroup para iniciar instantApp
-            playMedia(mMedias.get(indexCurrentMedia));
+            this.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    playMedia(mMedias.get(indexCurrentMedia));
+                }
+            });
         }  else {
             multicastGroup.stopMessageReceiver();
             multicastGroup.stopKeepAlive();
-            finish();
+//            finish();
+            android.os.Process.killProcess(android.os.Process.myPid());
         }
+
 
 //        mMediaPlayer.seekTo();
 
