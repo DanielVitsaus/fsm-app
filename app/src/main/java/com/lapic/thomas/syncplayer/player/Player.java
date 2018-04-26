@@ -248,6 +248,7 @@ public class Player extends Activity implements MediaPlayer.OnCompletionListener
             mWebView.destroy();
             mWebView.setVisibility(View.GONE);
         }
+
     }
 
     private void onEndMedia() {
