@@ -417,5 +417,8 @@ public class PrimaryModePresenter
         return formats;
     }
 
+    public void levelSelectedFromUser(int which) {
+
+    }
 }
 

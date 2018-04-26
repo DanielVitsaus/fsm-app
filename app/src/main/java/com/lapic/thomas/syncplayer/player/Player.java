@@ -46,12 +46,15 @@ public class Player extends Activity implements MediaPlayer.OnCompletionListener
     private ArrayList<MulticastGroup> multicastGroups;
     private ArrayList<Thread> syncs;
     private String folderApp;
+    private MulticastGroup multicastGroup;
+    private int level = -1;
 
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         configStatusBar();
         setContentView(R.layout.player_activity);
+        startMulticastGroupAction();
         mMedias = getIntent().getParcelableArrayListExtra(AppConstants.MEDIAS_PARCEL);
         folderApp = getIntent().getStringExtra(AppConstants.PATH_APP);
         if (mMedias != null && folderApp != null) {
@@ -122,6 +125,7 @@ public class Player extends Activity implements MediaPlayer.OnCompletionListener
 
     private void playMedia(Media media) {
         indexCurrentMedia++;
+        multicastGroup.startMessageReceiver();
         switch (media.getType()) {
             case "image":
                 startImage(media);
@@ -247,10 +251,41 @@ public class Player extends Activity implements MediaPlayer.OnCompletionListener
     }
 
     private void onEndMedia() {
-        if (mMedias.size() > indexCurrentMedia)
-            playMedia(mMedias.get(indexCurrentMedia));
-        else
+        if (indexCurrentMedia == 1) {
+            mVideoView.seekTo(mVideoView.getDuration() - 1);
+        } else {
+            multicastGroup.stopMessageReceiver();
+            multicastGroup.stopKeepAlive();
             finish();
+        }
+//        if (mMedias.size() > indexCurrentMedia) {
+//            playMedia(mMedias.get(indexCurrentMedia));
+//        } else {
+//            multicastGroup.stopMessageReceiver();
+//            multicastGroup.stopKeepAlive();
+//            finish();
+//        }
     }
 
+    private void startMulticastGroupAction() {
+        String tag = "ACTION";
+        String multicast_ip = "230.192.0.19";
+        int port = 1050;
+        multicastGroup = new MulticastGroup(this, tag, multicast_ip, port);
+    }
+
+    public void nextVideo(int which) {
+        level = which;
+        if (mMedias.size() > indexCurrentMedia) {
+            //startGroup para iniciar instantApp
+            playMedia(mMedias.get(indexCurrentMedia));
+        }  else {
+            multicastGroup.stopMessageReceiver();
+            multicastGroup.stopKeepAlive();
+            finish();
+        }
+
+//        mMediaPlayer.seekTo();
+
+    }
 }

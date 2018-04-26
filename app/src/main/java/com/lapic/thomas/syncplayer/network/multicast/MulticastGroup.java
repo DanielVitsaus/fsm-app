@@ -12,6 +12,7 @@ import com.hannesdorfmann.mosby.mvp.MvpBasePresenter;
 import java.util.ArrayList;
 
 import com.lapic.thomas.syncplayer.data.model.Media;
+import com.lapic.thomas.syncplayer.player.Player;
 import com.lapic.thomas.syncplayer.player.PlayerFragment;
 import com.lapic.thomas.syncplayer.player.VideoVLCActivity;
 import com.lapic.thomas.syncplayer.ui.primarymode.PrimaryModeActivity;
@@ -30,6 +31,7 @@ public class MulticastGroup extends MulticastManager {
     private SecondaryModePresenter secondaryModePresenter;
     private PlayerFragment playerFragment;
     private Context mContext;
+    private Player player;
 
     public MulticastGroup(MvpBasePresenter basePresenter, Context context, String tag, String multicastIp, int multicastPort) {
         super(context, tag, multicastIp, multicastPort);
@@ -40,6 +42,11 @@ public class MulticastGroup extends MulticastManager {
             secondaryModePresenter = (SecondaryModePresenter)basePresenter;
     }
 
+    public MulticastGroup(Player player, String tag, String multicastIp, int multicastPort) {
+        super(player, tag, multicastIp, multicastPort);
+        this.player = player;
+    }
+
     public void setPlayerFragment(PlayerFragment fragment) {
         this.playerFragment = fragment;
     }
@@ -47,10 +54,13 @@ public class MulticastGroup extends MulticastManager {
     @Override
     protected Runnable getIncomingMessageAnalyseRunnable() {
 
+        if (player != null) {
+            Log.e(TAG, incomingMessage.getMessage());
+            player.nextVideo(Integer.parseInt(incomingMessage.getMessage()));
+        }
+
         if (primaryModePresenter != null) {
-
             primaryModePresenter.showActionFromSecondDevice(incomingMessage.getMessage());
-
         } else if (secondaryModePresenter != null) {
             if (incomingMessage.getTag().equals(AppConstants.GROUP_CONFIG)) {
                 String[] msgSplited = incomingMessage.getMessage().split("/");
