@@ -90,6 +90,7 @@ public class SecondaryModePresenter extends MvpBasePresenter<SecondaryModeView> 
         //Filtra os tipos de acordo com as mídias suportadas pelo dispositivos
         ArrayList<String> classes = new ArrayList<>();
         Collections.addAll(classes, classesDevices.split(","));
+        Log.e(TAG, classesDevices);
         for (int i = 0; i < classes.size(); i++) {
             Log.d(TAG, classesDevices + " ----- " + hostIP);
             if (Integer.parseInt(String.valueOf(classes.get(i).charAt(0))) == AppConstants.ACTIVE_CLASS) {

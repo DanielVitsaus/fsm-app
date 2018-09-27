@@ -20,6 +20,9 @@ import com.lapic.thomas.syncplayer.ui.primarymode.PrimaryModePresenter;
 import com.lapic.thomas.syncplayer.ui.secondarymode.SecondaryModePresenter;
 import com.lapic.thomas.syncplayer.utils.AppConstants;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by thomas on 09/09/17.
  */
@@ -91,16 +94,29 @@ public class MulticastGroup extends MulticastManager {
                     }
                     Log.e(TAG, msg);
                 } else if (msg.contains("START:app:")) {
-                    final String urlInstantApp = msg.replace("START:app:","");
-                    playerFragment.getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Uri uri = Uri.parse(urlInstantApp);
-                            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-                            intent.addCategory(Intent.CATEGORY_BROWSABLE);
-                            playerFragment.getActivity().startActivity(intent);
-                        }
-                    });
+//                    final String urlInstantApp = msg.replace("START:app:","");
+//                    playerFragment.getActivity().runOnUiThread(new Runnable() {
+//                        @Override
+//                        public void run() {
+//                            Uri uri = Uri.parse(urlInstantApp);
+//                            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
+//                            intent.addCategory(Intent.CATEGORY_BROWSABLE);
+//                            playerFragment.getActivity().startActivity(intent);
+//                        }
+//                    });
+                    try {
+                        String[] message = msg.split(":");
+                        final String packageName = message[2];
+                        final JSONObject jsonObject = new JSONObject(Uri.decode(message[3]));
+                        playerFragment.getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                openAnotherApp(playerFragment.getActivity(), packageName, jsonObject);
+                            }
+                        });
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                 } else if (msg.contains("STOP:app")) {
 
                 } else {
@@ -138,5 +154,16 @@ public class MulticastGroup extends MulticastManager {
             }
         }
         return null;
+    }
+
+    private void openAnotherApp(Activity activity, String packageName, JSONObject jsonObject) {
+        Intent intent = activity.getPackageManager().getLaunchIntentForPackage(packageName);
+        if (intent == null) {
+            intent = new Intent(Intent.ACTION_VIEW);
+            intent.setData(Uri.parse("market://details?id="+packageName));
+        }
+        intent.putExtra("params", jsonObject.toString());
+        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+        activity.startActivity(intent);
     }
 }
