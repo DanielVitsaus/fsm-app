@@ -94,16 +94,6 @@ public class MulticastGroup extends MulticastManager {
                     }
                     Log.e(TAG, msg);
                 } else if (msg.contains("START:app:")) {
-//                    final String urlInstantApp = msg.replace("START:app:","");
-//                    playerFragment.getActivity().runOnUiThread(new Runnable() {
-//                        @Override
-//                        public void run() {
-//                            Uri uri = Uri.parse(urlInstantApp);
-//                            Intent intent = new Intent(Intent.ACTION_VIEW, uri);
-//                            intent.addCategory(Intent.CATEGORY_BROWSABLE);
-//                            playerFragment.getActivity().startActivity(intent);
-//                        }
-//                    });
                     try {
                         String[] message = msg.split(":");
                         final String packageName = message[2];
@@ -118,6 +108,20 @@ public class MulticastGroup extends MulticastManager {
                         e.printStackTrace();
                     }
                 } else if (msg.contains("STOP:app")) {
+
+                } else if (msg.contains("START:text")) {
+                    String[] message = msg.split(":");
+                    Log.e("TESTEMESSAGE", msg);
+                    Log.e("TESTEMESSAGE", message.length + "");
+                    final String text = message[2];
+                    final String level = message[3];
+                    playerFragment.getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            playerFragment.showCustomMessage(text, Integer.parseInt(level));
+                        }
+                    });
+                } else if (msg.contains("STOP:text")) {
 
                 } else {
                     //START:media2,video,-1,medias/media2.mp4+

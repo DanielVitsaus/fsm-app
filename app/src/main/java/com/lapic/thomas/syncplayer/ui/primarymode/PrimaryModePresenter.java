@@ -345,6 +345,7 @@ public class PrimaryModePresenter
 
     public void onClickStart() {
         if (isViewAttached()) {
+            mPreferencesHelper.putMediaIndex(0);
             startCallbackMulticastGroup();
             getView().callPlayer();
         }

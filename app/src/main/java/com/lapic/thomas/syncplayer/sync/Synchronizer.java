@@ -12,6 +12,7 @@ import com.lapic.thomas.syncplayer.data.model.Group;
 import com.lapic.thomas.syncplayer.data.model.Media;
 import com.lapic.thomas.syncplayer.network.multicast.MulticastGroup;
 import com.lapic.thomas.syncplayer.network.streaming.StreamingController;
+import com.lapic.thomas.syncplayer.player.Player;
 import com.lapic.thomas.syncplayer.utils.AppConstants;
 
 /**
@@ -20,6 +21,7 @@ import com.lapic.thomas.syncplayer.utils.AppConstants;
 
 public class Synchronizer extends Thread {
 
+    private final Context mContext;
     private Group mGroup;
     private MulticastGroup mMulticastGroup;
     private StreamingController streamingController;
@@ -29,6 +31,7 @@ public class Synchronizer extends Thread {
     private String ipPort;
 
     public Synchronizer(Context context, Group group, MulticastGroup multicastGroup, Handler h1, Handler h2) {
+        this.mContext = context;
         this.mGroup = group;
         this.mMulticastGroup = multicastGroup;
         this.handler1 = h1;
@@ -48,9 +51,10 @@ public class Synchronizer extends Thread {
                             sendMessage(AppConstants.START, ipPort);
                         else
                             Log.e(TAG, "ERRO, ipPort is null");
-                    } else
+                    } else {
                         sendMessage(AppConstants.START, anchor.getMedias());
                     }
+                }
             }, anchor.getBeginInt() * 1000);
 
             handler2.postDelayed(new Runnable() {
@@ -83,7 +87,11 @@ public class Synchronizer extends Thread {
         for (String media : medias) {
             if (media.contains(AppConstants.APP)) {
                 str += media;
-            } else {
+            } else if (media.contains("text:")) {
+                Player player = (Player) mContext;
+                if (player != null && player.level != -1)
+                str += media + ":" + player.level;
+            }else {
                 String mediaName = media.substring(media.lastIndexOf("/") + 1, media.lastIndexOf("."));
                 Media mMedia = mGroup.getMedia(mediaName);
                 str += mMedia.getId() + "," + mMedia.getType() + "," + mMedia.getDuration() + "," + mMedia.getSrc() + "+";

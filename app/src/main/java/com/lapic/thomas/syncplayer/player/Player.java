@@ -24,6 +24,7 @@ import java.util.ArrayList;
 
 import com.lapic.thomas.syncplayer.R;
 import com.lapic.thomas.syncplayer.data.model.Media;
+import com.lapic.thomas.syncplayer.helper.PreferencesHelper;
 import com.lapic.thomas.syncplayer.helper.StringHelper;
 import com.lapic.thomas.syncplayer.network.multicast.MulticastGroup;
 import com.lapic.thomas.syncplayer.sync.Synchronizer;
@@ -47,13 +48,15 @@ public class Player extends Activity implements MediaPlayer.OnCompletionListener
     private ArrayList<Thread> syncs;
     private String folderApp;
     private MulticastGroup multicastGroup;
-    private int level = -1;
+    public int level = -1;
+    private PreferencesHelper mPref;
 
     @Override
     public void onCreate(Bundle bundle) {
         super.onCreate(bundle);
         configStatusBar();
         setContentView(R.layout.player_activity);
+        mPref = new PreferencesHelper(this);
         startMulticastGroupAction();
         mMedias = getIntent().getParcelableArrayListExtra(AppConstants.MEDIAS_PARCEL);
         folderApp = getIntent().getStringExtra(AppConstants.PATH_APP);
@@ -85,19 +88,19 @@ public class Player extends Activity implements MediaPlayer.OnCompletionListener
     @Override
     protected void onResume() {
         super.onResume();
-        if (multicastGroups == null) {
-            multicastGroups = new ArrayList<>();
-            syncs = new ArrayList<>();
-            for (int i = 0; i < mMedias.get(0).getGroups().size(); i++) {
-                String multicastIp = StringHelper.incrementIp(AppConstants.CONFIG_MULTICAST_IP, i + 1);
-                int multicastPort = AppConstants.CONFIG_MULTICAST_PORT + (i + 1);
-                MulticastGroup multicastGroup = new MulticastGroup(null, this, AppConstants.ACTION, multicastIp, multicastPort);
-                multicastGroups.add(multicastGroup);
-                Synchronizer synchronizer = new Synchronizer(this, mMedias.get(0).getGroup(i), multicastGroup, new Handler(), new Handler());
-                synchronizer.start();
-                syncs.add(synchronizer);
-            }
-        }
+//        if (multicastGroups == null) {
+//            multicastGroups = new ArrayList<>();
+//            syncs = new ArrayList<>();
+//            for (int i = 0; i < mMedias.get(0).getGroups().size(); i++) {
+//                String multicastIp = StringHelper.incrementIp(AppConstants.CONFIG_MULTICAST_IP, i + 1);
+//                int multicastPort = AppConstants.CONFIG_MULTICAST_PORT + (i + 1);
+//                MulticastGroup multicastGroup = new MulticastGroup(null, this, AppConstants.ACTION, multicastIp, multicastPort);
+//                multicastGroups.add(multicastGroup);
+//                Synchronizer synchronizer = new Synchronizer(this, mMedias.get(0).getGroup(i), multicastGroup, new Handler(), new Handler());
+//                synchronizer.start();
+//                syncs.add(synchronizer);
+//            }
+//        }
     }
 
     @Override
@@ -208,6 +211,24 @@ public class Player extends Activity implements MediaPlayer.OnCompletionListener
             mWebView.setVisibility(View.GONE);
             mVideoView.setVisibility(View.VISIBLE);
             mVideoView.start();
+            startSynchronizers();
+        }
+    }
+
+    private void startSynchronizers() {
+        Log.e("TESTE", "mPref.getMediaIndex: " + mPref.getMediaIndex());
+        if (multicastGroups == null) {
+            multicastGroups = new ArrayList<>();
+            syncs = new ArrayList<>();
+            for (int i = 0; i < mMedias.get(mPref.getMediaIndex()).getGroups().size(); i++) {
+                String multicastIp = StringHelper.incrementIp(AppConstants.CONFIG_MULTICAST_IP, i + 1);
+                int multicastPort = AppConstants.CONFIG_MULTICAST_PORT + (i + 1);
+                MulticastGroup multicastGroup = new MulticastGroup(null, this, AppConstants.ACTION, multicastIp, multicastPort);
+                multicastGroups.add(multicastGroup);
+                Synchronizer synchronizer = new Synchronizer(this, mMedias.get(mPref.getMediaIndex()).getGroup(i), multicastGroup, new Handler(), new Handler());
+                synchronizer.start();
+                syncs.add(synchronizer);
+            }
         }
     }
 
@@ -283,7 +304,14 @@ public class Player extends Activity implements MediaPlayer.OnCompletionListener
     }
 
     public void nextVideo(int which) {
+        mPref.putMediaIndex(1);
         level = which;
+
+        for (MulticastGroup multicastGroup : multicastGroups) {
+            multicastGroup.stopMessageReceiver();
+        }
+        multicastGroups = null;
+
         if (mMedias.size() > indexCurrentMedia) {
             //startGroup para iniciar instantApp
             this.runOnUiThread(new Runnable() {

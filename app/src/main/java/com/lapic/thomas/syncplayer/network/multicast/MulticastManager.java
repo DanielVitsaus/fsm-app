@@ -53,12 +53,12 @@ public abstract class MulticastManager {
         Runnable sender = new Runnable() {
             @Override
             public void run() {
-                byte[] buf = new byte[4098];
+                byte[] buf = new byte[1024];
                 DatagramPacket packet = new DatagramPacket(buf, buf.length, group, MULTICAST_PORT);
                 do {
                     message.replaceAll("\"","");
-                    packet.setData(message.getBytes(), 0, message.length());
                     try {
+                        packet.setData(message.getBytes("UTF-8"), 0, message.length());
                         serverSocket.send(packet);
                         Log.d(TAG, "mensagem enviada para " + MULTICAST_ADDRESS + ":" + MULTICAST_PORT + " - "+  message);
                         Thread.sleep(TIME_KEEP_ALIVE);
@@ -100,10 +100,10 @@ public abstract class MulticastManager {
                 multicastLock.acquire();
                 while (receiveMessages) {
                     try {
-                        byte[] recvBuf = new byte[15000];
+                        byte[] recvBuf = new byte[1024];
                         DatagramPacket packet = new DatagramPacket(recvBuf, recvBuf.length);
                         clientSocket.receive(packet);
-                        String message = new String(packet.getData()).trim();
+                        String message = new String(packet.getData(), 0, packet.getLength(), "UTF-8").trim();
                         incomingMessage = new Message(TAG, message, packet.getAddress(), System.currentTimeMillis()/1000);
                         incomingMessageHandler.post(getIncomingMessageAnalyseRunnable());
                     } catch (IOException e) {

@@ -2,13 +2,17 @@ package com.lapic.thomas.syncplayer.player;
 
 
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.MediaPlayer;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
+import android.os.VibrationEffect;
+import android.os.Vibrator;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,6 +27,7 @@ import android.widget.VideoView;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import com.lapic.thomas.syncplayer.R;
 import com.lapic.thomas.syncplayer.data.model.Media;
@@ -47,6 +52,12 @@ public class PlayerFragment extends Fragment {
     private MediaPlayer mMediaPlayer;
     private int mGroup;
     private String TAG = this.getClass().getSimpleName();
+
+    private ArrayList<ArrayList<String>> words = new ArrayList<>(Arrays.asList(
+            new ArrayList<>(Arrays.asList("gato", "vaca", "bode", "vaga-lume", "mata", "rio", "jacaré", "índio", "ovo", "mato", "gato", "pato", "tucano")),
+            new ArrayList<>(Arrays.asList("lápis", "besouro", "caracol", "galinha", "barco", "peixes", "onça", "mar", "tucano", "coruja", "raposa", "bichos")),
+            new ArrayList<>(Arrays.asList("joaninha", "zebra", "lagarta", "pincel", "tartaruga", "montanhas", "pássaro", "filhote", "família", "gambá")))
+    );
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup parent, Bundle savedInstanceState) {
@@ -267,7 +278,20 @@ public class PlayerFragment extends Fragment {
     }
 
     public void sendMessageToFinishVideoVLCActivity() {
-        Log.e(TAG, "DEVE PARAR 2");
         LocalBroadcastManager.getInstance(getActivity()).sendBroadcast(new Intent(AppConstants.SHOULD_FINISH));
     }
+
+    public void showCustomMessage(String msg, int levelChosen) {
+        if (words.get(levelChosen).contains(msg)) {
+            Vibrator v = (Vibrator) getActivity().getSystemService(Context.VIBRATOR_SERVICE);
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                v.vibrate(VibrationEffect.createOneShot(500,VibrationEffect.DEFAULT_AMPLITUDE));
+            } else {
+                v.vibrate(500);
+            }
+            message.setText(msg);
+            message.setTextSize(40);
+        }
+    }
+
 }

@@ -23,6 +23,7 @@ public class PreferencesHelper {
     private static final String SUPPORT_MPEG3 = "SUPPORT_MPEG3";
     private static final String SUPPORT_WAV = "SUPPORT_WAV";
     private static final String SUPPORT_APP = "SUPPORT_APP";
+    private static final String MEDIA_INDEX = "MEDIA_INDEX";
 
     private final SharedPreferences mPref;
 
@@ -110,6 +111,14 @@ public class PreferencesHelper {
 
     public boolean getSupportApp() {
         return  mPref.getBoolean(SUPPORT_APP, false);
+    }
+
+    public void putMediaIndex(int value) {
+        mPref.edit().putInt(MEDIA_INDEX, value).apply();
+    }
+
+    public int getMediaIndex() {
+        return  mPref.getInt(MEDIA_INDEX, 0);
     }
 
 }
