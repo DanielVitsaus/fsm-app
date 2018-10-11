@@ -36,6 +36,37 @@
           "status": 2
         }
       }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:778093931225:android:5cea09e6edc33d8f",
+        "android_client_info": {
+          "package_name": "com.lmd.thomas.syncplayer"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "778093931225-ags5hvntvgf4tetghrlbtg5sfg470i0e.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCJddB-P6I5V2YkkuB5P2hBXi40N_A1v_o"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
     }
   ],
   "configuration_version": "1"
