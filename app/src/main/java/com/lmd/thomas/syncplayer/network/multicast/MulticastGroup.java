@@ -98,6 +98,7 @@ public class MulticastGroup extends MulticastManager {
                         String[] message = msg.split(":");
                         final String packageName = message[2];
                         final JSONObject jsonObject = new JSONObject(Uri.decode(message[3]));
+                        Log.e("TESTEMESSAGE", "APP-> "+jsonObject.toString());
                         playerFragment.getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
@@ -110,17 +111,21 @@ public class MulticastGroup extends MulticastManager {
                 } else if (msg.contains("STOP:app")) {
 
                 } else if (msg.contains("START:text")) {
-                    String[] message = msg.split(":");
                     Log.e("TESTEMESSAGE", msg);
-                    Log.e("TESTEMESSAGE", message.length + "");
-                    final String text = message[2];
-                    final String level = message[3];
-                    playerFragment.getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            playerFragment.showCustomMessage(text, Integer.parseInt(level));
-                        }
-                    });
+                    String[] message = msg.split(":");
+//                    String text = message[2];
+                    String[] message1 = message[2].split("_");
+                    if (message1.length == 2) {
+                        final String text = message1[0];
+                        final String level = message1[1];
+                        playerFragment.getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                Log.e("teste", "text: " + text + "    level:" + level);
+                                playerFragment.showCustomMessage(text, Integer.parseInt(level));
+                            }
+                        });
+                    }
                 } else if (msg.contains("STOP:text")) {
 
                 } else {

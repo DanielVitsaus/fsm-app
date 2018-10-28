@@ -90,7 +90,7 @@ public class Synchronizer extends Thread {
             } else if (media.contains("text:")) {
                 Player player = (Player) mContext;
                 if (player != null && player.level != -1)
-                str += media + ":" + player.level;
+                str += media + "_" + player.level;
             }else {
                 String mediaName = media.substring(media.lastIndexOf("/") + 1, media.lastIndexOf("."));
                 Media mMedia = mGroup.getMedia(mediaName);
